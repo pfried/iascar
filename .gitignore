@@ -1,0 +1,8 @@
+.DS_Store
+.nodemonignore
+.bower-*/
+.idea/
+node_modules/
+bluetoothcar/www
+src/js/lib/bower
+
