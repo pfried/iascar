@@ -4,6 +4,6 @@
 .idea/
 node_modules/
 bluetoothcar/www
-bluetoothcar/platforms
+bluetoothcar/www
+bluetoothcar/www
 src/js/lib/bower
-

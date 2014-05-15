@@ -4,14 +4,21 @@ module.exports = function (grunt) {
 
     var CLIENT_LIB_FILES = [
         'src/js/lib/bower/jquery/dist/jquery.js',
-        'src/js/lib/bower/angular/angular.js'
+        'src/js/lib/bower/angular/angular.js',
+        'src/js/lib/bower/angular-cookies/angular-cookies.js',
+        'src/js/lib/bower/angular-resource/angular-resource.js',
+        'src/js/lib/bower/angular-bootstrap/ui-bootstrap.js',
+        'src/js/lib/bower/angular-ui-router/release/angular-ui-router.js'
     ];
 
     var CLIENT_SRC_FILES = [
+        'src/js/app.js',
         'src/js/controllers/*.js',
         'src/js/directives/*.js',
         'src/js/filters/*.js',
-        'src/js/services/*.js'
+        'src/js/services/*.js',
+        'src/js/config/*.js',
+        'src/js/startApp.js'
     ];
 
     grunt.initConfig({
@@ -82,27 +89,27 @@ module.exports = function (grunt) {
             www : {
                 files: [
                     {
-                        expand: true,
-                        flatten: false,
-                        filter: 'isFile',
-                        dest: 'bluetoothcar/www/img/',
-                        cwd: 'src/',
-                        src: ['img/**']
+                        expand  : true,
+                        flatten : false,
+                        filter  : 'isFile',
+                        dest    : 'bluetoothcar/www/img/',
+                        cwd     : 'src/',
+                        src     : ['img/**']
                     },
                     {
-                        expand: true,
-                        flatten: false,
-                        filter: 'isFile',
-                        dest: 'bluetoothcar/www/fonts',
-                        cwd: 'src/',
-                        src: ['fonts/**']
+                        expand  : true,
+                        flatten : false,
+                        filter  : 'isFile',
+                        dest    : 'bluetoothcar/www/fonts',
+                        cwd     : 'src/',
+                        src     : ['fonts/**']
                     }
                 ]
             }
         },
         concat: {
             dist: {
-                src: CLIENT_SRC_FILES.concat(CLIENT_LIB_FILES),
+                src: CLIENT_LIB_FILES.concat(CLIENT_SRC_FILES),
                 dest: 'bluetoothcar/www/js/index.js'
 
             }
@@ -111,11 +118,11 @@ module.exports = function (grunt) {
         jade: {
             compile: {
                 files: [{
-                    cwd: 'src/js/views/',
-                    src: ['*.jade', 'partials/*.jade'],
-                    dest: 'bluetoothcar/www/',
-                    expand: true,
-                    ext: '.html'
+                    cwd    : 'src/js/views/',
+                    src    : ['*.jade', 'partials/*.jade'],
+                    dest   : 'bluetoothcar/www/',
+                    expand : true,
+                    ext    : '.html'
                 }],
                 options: {
                     client: false,
@@ -131,10 +138,10 @@ module.exports = function (grunt) {
         connect: {
             server: {
                 options: {
-                    hostname: '*',
-                    port: 8000,
-                    base: 'bluetoothcar/www',
-                    keepalive: true
+                    hostname  : '*',
+                    port      : 8000,
+                    base      : 'bluetoothcar/www',
+                    keepalive : true
                 }
             }
 
@@ -147,16 +154,22 @@ module.exports = function (grunt) {
         },
         exec : {
             prepare : {
-                command:"cordova prepare",
-                stdout:true,
-                stderror:true,
-                cwd : 'bluetoothcar'
+                command  : 'cordova prepare',
+                stdout   : true,
+                stderror : true,
+                cwd      : 'bluetoothcar'
+            },
+            serve : {
+                command  : 'cordova serve',
+                stdout   : true,
+                stderror : true,
+                cwd      : 'bluetoothcar'
             },
             build : {
-                command:"cordova build",
-                stdout:true,
-                stderror:true,
-                cwd : 'bluetoothcar'
+                command  : 'cordova build',
+                stdout   : true,
+                stderror : true,
+                cwd      : 'bluetoothcar'
             }
         }
     });
@@ -180,6 +193,7 @@ module.exports = function (grunt) {
 
     // Cordova prepare copies the resources from the bluetoothcar/www folder to its platform folders
     grunt.registerTask('cordovaPrepare', ['exec:prepare']);
+    grunt.registerTask('cordovaServe', ['exec:serve']);
 
     grunt.registerTask('default', ['runServer']);
 
