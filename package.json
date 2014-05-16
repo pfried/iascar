@@ -16,7 +16,9 @@
     "test": "node node_modules/grunt-cli/bin/grunt test",
     "postinstall": "node node_modules/bower/bin/bower install"
   },
-  "dependencies": {},
+  "dependencies": {
+    "grunt-contrib-copy": "~0.4.1"
+  },
   "devDependencies": {
     "grunt": "0.4.4",
     "grunt-cli": "0.1.13",
@@ -33,6 +35,13 @@
     "grunt-exec": "0.4.5",
     "grunt-concurrent": "latest",
     "grunt-nodemon": "0.2.0",
-    "bower": "1.3.3"
+    "bower": "1.3.3",
+    "grunt-karma": "~0.8.0",
+    "karma": "~0.12.0",
+    "karma-jasmine": "~0.1",
+    "karma-phantomjs-launcher": "~0.1",
+    "karma-coverage": "~0.1.4",
+    "protractor": "~0.12.0",
+    "phantomjs": "1.9.1-0"
   }
 }

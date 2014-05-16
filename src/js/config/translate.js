@@ -1,5 +1,5 @@
+'use strict';
 angular.module('iasCar').config(['$translateProvider', function ($translateProvider) {
-    'use strict';
 
     //Use static file loader to load language files from json file
     $translateProvider.useStaticFilesLoader({
@@ -7,6 +7,6 @@ angular.module('iasCar').config(['$translateProvider', function ($translateProvi
         suffix: '.json'
     });
 
-    $translateProvider.preferredLanguage('de');
+    $translateProvider.preferredLanguage('en');
 
 }]);

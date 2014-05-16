@@ -1,6 +1,5 @@
+'use strict';
 angular.module('iasCar').config(['$urlRouterProvider', '$stateProvider', function ($urlRouterProvider, $stateProvider) {
-
-    'use strict';
 
     $stateProvider
         .state('home', {

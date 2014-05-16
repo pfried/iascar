@@ -16,6 +16,4 @@
         bootstrap();
     }
 
-    window.console.log('Starting iasCar Application');
-
 })();

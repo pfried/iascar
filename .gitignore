@@ -2,6 +2,7 @@
 .nodemonignore
 .bower-*/
 .idea/
+/coverage
 node_modules/
 bluetoothcar/www
 bluetoothcar/platforms
