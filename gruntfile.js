@@ -43,7 +43,7 @@ module.exports = function (grunt) {
                 }
             },
             jade : {
-                files : ['src/views/**/*.jade'],
+                files : ['src/jade/**/*.jade'],
                 tasks : ['jade'],
                 options : {
                     livereload : true
@@ -63,7 +63,12 @@ module.exports = function (grunt) {
                     '!src/js/lib/bower/**'
                 ],
                 options: {
-                    jshintrc: true
+                    jshintrc: true,
+                    data : {
+                        livereload : function() {
+                            return process.env.NODE_ENV === 'development';
+                        }
+                    }
                 }
             }
         },
@@ -118,7 +123,7 @@ module.exports = function (grunt) {
         jade: {
             compile: {
                 files: [{
-                    cwd    : 'src/js/views/',
+                    cwd    : 'src/jade/',
                     src    : ['*.jade', 'partials/*.jade'],
                     dest   : 'bluetoothcar/www/',
                     expand : true,
@@ -141,7 +146,10 @@ module.exports = function (grunt) {
                     hostname  : '*',
                     port      : 8000,
                     base      : 'bluetoothcar/www',
-                    keepalive : true
+                    keepalive : true,
+                    open      : {
+                        target: 'http://localhost:8000'
+                    }
                 }
             }
 
