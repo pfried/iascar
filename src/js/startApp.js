@@ -8,12 +8,14 @@
     }
 
     // In case cordova is available we want to start on device ready
-    if(cordova) {
+    if(window.cordova) {
         document.addEventListener('deviceready', function() {
             bootstrap();
         }, false);
     } else {
         bootstrap();
     }
+
+    window.console.log('Starting iasCar Application');
 
 })();

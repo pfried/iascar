@@ -8,7 +8,9 @@ module.exports = function (grunt) {
         'src/js/lib/bower/angular-cookies/angular-cookies.js',
         'src/js/lib/bower/angular-resource/angular-resource.js',
         'src/js/lib/bower/angular-bootstrap/ui-bootstrap.js',
-        'src/js/lib/bower/angular-ui-router/release/angular-ui-router.js'
+        'src/js/lib/bower/angular-ui-router/release/angular-ui-router.js',
+        'src/js/lib/bower/angular-translate/angular-translate.js',
+        'src/js/lib/bower/angular-translate-loader-static-files/angular-translate-loader-static-files.js'
     ];
 
     var CLIENT_SRC_FILES = [
@@ -18,6 +20,7 @@ module.exports = function (grunt) {
         'src/js/filters/*.js',
         'src/js/services/*.js',
         'src/js/config/*.js',
+        'src/js/routes/*.js',
         'src/js/startApp.js'
     ];
 
@@ -108,6 +111,14 @@ module.exports = function (grunt) {
                         dest    : 'bluetoothcar/www/fonts',
                         cwd     : 'src/',
                         src     : ['fonts/**']
+                    },
+                    {
+                        expand  : true,
+                        flatten : false,
+                        filter  : 'isFile',
+                        dest    : 'bluetoothcar/www',
+                        cwd     : 'src/js',
+                        src     : ['lang/**']
                     }
                 ]
             }
