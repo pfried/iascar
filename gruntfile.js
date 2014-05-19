@@ -165,8 +165,20 @@ module.exports = function (grunt) {
             }
 
         },
+        karma: {
+            endless : {
+                configFile: 'karma.conf.js',
+                singleRun: false,
+                browsers: ['PhantomJS']
+            },
+            once : {
+                configFile: 'karma.conf.js',
+                singleRun: true,
+                browsers: ['PhantomJS']
+            }
+        },
         concurrent: {
-            tasks: ['connect', 'watch'],
+            tasks: ['connect', 'watch', 'karma:endless'],
             options: {
                 logConcurrentOutput: true
             }
@@ -204,11 +216,15 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-env');
     grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerTask('runServer', ['buildClient', 'concurrent']);
 
     // Building the Client from the resources in the src folder
     grunt.registerTask('buildClient', ['clean', 'env:dev', 'jshint', 'less:www', 'jade', 'copy', 'concat:dist']);
+
+    // Unit testing and JSHint Static Code Check
+    grunt.registerTask('test', ['jshint', 'karma:once']);
 
     // Cordova prepare copies the resources from the bluetoothcar/www folder to its platform folders
     grunt.registerTask('cordovaPrepare', ['exec:prepare']);
