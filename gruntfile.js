@@ -53,7 +53,7 @@ module.exports = function (grunt) {
                 }
             },
             less : {
-                files : ['src/css/**/*.less'],
+                files : ['src/less/**/*.less'],
                 tasks : ['less'],
                 livereload : true
             }
@@ -88,7 +88,7 @@ module.exports = function (grunt) {
                 files: [
                     {
                         dest : 'bluetoothcar/www/css/index.css',
-                        src  : ['src/css/**/*.less', 'src/js/lib/bower/bootstrap/less/bootstrap.less']
+                        src  : ['src/less/**/*.less']
                     }
                 ]
             }

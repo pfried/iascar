@@ -19,6 +19,15 @@ angular.module('iasCar').config(['$urlRouterProvider', '$stateProvider', functio
                     controller: 'ConnectionController'
                 }
             }
+        })
+        .state('car', {
+            url: '/car',
+            views : {
+                'mainPanel' : {
+                    templateUrl : 'partials/car.html',
+                    controller : 'CarController'
+                }
+            }
         });
 
     $urlRouterProvider.otherwise('/home');
