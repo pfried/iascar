@@ -13,6 +13,11 @@ module.exports = function (grunt) {
         'src/js/lib/bower/angular-translate-loader-static-files/angular-translate-loader-static-files.js'
     ];
 
+    var MOCK_FILES = [
+        'src/js/lib/bower/angular-mocks/angular-mocks.js',
+        'src/js/mocks/**/*.js'
+    ];
+
     var CLIENT_SRC_FILES = [
         'src/js/app.js',
         'src/js/controllers/*.js',
@@ -55,7 +60,9 @@ module.exports = function (grunt) {
             less : {
                 files : ['src/less/**/*.less'],
                 tasks : ['less'],
-                livereload : true
+                options : {
+                    livereload : true
+                }
             }
         },
         jshint: {
@@ -108,7 +115,7 @@ module.exports = function (grunt) {
                         expand  : true,
                         flatten : false,
                         filter  : 'isFile',
-                        dest    : 'bluetoothcar/www/fonts',
+                        dest    : 'bluetoothcar/www/',
                         cwd     : 'src/',
                         src     : ['fonts/**']
                     },
@@ -127,7 +134,10 @@ module.exports = function (grunt) {
             dist: {
                 src: CLIENT_LIB_FILES.concat(CLIENT_SRC_FILES),
                 dest: 'bluetoothcar/www/js/index.js'
-
+            },
+            mock: {
+                src: CLIENT_LIB_FILES.concat(MOCK_FILES).concat(CLIENT_SRC_FILES),
+                dest: 'bluetoothcar/www/js/index.js'
             }
         },
         clean: ['bluetoothcar/www'],
@@ -218,10 +228,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-karma');
 
-    grunt.registerTask('runServer', ['buildClient', 'concurrent']);
+    grunt.registerTask('runServer', ['buildClientMock', 'concurrent']);
 
     // Building the Client from the resources in the src folder
     grunt.registerTask('buildClient', ['clean', 'env:dev', 'jshint', 'less:www', 'jade', 'copy', 'concat:dist']);
+    grunt.registerTask('buildClientMock', ['clean', 'env:dev', 'jshint', 'less:www', 'jade', 'copy', 'concat:mock']);
 
     // Unit testing and JSHint Static Code Check
     grunt.registerTask('test', ['jshint', 'karma:once']);
