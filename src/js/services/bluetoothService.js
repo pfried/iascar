@@ -4,7 +4,7 @@
 angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootScope', '$q', 'cordovaService', function($window, $rootScope, $q, cordovaService) {
 
     var initialized = false;
-    var scanTimeout = 10000;
+    var timeout;
 
     var devices = [];
 
@@ -38,11 +38,7 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
         return cordovaService.isAvailable() && $window.hasOwnProperty('bluetoothle');
     }
 
-    function setTimeout(timeout) {
-        scanTimeout = timeout;
-    }
-
-    function listDevices() {
+    function startScan() {
 
         var deferred = $q.defer();
 
@@ -79,12 +75,16 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
         return deferred.promise;
     }
 
+    function stopScan() {
+        bt.stopScan(function() {});
+    }
+
     return {
         isAvailable   : isAvailable,
         initialize    : initialize,
         isInitialized : isInitialized,
-        setTimeout    : setTimeout,
-        listDevices   : listDevices
+        startScan     : startScan,
+        stopScan      : stopScan
     };
 
 }]);

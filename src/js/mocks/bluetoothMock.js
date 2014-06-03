@@ -62,6 +62,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
         var OS = 'android';
         var expectingError = false;
+        var interval;
 
         /**
          * Initialize Bluetooth on the device. Must be called before anything else. If Bluetooth is disabled, the user will be prompted to enable it on Android devices. Note: Although Bluetooth initialization could initially be successful, there's no guarantee whether it will stay enabled. Each call checks whether Bluetooth is disabled. If it becomes disabled, the user must reinitialize Bluetooth, connect to the device, start a read/write operation, etc.
@@ -112,14 +113,12 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
             if(!expectingError) {
 
-                if (OS === 'android') {
-                    successCallback(resultStartScan);
-                }
+                successCallback(resultStartScan);
 
-                window.setInterval(function() {
+                interval = window.setInterval(function() {
                     window.console.log('adding device');
                     successCallback(resultAndroid);
-                }, 5000);
+                }, 1000);
 
             } else {
                 errorCallback({
@@ -138,6 +137,8 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             successCallback({
                 'status' : 'scanStopped'
             });
+
+            window.clearInterval(interval);
         }
 
         /**
