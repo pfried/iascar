@@ -15,9 +15,10 @@
         });
 
         it('should detect whether cordova is present or not', function() {
-            expect(cordovaService.isAvailable()).toBe(false);
-            window.cordova = {};
+            window.mockCordova();
             expect(cordovaService.isAvailable()).toBe(true);
+            delete window.cordova;
+            expect(cordovaService.isAvailable()).toBe(false);
         });
 
     });
