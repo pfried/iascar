@@ -28,7 +28,7 @@ module.exports = function(config) {
             'src/js/routes/*.js',
             'src/js/mocks/*.js',
             'src/js/startApp.js',
-            'src/js/tests/**/*.js'
+            'src/js/tests/**/*.spec.js'
         ],
 
 

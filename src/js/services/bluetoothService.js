@@ -65,11 +65,9 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
                         rssi : result.rssi
                     });
                 });
-
             }
-
-            deferred.reject(result.message);
-
+        }, function(error) {
+            deferred.reject(error.message);
         });
 
         return deferred.promise;
@@ -79,12 +77,32 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
         bt.stopScan(function() {});
     }
 
+    function connect(device) {
+        var deferred = $q.defer();
+
+        bt.connect(function(result) {
+            if(result && result.status === 'connecting') {
+                deferred.notify(result);
+            }
+            if(result && result.status === 'connected') {
+                deferred.resolve(result);
+            }
+        }, function (error) {
+            deferred.reject(error.message);
+        }, {
+            address : device.address
+        });
+
+        return deferred.promise;
+    }
+
     return {
         isAvailable   : isAvailable,
         initialize    : initialize,
         isInitialized : isInitialized,
         startScan     : startScan,
-        stopScan      : stopScan
+        stopScan      : stopScan,
+        connect       : connect
     };
 
 }]);

@@ -2,4 +2,4 @@ h1 Connection Controller
   p {{ 'settings.title' | translate }}
 
     ul(ng-repeat='car in cars')
-      li {{ car.name }}
+      li(ng-click='connectToDevice(car)') {{ car.name }}

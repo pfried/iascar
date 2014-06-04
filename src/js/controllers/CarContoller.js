@@ -1,8 +1,6 @@
-angular.module('iasCar').controller('CarController', ['$scope', '$window', 'CarService',  function($scope, $window, CarService) {
+angular.module('iasCar').controller('CarController', ['$scope', '$window', '$stateParams', 'bluetoothService',  function($scope, $window, $stateParams, bluetoothService) {
     'use strict';
 
-    $window.console.log('Car Controller');
-
-    $scope.cars = CarService.listCars();
+    $window.console.log($stateParams.carAddress);
 
 }]);

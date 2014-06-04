@@ -21,7 +21,7 @@ angular.module('iasCar').config(['$urlRouterProvider', '$stateProvider', functio
             }
         })
         .state('car', {
-            url: '/car',
+            url: '/car/:carAddress',
             views : {
                 'mainPanel' : {
                     templateUrl : 'partials/car.html',
@@ -36,4 +36,4 @@ angular.module('iasCar').config(['$urlRouterProvider', '$stateProvider', functio
     function ($rootScope, $state, $stateParams) {
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
-    }]);
+}]);

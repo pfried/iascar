@@ -1,4 +1,7 @@
 /*jshint unused:false */
+/**
+ * @author Friedrich Mäckle
+ */
 'use strict';
 angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$window', '$interval', function ($httpBackend, $window, $interval) {
 
@@ -61,8 +64,42 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
         };
 
         var OS = 'android';
-        var expectingError = false;
+        var expectedErrors = [];
         var interval;
+
+        /**
+         * Add an event error to the expected errors
+         * @param event The event/action we are expecting an error for
+         * @param errorMessage The error message to expect, errorMessages contains a set of messages that can be used.
+         */
+        function addError(event, errorMessage) {
+            // Add the error, event is key, if no array yet, create one and push message in
+            var message = errorMessage ? errorMessage : errorMessages.default;
+            (expectedErrors[event] = expectedErrors[event] ? expectedErrors[event] : []).push(errorMessage);
+        }
+
+        /**
+         * Returns whether we are expecting an error for a special event
+         * @param status The event
+         * @returns {boolean} Returns whether we expect an error for that event
+         */
+        function expectingError(event) {
+            return expectedErrors.hasOwnProperty(event) && expectedErrors[event].length > 0;
+        }
+
+        /**
+         * Produces an error and passes it to the callback
+         * @param errorCallback The error callback which will be called with the error
+         * @param event The event we are creating an error for
+         */
+        function produceError(errorCallback, event) {
+
+            // Taking the first error message in the array
+            errorCallback({
+                'status'  : event,
+                'message' : expectedErrors[event].shift()
+            })
+        }
 
         /**
          * Initialize Bluetooth on the device. Must be called before anything else. If Bluetooth is disabled, the user will be prompted to enable it on Android devices. Note: Although Bluetooth initialization could initially be successful, there's no guarantee whether it will stay enabled. Each call checks whether Bluetooth is disabled. If it becomes disabled, the user must reinitialize Bluetooth, connect to the device, start a read/write operation, etc.
@@ -75,13 +112,10 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 'status' : 'initialized'
             };
 
-            if(!expectingError) {
+            if(!expectingError('initialize')) {
                 successCallback(result);
             } else {
-                errorCallback({
-                    error : 'initialize',
-                    message : errorMessages.initialize.notEnabled
-                });
+                produceError(errorCallback, 'initialize');
             }
 
         }
@@ -111,7 +145,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 'status' : 'scanStarted'
             };
 
-            if(!expectingError) {
+            if(!expectingError('startScan')) {
 
                 successCallback(resultStartScan);
 
@@ -121,10 +155,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 }, 1000);
 
             } else {
-                errorCallback({
-                    error : 'initialize',
-                    message : errorMessages.startScan.scanStartFail
-                });
+                produceError(errorCallback, 'startScan');
             }
         }
 
@@ -134,11 +165,16 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          * @param errorCallback
          */
         function stopScan(successCallback, errorCallback) {
-            successCallback({
-                'status' : 'scanStopped'
-            });
 
-            window.clearInterval(interval);
+            if(!expectingError('stopScan')) {
+                window.clearInterval(interval);
+                successCallback({
+                    'status': 'scanStopped'
+                });
+            } else {
+                produceError(errorCallback, 'stopScan');
+            }
+
         }
 
         /**
@@ -168,13 +204,10 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 'name'    : 'iasCar1'
             };
 
-            if(!expectingError) {
-                successCallback(resultConnected);
+            if(!expectingError('connect')) {
+                successCallback(resultConnecting);
             } else {
-                errorCallback({
-                    error : 'connecting',
-                    message : errorMessages.connect.neverConnected
-                });
+                produceError(errorCallback, 'connect');
             }
         }
 
@@ -191,13 +224,10 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 'name'    : 'iasCar1'
             };
 
-            if(!expectingError) {
+            if(!expectingError('reconnect')) {
                 successCallback(resultConnected);
             } else {
-                errorCallback({
-                    error : 'reconnecting',
-                    message : errorMessages.connect.neverConnected
-                });
+                produceError(errorCallback, 'reconnect');
             }
         }
 
@@ -220,13 +250,10 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 'name'    : 'iasCar1'
             };
 
-            if(!expectingError) {
+            if(!expectingError('disconnect')) {
                 successCallback(resultDisconnected);
             } else {
-                errorCallback({
-                    error : 'reconnecting',
-                    message : errorMessages.connect.isNotDisconnected
-                });
+                produceError(errorCallback, 'disconnect');
             }
         }
 
@@ -242,13 +269,10 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 'name'    : 'iasCar1'
             };
 
-            if(!expectingError) {
+            if(!expectingError('close')) {
                 successCallback(result);
             } else {
-                errorCallback({
-                    error : 'closing',
-                    message : errorMessages.default
-                });
+                produceError(errorCallback, 'close');
             }
         }
 
@@ -283,16 +307,13 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 ]
             };
 
-            if(!expectingError) {
+            if(!expectingError('discover')) {
                 if(OS === 'ios') {
                     successCallback(void(0));
                 }
                 successCallback(result);
             } else {
-                errorCallback({
-                    error : 'closing',
-                    message : errorMessages.default
-                });
+                produceError(errorCallback, 'discover');
             }
 
 
@@ -314,16 +335,13 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 ]
             };
 
-            if(!expectingError) {
+            if(!expectingError('services')) {
                 if(OS === 'android') {
                     successCallback(void(0));
                 }
                 successCallback(result);
             } else {
-                errorCallback({
-                    error : 'services',
-                    message : errorMessages.default
-                });
+                produceError(errorCallback, 'services');
             }
 
         }
@@ -345,16 +363,13 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 ]
             };
 
-            if(!expectingError) {
+            if(!expectingError('characteristics')) {
                 if(OS === 'android') {
                     successCallback(void(0));
                 }
                 successCallback(result);
             } else {
-                errorCallback({
-                    error : 'characteristics',
-                    message : errorMessages.default
-                });
+                produceError(errorCallback, 'characteristics');
             }
         }
 
@@ -375,16 +390,13 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 ]
             };
 
-            if(!expectingError) {
+            if(!expectingError('descriptors')) {
                 if(OS === 'android') {
                     successCallback(void(0));
                 }
                 successCallback(result);
             } else {
-                errorCallback({
-                    error : 'descriptors',
-                    message : errorMessages.default
-                });
+                produceError(errorCallback, 'descriptors');
             }
         }
 
@@ -403,17 +415,20 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 'value': ''
             };
 
-            if(!expectingError) {
+            if(!expectingError('read')) {
                 successCallback(result);
             } else {
-                errorCallback({
-                    error : 'descriptors',
-                    message : errorMessages.readWrite.readFail
-                });
+                produceError(errorCallback, 'read');
             }
 
         }
 
+        /**
+         * Subscribe to a particular service's characteristic. Once a subscription is no longer needed, execute unsubscribe in a similar fashion. The Client Configuration descriptor will automatically be written to enable notification/indication.
+         * @param successCallback
+         * @param errorCallback
+         * @param params
+         */
         function subscribe(successCallback, errorCallback, params) {
 
             var subscribedResult = {
@@ -429,18 +444,84 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 'value' : ''
             };
 
-            if(!expectingError) {
+            if(!expectingError('subscribe')) {
                 successCallback(subscribedResult);
             } else {
-                errorCallback({
-                    error : 'descriptors',
-                    message : errorMessages.readWrite.readFail
-                });
+                produceError(errorCallback, 'subscribe');
+            }
+        }
+
+        /**
+         * Unsubscribe to a particular service's characteristic.
+         * @param successCallback
+         * @param errorCallback
+         * @param params
+         */
+        function unsubscribe(successCallback, errorCallback, params) {
+
+            var result = {
+                'status' : 'unsubscribed',
+                'serviceUuid' : '180D',
+                'characteristicUuid' : '2A37'
+            };
+
+            if(!expectingError('unsubscribe')) {
+                successCallback(result);
+            } else {
+                produceError(errorCallback, 'unsubscribe');
+            }
+
+        }
+
+        /**
+         * Write a particular service's characteristic. NOTE: this hasn't been well tested
+         * @param successCallback
+         * @param errorCallback
+         * @param params
+         */
+        function write(successCallback, errorCallback, params) {
+            
+            var result = {
+                'status' : 'written',
+                'serviceUuid' : params.serviceUuid,
+                'characteristicUuid' : params.characteristicUuid,
+                'value' : params.value
+            };
+
+            if(!expectingError('write')) {
+                successCallback(result);
+            } else {
+                produceError(errorCallback, 'write');
+            }
+            
+        }
+
+        /**
+         * Read a particular characterist's descriptor
+         * @param successCallback
+         * @param errorCallback
+         * @param params
+         */
+        function readDescriptor(successCallback, errorCallback, params) {
+            var result = {
+                'status' : 'readDescriptor',
+                'serviceUuid' : params.serviceUuid,
+                'characteristicUuid' : params.characteristicUuid,
+                'descriptorUuid' : params.descriptorUuid,
+                'value' : params.value
+            };
+
+            if(!expectingError('readDescriptor')) {
+                successCallback(result);
+            } else {
+                produceError(errorCallback, 'readDescriptor');
             }
         }
 
         return {
+            addError         : addError,
             expectingError   : expectingError,
+            errorMessages    : errorMessages,
             OS               : OS,
             initialize       : initialize,
             startScan        : startScan,
@@ -452,7 +533,9 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             services         : services,
             characteristics  : characteristics,
             descriptors      : descriptors,
-            read             : read
+            read             : read,
+            subscribe        : subscribe,
+            unsubscribe      : unsubscribe
         };
     };
 
