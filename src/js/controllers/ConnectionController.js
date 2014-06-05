@@ -8,7 +8,11 @@ angular.module('iasCar').controller('ConnectionController', ['$scope', '$window'
             $scope.scanning = true;
             $scope.cars = devices;
 
+
+
             timeout = $timeout(function() {
+                $window.console.log('DEVICE');
+                $window.console.log($scope.cars[0]);
                 stopScan();
             }, 5000);
 
