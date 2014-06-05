@@ -2,7 +2,6 @@ angular.module('iasCar').controller('ConnectionController', ['$scope', '$window'
     'use strict';
 
     var timeout;
-    $scope.scanning;
 
     function startScan() {
         bluetoothService.startScan().then(function(devices) {

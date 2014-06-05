@@ -3,7 +3,6 @@
 (function() {
     describe('Bluetooth Mock', function() {
 
-        var cordovaService;
         var bt;
 
         beforeEach(function() {
@@ -54,6 +53,56 @@
             bt.initialize(function() {}, function () {});
             expect(bt.expectingError('initialize')).toBe(true);
         });
+
+        it('should be able to initialize the bluetooth module', function() {
+            var state;
+            bt.isInitialized(function(result) {
+                state = result;
+            });
+            expect(state).toBe(false);
+            bt.initialize(function(result) {
+                expect(result.status).toBe('initialized');
+            }, function() {});
+            bt.isInitialized(function(result) {
+                state = result;
+            });
+            expect(state).toBe(true);
+        });
+
+        it('connects to a device and return an error if no address is given', function() {
+            var error, result;
+            bt.connect(function(res) {
+                result = res;
+            }, function(err) {
+                error = err;
+            });
+            expect(error.message).toBe(bt.errorMessages.connect.noAddress);
+        });
+
+        it('connects to a device by a given address', function() {
+            var error, result;
+            bt.connect(function(res){
+                result = res;
+            }, function(err) {
+                error = err;
+            }, {
+                'address' : '01:23:45:67:89:AB'
+            });
+
+            //expect(result).toEqual({ 'status': 'connecting', 'address': '01:23:45:67:89:AB', 'name': 'iasCar1' });
+
+        });
+
+        // https://github.com/ariya/phantomjs/issues/11172
+        //it('should convert string to array buffer and back', function() {
+        //    console.log(Uint16Array);
+        //    expect(bt.bytesToString(bt.stringToBytes('foo'))).toEqual('foo');
+        //});
+
+        // https://github.com/ariya/phantomjs/issues/11172
+        //it('should convert an encoded string to array buffer and back', function(){
+        //    expect(bt.bytesToEncodedString(bt.encodedStringToBytes('foo'))).toBe('foo');
+        //});
 
     });
 }());

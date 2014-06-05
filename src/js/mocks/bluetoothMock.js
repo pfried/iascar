@@ -1,9 +1,10 @@
 /*jshint unused:false */
 /**
- * @author Friedrich Mäckle
+ * @author Friedrich Mäckle, Rand Dusing
+ * This file contains code from https://github.com/randdusing Rand Dusing released under the Apache2 licence
  */
 'use strict';
-angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$window', '$interval', function ($httpBackend, $window, $interval) {
+angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$window', '$interval', '$timeout', function ($httpBackend, $window, $interval, $timeout) {
 
     // Pass through all dependencies
     $httpBackend.whenGET(/^partials\//).passThrough();
@@ -67,6 +68,14 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
         var expectedErrors = [];
         var interval;
 
+        // State machine
+        var deviceState = {
+            initialized : false,
+            connected   : false,
+            discovered  : false,
+            scanning    : false
+        };
+
         /**
          * Add an event error to the expected errors
          * @param event The event/action we are expecting an error for
@@ -98,7 +107,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             errorCallback({
                 'status'  : event,
                 'message' : expectedErrors[event].shift()
-            })
+            });
         }
 
         /**
@@ -113,6 +122,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             };
 
             if(!expectingError('initialize')) {
+                deviceState.initialized = true;
                 successCallback(result);
             } else {
                 produceError(errorCallback, 'initialize');
@@ -148,6 +158,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             if(!expectingError('startScan')) {
 
                 successCallback(resultStartScan);
+                deviceState.scanning = true;
 
                 interval = window.setInterval(function() {
                     window.console.log('adding device');
@@ -168,6 +179,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
             if(!expectingError('stopScan')) {
                 window.clearInterval(interval);
+                deviceState.scanning = true;
                 successCallback({
                     'status': 'scanStopped'
                 });
@@ -185,8 +197,8 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          */
         function connect(successCallback, errorCallback, params) {
 
-            if(params && !params.address) {
-                errorCallback({
+            if(!params || !params.address) {
+                return errorCallback({
                     'status' : 'connecting',
                     'message': errorMessages.connect.noAddress
                 });
@@ -194,18 +206,24 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
             var resultConnected = {
                 'status'  : 'connected',
-                'address' : '01:23:45:67:89:AB',
+                'address' : params.address,
                 'name'    : 'iasCar1'
             };
 
             var resultConnecting = {
                 'status'  : 'connecting',
-                'address' : '01:23:45:67:89:AB',
+                'address' : params.address,
                 'name'    : 'iasCar1'
             };
 
             if(!expectingError('connect')) {
-                successCallback(resultConnecting);
+                deviceState.connected = true;
+                $timeout(function() {
+                    successCallback(resultConnecting);
+                }, 200);
+                $timeout(function() {
+                    successCallback(resultConnected);
+                }, 2000);
             } else {
                 produceError(errorCallback, 'connect');
             }
@@ -225,6 +243,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             };
 
             if(!expectingError('reconnect')) {
+                deviceState.connected = true;
                 successCallback(resultConnected);
             } else {
                 produceError(errorCallback, 'reconnect');
@@ -251,6 +270,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             };
 
             if(!expectingError('disconnect')) {
+                deviceState.connected = false;
                 successCallback(resultDisconnected);
             } else {
                 produceError(errorCallback, 'disconnect');
@@ -518,24 +538,149 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             }
         }
 
+        /**
+         * Write a particular characteristic's descriptor. Unable to write characteristic configuration directly to keep in line with iOS implementation. Instead use subscribe/unsubscribe, which will automatically enable/disable notification. Note, limited testing and likely needs to be made more generic
+         * @param successCallback
+         * @param errorCallback
+         * @param params
+         */
+        function writeDescriptor(successCallback, errorCallback, params) {
+
+            var result = {
+                'status' : 'writeDescriptor',
+                'serviceUuid' : params.serviceUuid,
+                'characteristicUuid' : params.characteristicUuid,
+                'descriptorUuid' : params.descriptorUuid,
+                'value' :  params.value
+            };
+
+            if(!expectingError('writeDescriptor')) {
+                successCallback(result);
+            } else {
+                produceError(errorCallback, 'writeDescriptor');
+            }
+        }
+
+        /**
+         * Read RSSI of a connected device. RSSI is also returned with scanning.
+         * @param successCallback
+         * @param errorCallback
+         */
+        function rssi(successCallback, errorCallback) {
+
+            var result = {
+                'rssi' : -5
+            };
+
+            if(!expectingError('rssi')) {
+                successCallback(result);
+            } else {
+                produceError(errorCallback, 'rssi');
+            }
+        }
+
+        /**
+         * Determine whether the adapter is initialized. No error callback
+         * @param successCallback
+         */
+        function isInitialized(successCallback) {
+            successCallback(deviceState.initialized);
+        }
+
+        /**
+         * Determine whether the adapter is initialized. No error callback
+         * @param successCallback
+         */
+        function isScanning(successCallback) {
+            successCallback(deviceState.scanning);
+        }
+
+        /**
+         * Determine whether the device's characteristics and descriptors have been discovered. No error callback. Android support only. Calling on iOS will return false.
+         * @param successCallback
+         */
+        function isDiscovered(successCallback) {
+            if (OS === 'ios') {
+                return successCallback(false);
+            } else {
+                successCallback(deviceState.discovered);
+            }
+        }
+
+        /**
+         * @author https://github.com/randdusing
+         * Helper function to convert a base64 encoded string from a characteristic or descriptor value into a uint8Array object.
+         * @param string
+         */
+        function encodedStringToBytes(string) {
+            var data = atob(string);
+            var bytes = new Uint8Array(data.length);
+            for (var i = 0; i < bytes.length; i++)
+            {
+                bytes[i] = data.charCodeAt(i);
+            }
+            return bytes;
+        }
+
+        /**
+         * Helper function to convert a unit8Array to a base64 encoded string for a characteric or descriptor write.
+         * @param bytes
+         * @returns {*|string}
+         */
+        function bytesToEncodedString(bytes) {
+            return btoa(String.fromCharCode.apply(null, bytes));
+        }
+
+        /**
+         * Helper function to convert a string to bytes.
+         * @param str
+         */
+        function stringToBytes(str) {
+            var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+            var bufView = new Uint16Array(buf);
+            for (var i=0, strLen=str.length; i<strLen; i++) {
+                bufView[i] = str.charCodeAt(i);
+            }
+            return buf;
+        }
+
+        /**
+         * Helper function to convert bytes to a string.
+         * @param buf
+         */
+        function bytesToString(buf) {
+            return String.fromCharCode.apply(null, new Uint16Array(buf));
+        }
+
         return {
-            addError         : addError,
-            expectingError   : expectingError,
-            errorMessages    : errorMessages,
-            OS               : OS,
-            initialize       : initialize,
-            startScan        : startScan,
-            stopScan         : stopScan,
-            connect          : connect,
-            reconnect        : reconnect,
-            close            : close,
-            discover         : discover,
-            services         : services,
-            characteristics  : characteristics,
-            descriptors      : descriptors,
-            read             : read,
-            subscribe        : subscribe,
-            unsubscribe      : unsubscribe
+            addError             : addError,
+            expectingError       : expectingError,
+            errorMessages        : errorMessages,
+            OS                   : OS,
+            initialize           : initialize,
+            startScan            : startScan,
+            stopScan             : stopScan,
+            connect              : connect,
+            reconnect            : reconnect,
+            close                : close,
+            discover             : discover,
+            services             : services,
+            characteristics      : characteristics,
+            descriptors          : descriptors,
+            read                 : read,
+            subscribe            : subscribe,
+            unsubscribe          : unsubscribe,
+            write                : write,
+            readDescriptor       : readDescriptor,
+            writeDescriptor      : writeDescriptor,
+            rssi                 : rssi,
+            isInitialized        : isInitialized,
+            isScanning           : isScanning,
+            isDiscovered         : isDiscovered,
+            encodedStringToBytes : encodedStringToBytes,
+            bytesToEncodedString : bytesToEncodedString,
+            stringToBytes        : stringToBytes,
+            bytesToString        : bytesToString
         };
     };
 

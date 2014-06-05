@@ -4,7 +4,6 @@
 angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootScope', '$q', 'cordovaService', function($window, $rootScope, $q, cordovaService) {
 
     var initialized = false;
-    var timeout;
 
     var devices = [];
 
@@ -77,12 +76,13 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
         bt.stopScan(function() {});
     }
 
-    function connect(device) {
+    function connect(address) {
         var deferred = $q.defer();
 
         bt.connect(function(result) {
+
             if(result && result.status === 'connecting') {
-                deferred.notify(result);
+                $rootScope.$apply(deferred.notify(result));
             }
             if(result && result.status === 'connected') {
                 deferred.resolve(result);
@@ -90,7 +90,7 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
         }, function (error) {
             deferred.reject(error.message);
         }, {
-            address : device.address
+            address : address
         });
 
         return deferred.promise;

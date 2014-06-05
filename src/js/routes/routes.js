@@ -11,7 +11,7 @@ angular.module('iasCar').config(['$urlRouterProvider', '$stateProvider', functio
                 }
             }
         })
-        .state('connectToDevice', {
+        .state('connecting', {
             url: '/connecting',
             views: {
                 'mainPanel': {

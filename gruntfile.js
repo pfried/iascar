@@ -211,6 +211,21 @@ module.exports = function (grunt) {
                 stdout   : true,
                 stderror : true,
                 cwd      : 'bluetoothcar'
+            },
+            runAndroid : {
+                command : 'cordova run android',
+            }
+            buildAndroidRelease : {
+                command  : 'cordova build android --release',
+                stdout   : true,
+                stderror : true,
+                cwd      : 'bluetoothcar'
+            },
+            buildIOSRelease : {
+                command  : 'cordova build ios --release',
+                stdout   : true,
+                stderror : true,
+                cwd      : 'bluetoothcar'
             }
         }
     });
@@ -240,6 +255,9 @@ module.exports = function (grunt) {
     // Cordova prepare copies the resources from the bluetoothcar/www folder to its platform folders
     grunt.registerTask('cordovaPrepare', ['exec:prepare']);
     grunt.registerTask('cordovaServe', ['exec:serve']);
+    grunt.registerTask('cordovaBuild', ['exec:build']);
+    grunt.registerTask('cordovaBuildAndroidRelease', ['exec:buildAndroidRelease']);
+    grunt.registerTask('cordovaBuildIOSRelease', ['exec:buildIOSRelease']);
 
     grunt.registerTask('default', ['runServer']);
 

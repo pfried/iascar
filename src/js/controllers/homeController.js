@@ -2,6 +2,6 @@ angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$st
     'use strict';
 
     $window.console.log('Home Controller');
-    $state.go('connectToDevice');
+    $state.go('connecting');
 
 }]);
