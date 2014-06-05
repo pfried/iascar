@@ -214,7 +214,10 @@ module.exports = function (grunt) {
             },
             runAndroid : {
                 command : 'cordova run android',
-            }
+                stdout   : true,
+                stderror : true,
+                cwd      : 'bluetoothcar'
+            },
             buildAndroidRelease : {
                 command  : 'cordova build android --release',
                 stdout   : true,
@@ -256,6 +259,7 @@ module.exports = function (grunt) {
     grunt.registerTask('cordovaPrepare', ['exec:prepare']);
     grunt.registerTask('cordovaServe', ['exec:serve']);
     grunt.registerTask('cordovaBuild', ['exec:build']);
+    grunt.registerTask('cordovaRunAndroid', ['exec:runAndroid']);
     grunt.registerTask('cordovaBuildAndroidRelease', ['exec:buildAndroidRelease']);
     grunt.registerTask('cordovaBuildIOSRelease', ['exec:buildIOSRelease']);
 
