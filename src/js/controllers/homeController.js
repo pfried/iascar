@@ -4,7 +4,7 @@ angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$st
     $window.console.log('Home Controller');
 
     $scope.goToState= function() {
-        $state.go('connect');
+        $state.go('scan');
     };
 
 }]);

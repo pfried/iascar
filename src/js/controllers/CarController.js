@@ -6,11 +6,11 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
 
     // If we are not initialized go to connect page
     bluetoothService.isInitialized().catch(function() {
-        $state.go('connecting');
+        $state.go('scan');
     });
 
     if(!address || !bluetoothService.isValidAddress(address)) {
-
+        $state.go('scan');
     }
 
     bluetoothService.connect(address).then(function(device) {

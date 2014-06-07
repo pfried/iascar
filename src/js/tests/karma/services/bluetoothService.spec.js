@@ -84,8 +84,8 @@
         });
 
         it('should validate a correct device address and invalidate an incorrect one', function(){
-            var valid = "01:23:45:67:89:ab";
-            var invalid = "123";
+            var valid = '01:23:45:67:89:ab';
+            var invalid = '123';
             expect(bluetoothService.isValidAddress(valid)).toBe(true);
             expect(bluetoothService.isValidAddress(invalid)).toBe(false);
         });

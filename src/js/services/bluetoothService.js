@@ -22,6 +22,10 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
         return false;
     }
 
+    function unifyAddress(address) {
+        return address.replace(/\:/g,'');
+    }
+
     function initialize() {
 
         var deferred = $q.defer();
@@ -77,7 +81,7 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
 
                         // Since the results come from outside of the angular scope we need to wrap this in the apply function
                         $rootScope.$apply(function() {
-                            devices[result.address.replace(/\:/g,'')] = {
+                            devices[unifyAddress(result.address)] = {
                                 'address' : result.address,
                                 'name' : result.name,
                                 'rssi' : result.rssi

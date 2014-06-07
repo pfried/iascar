@@ -1,4 +1,4 @@
-angular.module('iasCar').controller('ConnectionController', ['$scope', '$window', '$timeout', '$state', 'bluetoothService',  function($scope, $window, $timeout, $state, bluetoothService) {
+angular.module('iasCar').controller('ScanController', ['$scope', '$window', '$timeout', '$state', 'bluetoothService',  function($scope, $window, $timeout, $state, bluetoothService) {
     'use strict';
 
     var timeout;
@@ -45,6 +45,7 @@ angular.module('iasCar').controller('ConnectionController', ['$scope', '$window'
     }
 
     function connectToDevice(device) {
+
         // Cancel the scan timeout and stop scanning
         $timeout.cancel(timeout);
         bluetoothService.stopScan();
