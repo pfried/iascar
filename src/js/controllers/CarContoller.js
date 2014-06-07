@@ -4,8 +4,13 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
     var address = $stateParams.carAddress;
     $scope.connecting = false;
 
-    if(!bluetoothService.isInitialized()) {
+    // If we are not initialized go to connect page
+    bluetoothService.isInitialized().catch(function() {
         $state.go('connecting');
+    });
+
+    if(!address || !bluetoothService.isValidAddress(address)) {
+
     }
 
     bluetoothService.connect(address).then(function(device) {

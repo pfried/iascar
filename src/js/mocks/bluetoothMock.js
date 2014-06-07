@@ -1,10 +1,10 @@
-/*jshint unused:false */
+/* jshint unused:false */
 /**
  * @author Friedrich Mäckle, Rand Dusing
  * This file contains code from https://github.com/randdusing Rand Dusing released under the Apache2 licence
  */
 'use strict';
-angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$window', '$interval', '$timeout', function ($httpBackend, $window, $interval, $timeout) {
+angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$window', function ($httpBackend, $window) {
 
     // Pass through all dependencies
     $httpBackend.whenGET(/^partials\//).passThrough();
@@ -77,6 +77,16 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
         };
 
         /**
+         * Get a random integer number for simulating rssi
+         * @param min
+         * @param max
+         * @returns {*}
+         */
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        /**
          * Add an event error to the expected errors
          * @param event The event/action we are expecting an error for
          * @param errorMessage The error message to expect, errorMessages contains a set of messages that can be used.
@@ -115,7 +125,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          * @param successCallback
          * @param errorCallback
          */
-        function initialize(successCallback, errorCallback) {
+        function initialize(successCallback, errorCallback, params) {
 
             var result = {
                 'status' : 'initialized'
@@ -135,20 +145,20 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          * @param successCallback
          * @param errorCallback
          */
-        function startScan(successCallback, errorCallback) {
+        function startScan(successCallback, errorCallback, params) {
 
             var resultAndroid = {
                 'status': 'scanResult',
                 'address': '01:23:45:67:89:AB',
                 'name': 'IASCar1',
-                'rssi': -5
+                'rssi': -50
             };
 
             var resultIOS = {
                 'status'  : 'scanResult',
                 'address' : '123234',
                 'name'    : 'IASCar1',
-                'rssi'    : -5
+                'rssi'    : -50
             };
 
             var resultStartScan = {
@@ -159,10 +169,16 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
                 successCallback(resultStartScan);
                 deviceState.scanning = true;
-
+                // We dont use $interval here since the real thin will happen outside of angularjs as well
                 interval = window.setInterval(function() {
-                    window.console.log('adding device');
-                    successCallback(resultAndroid);
+                    if(OS === 'android') {
+                        resultAndroid.rssi = -50 - getRandomInt(0,20);
+                        successCallback(resultAndroid);
+                    }
+                    if(OS === 'ios') {
+                        resultIOS.rssi = -50 - getRandomInt(0,20);
+                        successCallback(resultIOS);
+                    }
                 }, 1000);
 
             } else {
@@ -218,10 +234,10 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
             if(!expectingError('connect')) {
                 deviceState.connected = true;
-                $timeout(function() {
+                window.setTimeout(function() {
                     successCallback(resultConnecting);
                 }, 200);
-                $timeout(function() {
+                window.setTimeout(function() {
                     successCallback(resultConnected);
                 }, 2000);
             } else {
@@ -584,7 +600,9 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          * @param successCallback
          */
         function isInitialized(successCallback) {
-            successCallback(deviceState.initialized);
+            successCallback({
+                'isInitialized' : deviceState.initialized
+            });
         }
 
         /**
@@ -592,7 +610,19 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          * @param successCallback
          */
         function isScanning(successCallback) {
-            successCallback(deviceState.scanning);
+            successCallback({
+                'isScanning' : deviceState.scanning
+            });
+        }
+
+        /**
+         * Determine whether the device is connected. No error callback
+         * @param successCallback
+         */
+        function isConnected(successCallback) {
+            successCallback({
+                'isConncted' : deviceState.connected
+            });
         }
 
         /**
@@ -601,9 +631,13 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          */
         function isDiscovered(successCallback) {
             if (OS === 'ios') {
-                return successCallback(false);
+                return successCallback({
+                    'isDiscovered' : false
+                });
             } else {
-                successCallback(deviceState.discovered);
+                successCallback({
+                    'isDiscovered' : deviceState.discovered
+                });
             }
         }
 
@@ -677,6 +711,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             isInitialized        : isInitialized,
             isScanning           : isScanning,
             isDiscovered         : isDiscovered,
+            isConnected          : isConnected,
             encodedStringToBytes : encodedStringToBytes,
             bytesToEncodedString : bytesToEncodedString,
             stringToBytes        : stringToBytes,
@@ -695,6 +730,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
     };
 
     window.console.log('Mocking cordova and bluetooth');
+
     $window.mockBluetooth();
     $window.mockCordova();
 

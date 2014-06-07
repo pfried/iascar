@@ -3,16 +3,20 @@ angular.module('iasCar').controller('ConnectionController', ['$scope', '$window'
 
     var timeout;
 
-    function startScan() {
+    function scan() {
+
+        // Clear the timeout
+        $timeout.cancel(timeout);
+
         bluetoothService.startScan().then(function(devices) {
             $scope.scanning = true;
             $scope.cars = devices;
 
-
+            // Scope gets automatically updated to new devices since devices is linked to our bluetooth service
+            $scope.connectToDevice = connectToDevice;
 
             timeout = $timeout(function() {
-                $window.console.log('DEVICE');
-                $window.console.log($scope.cars[0]);
+                $window.console.log($scope.cars);
                 stopScan();
             }, 5000);
 
@@ -20,6 +24,20 @@ angular.module('iasCar').controller('ConnectionController', ['$scope', '$window'
             $window.console.log(error);
         });
     }
+
+    function startScan() {
+        bluetoothService.isInitialized().then(function() {
+            scan();
+        }, function(){
+            bluetoothService.initialize().then(function() {
+                scan();
+            }, function(error) {
+                $window.console.log(error);
+            });
+        });
+    }
+
+    $scope.startScan = startScan;
 
     function stopScan() {
         bluetoothService.stopScan();
@@ -37,13 +55,6 @@ angular.module('iasCar').controller('ConnectionController', ['$scope', '$window'
         });
     }
 
-    bluetoothService.initialize().then(function(){
-
-        // Scope gets automatically updated to new devices since devices is linked to our bluetooth service
-        startScan();
-
-        $scope.connectToDevice = connectToDevice;
-
-    });
+    startScan();
 
 }]);

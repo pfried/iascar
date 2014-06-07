@@ -1,5 +1,10 @@
 h1 Connection Controller
-  p {{ 'settings.title' | translate }}
 
-    ul(ng-repeat='car in cars')
-      li(ng-click='connectToDevice(car)') {{ car.name }}
+  h2(ng-show="scanning") Scanning
+
+  button(ng-show="!scanning", ng-click="startScan()") Restart Scanning
+
+  ul(ng-repeat='(address, car) in cars')
+    li(ng-click='connectToDevice(address)') {{ car.name }}: {{ car.rssi }}
+      br
+      span {{ address }}

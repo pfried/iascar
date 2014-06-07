@@ -59,16 +59,29 @@
             bt.isInitialized(function(result) {
                 state = result;
             });
-            expect(state).toBe(false);
+            expect(state).toEqual({'isInitialized' : false});
             bt.initialize(function(result) {
                 expect(result.status).toBe('initialized');
             }, function() {});
             bt.isInitialized(function(result) {
                 state = result;
             });
-            expect(state).toBe(true);
+            expect(state).toEqual({'isInitialized' : true});
         });
 
+        it('should scan for bluetooth devices', function() {
+            var result;
+            bt.startScan(function(res) {
+                result = res;
+            }, function(){
+
+            });
+            expect(result).toEqual({
+                'status' : 'scanStarted'
+            });
+        });
+
+        // Receiving devices is asynchronous, need to figure out a test
         it('connects to a device and return an error if no address is given', function() {
             var error, result;
             bt.connect(function(res) {
