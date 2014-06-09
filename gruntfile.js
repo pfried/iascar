@@ -2,6 +2,9 @@
 
 module.exports = function (grunt) {
 
+    var chromeBuildPath = 'chrome/dist';
+    var cordovaBuildPath = 'bluetoothcar/www';
+
     var CLIENT_LIB_FILES = [
         'src/js/lib/bower/jquery/dist/jquery.js',
         'src/js/lib/bower/angular/angular.js',
@@ -83,7 +86,7 @@ module.exports = function (grunt) {
             }
         },
         less: {
-            www : {
+            cordova : {
                 options: {
                     port      : 8000,
                     compile   : true,
@@ -94,14 +97,30 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {
-                        dest : 'bluetoothcar/www/css/index.css',
+                        dest : cordovaBuildPath + '/css/index.css',
+                        src  : ['src/less/**/*.less']
+                    }
+                ]
+            },
+            chrome : {
+                options: {
+                    port      : 8000,
+                    compile   : true,
+                    cleancss  : true,
+                    sourceMap : function() {
+                        return process.env.NODE_ENV === 'development';
+                    }
+                },
+                files: [
+                    {
+                        dest : chromeBuildPath + '/css/index.css',
                         src  : ['src/less/**/*.less']
                     }
                 ]
             }
         },
         copy: {
-            www : {
+            cordova : {
                 files: [
                     {
                         expand  : true,
@@ -123,30 +142,99 @@ module.exports = function (grunt) {
                         expand  : true,
                         flatten : false,
                         filter  : 'isFile',
-                        dest    : 'bluetoothcar/www',
+                        dest    : 'bluetoothcar/www/',
+                        cwd     : 'src/js/',
+                        src     : ['lang/**']
+                    }
+                ]
+            },
+            chrome : {
+                files: [
+                    {
+                        expand  : true,
+                        flatten : false,
+                        filter  : 'isFile',
+                        dest    : chromeBuildPath + '/img/',
+                        cwd     : 'src/',
+                        src     : ['img/**']
+                    },
+                    {
+                        expand  : true,
+                        flatten : false,
+                        filter  : 'isFile',
+                        dest    : chromeBuildPath,
+                        cwd     : 'src/',
+                        src     : ['fonts/**']
+                    },
+                    {
+                        expand  : true,
+                        flatten : false,
+                        filter  : 'isFile',
+                        dest    : chromeBuildPath,
                         cwd     : 'src/js',
                         src     : ['lang/**']
+                    },
+                    {
+                        expand  : true,
+                        flatten : false,
+                        filter  : 'isFile',
+                        dest    : chromeBuildPath,
+                        cwd     : 'chrome',
+                        src     : ['manifest.json']
+                    },
+                    {
+                        expand  : true,
+                        flatten : false,
+                        filter  : 'isFile',
+                        dest    : chromeBuildPath,
+                        cwd     : 'chrome/js',
+                        src     : ['**']
                     }
                 ]
             }
         },
         concat: {
-            dist: {
+            cordovaDist: {
                 src: CLIENT_LIB_FILES.concat(CLIENT_SRC_FILES),
-                dest: 'bluetoothcar/www/js/index.js'
+                dest: cordovaBuildPath + '/js/index.js'
             },
-            mock: {
+            cordovaMock: {
                 src: CLIENT_LIB_FILES.concat(MOCK_FILES).concat(CLIENT_SRC_FILES),
-                dest: 'bluetoothcar/www/js/index.js'
+                dest: cordovaBuildPath + '/js/index.js'
+            },
+            chromeDist : {
+                src: CLIENT_LIB_FILES.concat(CLIENT_SRC_FILES),
+                dest: chromeBuildPath + '/js/index.js'
             }
         },
-        clean: ['bluetoothcar/www'],
+        clean: {
+            cordova : [cordovaBuildPath],
+            chrome  : [chromeBuildPath]
+        },
         jade: {
-            compile: {
+            cordova: {
                 files: [{
                     cwd    : 'src/jade/',
                     src    : ['*.jade', 'partials/*.jade'],
-                    dest   : 'bluetoothcar/www/',
+                    dest   : cordovaBuildPath,
+                    expand : true,
+                    ext    : '.html'
+                }],
+                options: {
+                    client: false,
+                    pretty: true,
+                    data : {
+                        livereload : function() {
+                            return process.env.NODE_ENV === 'development';
+                        }
+                    }
+                }
+            },
+            chrome : {
+                files: [{
+                    cwd    : 'src/jade/',
+                    src    : ['*.jade', 'partials/*.jade'],
+                    dest   : chromeBuildPath,
                     expand : true,
                     ext    : '.html'
                 }],
@@ -166,7 +254,7 @@ module.exports = function (grunt) {
                 options: {
                     hostname  : '*',
                     port      : 8000,
-                    base      : 'bluetoothcar/www',
+                    base      : cordovaBuildPath,
                     keepalive : true,
                     open      : {
                         target: 'http://localhost:8000'
@@ -246,11 +334,14 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-karma');
 
-    grunt.registerTask('runServer', ['buildClientMock', 'concurrent']);
+    grunt.registerTask('runServer', ['buildCordovaClientMock', 'concurrent']);
 
-    // Building the Client from the resources in the src folder
-    grunt.registerTask('buildClient', ['clean', 'env:dev', 'jshint', 'less:www', 'jade', 'copy', 'concat:dist']);
-    grunt.registerTask('buildClientMock', ['clean', 'env:dev', 'jshint', 'less:www', 'jade', 'copy', 'concat:mock']);
+    // Building the Cordova Client from the resources in the src folder
+    grunt.registerTask('buildCordovaClient', ['clean:cordova', 'env:dev', 'jshint', 'less:cordova', 'jade:cordova', 'copy:cordova', 'concat:cordovaDist']);
+    grunt.registerTask('buildCordovaClientMock', ['clean:cordova', 'env:dev', 'jshint', 'less:cordova', 'jade:cordova', 'copy:cordova', 'concat:cordovaMock']);
+
+    // Building the Chrome Client from the resources from the src and chrome folder
+    grunt.registerTask('buildChromeClient', ['clean:chrome', 'env:dev', 'jshint', 'less:chrome', 'jade:chrome', 'copy:chrome', 'concat:chromeDist']);
 
     // Unit testing and JSHint Static Code Check
     grunt.registerTask('test', ['jshint', 'karma:once']);
