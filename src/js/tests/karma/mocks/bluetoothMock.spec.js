@@ -1,12 +1,12 @@
 'use strict';
 
 (function() {
-    describe('Bluetooth Mock', function() {
+    describe('Cordova Bluetooth Mock', function() {
 
         var bt;
 
         beforeEach(function() {
-            window.mockBluetooth();
+            window.mockCordovaBluetooth();
             bt = window.bluetoothle;
         });
 

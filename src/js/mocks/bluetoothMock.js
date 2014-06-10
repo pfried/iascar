@@ -10,7 +10,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
     $httpBackend.whenGET(/^partials\//).passThrough();
     $httpBackend.whenGET(/^lang\//).passThrough();
 
-    $window.BluetoothMock = function BluetoothMock() {
+    $window.CordovaBluetoothMock = function CordovaBluetoothMock() {
 
         var errorMessages = {
             default : 'Default error message',
@@ -719,20 +719,14 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
         };
     };
 
-    // Mock the presence of Cordova
-    $window.mockCordova = function() {
-        window.cordova = {};
-    };
-
     // Mocking the bluetooth dependecy
-    $window.mockBluetooth = function() {
-        window.bluetoothle = window.BluetoothMock();
+    $window.mockCordovaBluetooth = function() {
+        window.bluetoothle = window.CordovaBluetoothMock();
     };
 
     window.console.log('Mocking cordova and bluetooth');
 
-    $window.mockBluetooth();
-    $window.mockCordova();
+    $window.mockCordovaBluetooth();
 
 }]);
 

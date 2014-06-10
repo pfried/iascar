@@ -1,9 +1,9 @@
 'use strict';
 
 (function() {
-    describe('Bluetooth Service', function() {
+    describe('Cordova Bluetooth Service', function() {
 
-        var bluetoothService;
+        var bluetoothService, bluetoothTools;
         var $rootScope;
         var success, error, notify;
 
@@ -11,22 +11,17 @@
 
             module('iasCar.services');
 
-            window.mockBluetooth();
+            window.mockCordovaBluetooth();
 
             inject(function ($injector) {
-                bluetoothService = ($injector.get('bluetoothService'));
+                bluetoothService = ($injector.get('cordovaBluetoothService'));
+                bluetoothTools = ($injector.get('bluetoothTools'));
                 $rootScope = ($injector.get('$rootScope'));
             });
 
             success = jasmine.createSpy('success');
             error = jasmine.createSpy('error');
             notify = jasmine.createSpy('notify');
-        });
-
-        it('should detect whether bluetooth is present or not', function() {
-            expect(bluetoothService.isAvailable()).toBe(true);
-            delete window.bluetoothle;
-            expect(bluetoothService.isAvailable()).toBe(false);
         });
 
         it('should fulfill error promise if it is not yet initialized', function() {
@@ -50,7 +45,7 @@
         it('should not scan for bluetooth devices before initialization', function() {
             bluetoothService.startScan().then(success, error);
             $rootScope.$apply();
-            expect(error).toHaveBeenCalledWith(bluetoothService.errorMessages.notInitialized);
+            expect(error).toHaveBeenCalledWith(bluetoothTools.errorMessages.notInitialized);
         });
 
         it('should scan for bluetooth devices', function() {
@@ -62,13 +57,13 @@
         it('should not connect to bluetooth devices before initialization', function() {
             bluetoothService.connect().then(success, error);
             $rootScope.$apply();
-            expect(error).toHaveBeenCalledWith(bluetoothService.errorMessages.notInitialized);
+            expect(error).toHaveBeenCalledWith(bluetoothTools.errorMessages.notInitialized);
         });
 
         it('should not connect to bluetooth devices without an address', function() {
             bluetoothService.initialize().then(bluetoothService.connect).then(success, error);
             $rootScope.$apply();
-            expect(error).toHaveBeenCalledWith(bluetoothService.errorMessages.noAddress);
+            expect(error).toHaveBeenCalledWith(bluetoothTools.errorMessages.noAddress);
         });
 
         // TODO Jasmine 2.0 changes jasmine clock, we need this feature here since there will be two callbacks
@@ -83,12 +78,7 @@
             //expect(notify).toHaveBeenCalled();
         });
 
-        it('should validate a correct device address and invalidate an incorrect one', function(){
-            var valid = '01:23:45:67:89:ab';
-            var invalid = '123';
-            expect(bluetoothService.isValidAddress(valid)).toBe(true);
-            expect(bluetoothService.isValidAddress(invalid)).toBe(false);
-        });
+
 
     });
 }());

@@ -242,9 +242,7 @@ module.exports = function (grunt) {
                     client: false,
                     pretty: true,
                     data : {
-                        livereload : function() {
-                            return process.env.NODE_ENV === 'development';
-                        }
+                        livereload : false
                     }
                 }
             }
@@ -341,7 +339,7 @@ module.exports = function (grunt) {
     grunt.registerTask('buildCordovaClientMock', ['clean:cordova', 'env:dev', 'jshint', 'less:cordova', 'jade:cordova', 'copy:cordova', 'concat:cordovaMock']);
 
     // Building the Chrome Client from the resources from the src and chrome folder
-    grunt.registerTask('buildChromeClient', ['clean:chrome', 'env:dev', 'jshint', 'less:chrome', 'jade:chrome', 'copy:chrome', 'concat:chromeDist']);
+    grunt.registerTask('buildChromeClient', ['clean:chrome', 'env:prod', 'jshint', 'less:chrome', 'jade:chrome', 'copy:chrome', 'concat:chromeDist']);
 
     // Unit testing and JSHint Static Code Check
     grunt.registerTask('test', ['jshint', 'karma:once']);
