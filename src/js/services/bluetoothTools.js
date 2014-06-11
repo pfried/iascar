@@ -26,6 +26,6 @@ angular.module('iasCar.services').factory('bluetoothTools', function() {
         isValidAddress : isValidAddress,
         errorMessages  : errorMessages,
         unifyAddress : unifyAddress
-    }
+    };
 
 });

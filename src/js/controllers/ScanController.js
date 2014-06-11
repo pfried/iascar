@@ -56,6 +56,8 @@ angular.module('iasCar').controller('ScanController', ['$scope', '$window', '$ti
         });
     }
 
-    startScan();
+    bluetoothService.initialize().then(function(adapter) {
+        $window.console.log(adapter);
+    });
 
 }]);

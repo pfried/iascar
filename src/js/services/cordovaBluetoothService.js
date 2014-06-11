@@ -56,7 +56,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
 
                         // Since the results come from outside of the angular scope we need to wrap this in the apply function
                         $rootScope.$apply(function() {
-                            devices[unifyAddress(result.address)] = {
+                            devices[bluetoothTools.unifyAddress(result.address)] = {
                                 'address' : result.address,
                                 'name' : result.name,
                                 'rssi' : result.rssi

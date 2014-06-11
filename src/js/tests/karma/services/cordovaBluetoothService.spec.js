@@ -14,9 +14,9 @@
             window.mockCordovaBluetooth();
 
             inject(function ($injector) {
-                bluetoothService = ($injector.get('cordovaBluetoothService'));
-                bluetoothTools = ($injector.get('bluetoothTools'));
-                $rootScope = ($injector.get('$rootScope'));
+                bluetoothService = $injector.get('cordovaBluetoothService');
+                bluetoothTools = $injector.get('bluetoothTools');
+                $rootScope = $injector.get('$rootScope');
             });
 
             success = jasmine.createSpy('success');
