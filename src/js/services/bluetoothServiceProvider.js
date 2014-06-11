@@ -29,8 +29,6 @@ angular.module('iasCar.services').provider('bluetoothService', ['$windowProvider
     // Returns the implementation of the available Bluetooth Provider
     this.$get = ['chromeBluetoothService', 'cordovaBluetoothService', function getBluetoothProvider (chromeBluetoothService, cordovaBluetoothService) {
 
-        var $injector = angular.injector();
-
         if(bluetoothProvider === 'cordova') {
             return cordovaBluetoothService;
         }

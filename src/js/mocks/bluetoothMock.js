@@ -32,7 +32,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             scanning    : false
         };
         expectedErrors = [];
-    }
+    };
 
     var cordovaErrorMessages = {
         default : 'Default error message',
