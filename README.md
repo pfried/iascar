@@ -1,6 +1,8 @@
 iasCar
 ======
 
+[![Build Status](https://magnum.travis-ci.com/pfried/iascar.svg?token=MViZPXDXmnKqVqrN56zX&branch=chrome)](https://magnum.travis-ci.com/pfried/iascar)
+
 IAS Studienarbeit Bluetooth Car Control
 ---------------------------------------
 
