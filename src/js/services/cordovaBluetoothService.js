@@ -1,26 +1,9 @@
 'use strict';
-// Car service
-angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootScope', '$q', 'cordovaService', function($window, $rootScope, $q, cordovaService) {
+angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window','$rootScope', '$q', 'bluetoothTools', function($window, $rootScope, $q, bluetoothTools) {
 
     var devices = [];
-    var macRegex = /^([0-9a-fA-F]{2}[:]){5}([0-9a-fA-F]{2})$/;
 
     var bt = $window.bluetoothle;
-
-    var errorMessages = {
-        notInitialized : 'Initialize Bluetooth first',
-        noAddress : 'Please provide an address for connecting to a device',
-        addressNotValid : 'Please provide the address in the correct format'
-    };
-
-    function isValidAddress(address) {
-
-        if (address && macRegex.test(address)) {
-            return true;
-        }
-
-        return false;
-    }
 
     function initialize() {
 
@@ -55,10 +38,6 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
         return deferred.promise;
     }
 
-    function isAvailable() {
-        return cordovaService.isAvailable() && $window.hasOwnProperty('bluetoothle');
-    }
-
     function startScan() {
 
         var deferred = $q.defer();
@@ -77,7 +56,7 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
 
                         // Since the results come from outside of the angular scope we need to wrap this in the apply function
                         $rootScope.$apply(function() {
-                            devices[result.address.replace(/\:/g,'')] = {
+                            devices[bluetoothTools.unifyAddress(result.address)] = {
                                 'address' : result.address,
                                 'name' : result.name,
                                 'rssi' : result.rssi
@@ -88,7 +67,7 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
                     deferred.reject(error.message);
                 });
             }, function() {
-                deferred.reject(errorMessages.notInitialized);
+                deferred.reject(bluetoothTools.errorMessages.notInitialized);
             }
         );
 
@@ -105,11 +84,11 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
         isInitialized().then(function() {
 
             if(!params || !params.address) {
-                return deferred.reject(errorMessages.noAddress);
+                return deferred.reject(bluetoothTools.errorMessages.noAddress);
             }
 
-            if(!isValidAddress(params.address)) {
-                return deferred.reject(errorMessages.addressNotValid);
+            if(!bluetoothTools.isValidAddress(params.address)) {
+                return deferred.reject(bluetoothTools.errorMessages.addressNotValid);
             }
 
             bt.connect(function(result) {
@@ -128,7 +107,7 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
             });
 
         },function() {
-            deferred.reject(errorMessages.notInitialized);
+            deferred.reject(bluetoothTools.errorMessages.notInitialized);
         });
 
         return deferred.promise;
@@ -136,9 +115,6 @@ angular.module('iasCar.services').factory('bluetoothService', ['$window','$rootS
 
     return {
         _bt : bt,
-        isValidAddress : isValidAddress,
-        errorMessages  : errorMessages,
-        isAvailable    : isAvailable,
         initialize     : initialize,
         isInitialized  : isInitialized,
         startScan      : startScan,

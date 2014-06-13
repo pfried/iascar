@@ -10,115 +10,127 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
     $httpBackend.whenGET(/^partials\//).passThrough();
     $httpBackend.whenGET(/^lang\//).passThrough();
 
-    $window.BluetoothMock = function BluetoothMock() {
+    var OS = 'android';
+    var expectedErrors = [];
+    var interval;
 
-        var errorMessages = {
-            default : 'Default error message',
-            initialize : {
-                notEnabled : 'Bluetooth not enabled',
-                notEnabledUser : 'Bluetooth not enabled by user',
-                notSupported : 'Hardware doesn\'t support Bluetooth LE',
-                notInit : 'Bluetooth not initialized'
-            },
-            startScan : {
-                alreadyScanning : 'Scanning already in progress',
-                scanStartFail : 'Scan failed to start',
-                notScanning : 'Not scanning'
-            },
-            connect : {
-                previouslyConnected : 'Device previously connected, reconnect or close for new device',
-                neverConnected : 'Never connected to device',
-                isNotConnected : 'Device isn\'t connected',
-                isNotDisconnected : 'Device isn\'t disconnected',
-                isDisconnected : 'Device is disconnected',
-                noAddress : 'No device address',
-                noDevice : 'Device not found',
-                reconnectFail : 'Reconnection to device failed'
-            },
-            discover : {
-                alreadyDiscovering : 'Already discovering device',
-                discoveryFail : 'Unable to discover service'
-            },
-            readWrite : {
-                noArgument : 'Argument object not found',
-                noService : 'Service not found',
-                noCharacteristic : 'Characteristic not found',
-                noDescriptor : 'Descriptor not found',
-                readFail : 'Unable to read',
-                readFailReturn : 'Unable to read on return',
-                subscribeFail : 'Unable to subscribe',
-                unsubscribeFail : 'Unable to unsubscribe',
-                writeFail : 'Unable to write',
-                writeReturnFail : 'Unable to write on return',
-                writeValueNotFound : 'Write value not found',
-                writeValueNotSet : 'Write value not set',
-                readDescriptorFail : 'Unable to read descriptor',
-                readDescriptorFailReturn : 'Unable to read descriptor on return',
-                writeDescriptorNotAllowed : 'Unable to write client configuration descriptor',
-                writeDescriptorFail : 'Unable to write descriptor',
-                writeDescriptorValueNotFound : 'Write descriptor value not found',
-                writeDescriptorValueNotSet : 'Write descriptor value not set',
-                writeDescriptorFailReturn : 'Descript not written on return',
-                rssiFail : 'Unable to read RSSI',
-                rssiFailReturn : 'Unable to read RSSI on return'
-            }
-        };
+    // State machine
+    var deviceState = {
+        initialized : false,
+        connected   : false,
+        discovered  : false,
+        scanning    : false
+    };
 
-        var OS = 'android';
-        var expectedErrors = [];
-        var interval;
-
-        // State machine
-        var deviceState = {
+    var resetDevice = function() {
+        OS = 'android';
+        interval = null;
+        deviceState = {
             initialized : false,
             connected   : false,
             discovered  : false,
             scanning    : false
         };
+        expectedErrors = [];
+    };
 
-        /**
-         * Get a random integer number for simulating rssi
-         * @param min
-         * @param max
-         * @returns {*}
-         */
-        function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
+    var cordovaErrorMessages = {
+        default : 'Default error message',
+        initialize : {
+            notEnabled : 'Bluetooth not enabled',
+            notEnabledUser : 'Bluetooth not enabled by user',
+            notSupported : 'Hardware doesn\'t support Bluetooth LE',
+            notInit : 'Bluetooth not initialized'
+        },
+        startScan : {
+            alreadyScanning : 'Scanning already in progress',
+            scanStartFail : 'Scan failed to start',
+            notScanning : 'Not scanning'
+        },
+        connect : {
+            previouslyConnected : 'Device previously connected, reconnect or close for new device',
+            neverConnected : 'Never connected to device',
+            isNotConnected : 'Device isn\'t connected',
+            isNotDisconnected : 'Device isn\'t disconnected',
+            isDisconnected : 'Device is disconnected',
+            noAddress : 'No device address',
+            noDevice : 'Device not found',
+            reconnectFail : 'Reconnection to device failed'
+        },
+        discover : {
+            alreadyDiscovering : 'Already discovering device',
+            discoveryFail : 'Unable to discover service'
+        },
+        readWrite : {
+            noArgument : 'Argument object not found',
+            noService : 'Service not found',
+            noCharacteristic : 'Characteristic not found',
+            noDescriptor : 'Descriptor not found',
+            readFail : 'Unable to read',
+            readFailReturn : 'Unable to read on return',
+            subscribeFail : 'Unable to subscribe',
+            unsubscribeFail : 'Unable to unsubscribe',
+            writeFail : 'Unable to write',
+            writeReturnFail : 'Unable to write on return',
+            writeValueNotFound : 'Write value not found',
+            writeValueNotSet : 'Write value not set',
+            readDescriptorFail : 'Unable to read descriptor',
+            readDescriptorFailReturn : 'Unable to read descriptor on return',
+            writeDescriptorNotAllowed : 'Unable to write client configuration descriptor',
+            writeDescriptorFail : 'Unable to write descriptor',
+            writeDescriptorValueNotFound : 'Write descriptor value not found',
+            writeDescriptorValueNotSet : 'Write descriptor value not set',
+            writeDescriptorFailReturn : 'Descript not written on return',
+            rssiFail : 'Unable to read RSSI',
+            rssiFailReturn : 'Unable to read RSSI on return'
         }
+    };
 
-        /**
-         * Add an event error to the expected errors
-         * @param event The event/action we are expecting an error for
-         * @param errorMessage The error message to expect, errorMessages contains a set of messages that can be used.
-         */
-        function addError(event, errorMessage) {
-            // Add the error, event is key, if no array yet, create one and push message in
-            var message = errorMessage ? errorMessage : errorMessages.default;
-            (expectedErrors[event] = expectedErrors[event] ? expectedErrors[event] : []).push(errorMessage);
-        }
+    /**
+     * Get a random integer number for simulating rssi
+     * @param min
+     * @param max
+     * @returns {*}
+     */
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
-        /**
-         * Returns whether we are expecting an error for a special event
-         * @param status The event
-         * @returns {boolean} Returns whether we expect an error for that event
-         */
-        function expectingError(event) {
-            return expectedErrors.hasOwnProperty(event) && expectedErrors[event].length > 0;
-        }
+    /**
+     * Add an event error to the expected errors
+     * @param event The event/action we are expecting an error for
+     * @param errorMessage The error message to expect, errorMessages contains a set of messages that can be used.
+     */
+    function addError(event, errorMessage) {
+        // Add the error, event is key, if no array yet, create one and push message in
+        var message = errorMessage ? errorMessage : cordovaErrorMessages.default;
+        (expectedErrors[event] = expectedErrors[event] ? expectedErrors[event] : []).push(errorMessage);
+    }
 
-        /**
-         * Produces an error and passes it to the callback
-         * @param errorCallback The error callback which will be called with the error
-         * @param event The event we are creating an error for
-         */
-        function produceError(errorCallback, event) {
+    /**
+     * Returns whether we are expecting an error for a special event
+     * @param status The event
+     * @returns {boolean} Returns whether we expect an error for that event
+     */
+    function expectingError(event) {
+        return expectedErrors.hasOwnProperty(event) && expectedErrors[event].length > 0;
+    }
 
-            // Taking the first error message in the array
-            errorCallback({
-                'status'  : event,
-                'message' : expectedErrors[event].shift()
-            });
-        }
+    /**
+     * Produces an error and passes it to the callback
+     * @param errorCallback The error callback which will be called with the error
+     * @param event The event we are creating an error for
+     */
+    function produceError(errorCallback, event) {
+
+        // Taking the first error message in the array
+        errorCallback({
+            'status'  : event,
+            'message' : expectedErrors[event].shift()
+        });
+    }
+
+    $window.CordovaBluetoothMock = function CordovaBluetoothMock() {
 
         /**
          * Initialize Bluetooth on the device. Must be called before anything else. If Bluetooth is disabled, the user will be prompted to enable it on Android devices. Note: Although Bluetooth initialization could initially be successful, there's no guarantee whether it will stay enabled. Each call checks whether Bluetooth is disabled. If it becomes disabled, the user must reinitialize Bluetooth, connect to the device, start a read/write operation, etc.
@@ -216,7 +228,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             if(!params || !params.address) {
                 return errorCallback({
                     'status' : 'connecting',
-                    'message': errorMessages.connect.noAddress
+                    'message': cordovaErrorMessages.connect.noAddress
                 });
             }
 
@@ -689,7 +701,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
         return {
             addError             : addError,
             expectingError       : expectingError,
-            errorMessages        : errorMessages,
+            errorMessages        : cordovaErrorMessages,
             OS                   : OS,
             initialize           : initialize,
             startScan            : startScan,
@@ -719,20 +731,57 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
         };
     };
 
-    // Mock the presence of Cordova
-    $window.mockCordova = function() {
-        window.cordova = {};
+    // Mocking the cordova bluetooth dependecy
+    $window.mockCordovaBluetooth = function() {
+        //$window.console.log('Mocking cordova and bluetooth');
+        resetDevice();
+        $window.bluetoothle = window.CordovaBluetoothMock();
     };
 
-    // Mocking the bluetooth dependecy
-    $window.mockBluetooth = function() {
-        window.bluetoothle = window.BluetoothMock();
+    $window.ChromeBluetoothMock = function ChromeBluetoothMock() {
+
+        var expectedErrors = [];
+        var interval;
+
+        // State machine
+        var deviceState = {
+            initialized : false,
+            connected   : false,
+            discovered  : false,
+            scanning    : false
+        };
+
+        var bluetooth;
+
+        bluetooth.initialize = function() {
+            var result = {
+                'address'     : '00:1A:7D:DA:71:13',
+                'available'   : true,
+                'discovering' : false,
+                'name'        : 'FRIEDRICH',
+                'powered'     : true
+            };
+        };
+
+        var bluetoothLowEnergy;
+
+        return {
+            bluetooth : bluetooth,
+            bluetoothLowEnergy : bluetoothLowEnergy
+        };
     };
 
-    window.console.log('Mocking cordova and bluetooth');
+    // Mocking the chrome bluetooth dependency
+    $window.mockChromeBluetooth = function() {
+        //$window.console.log('Mocking chrome and bluetooth');
+        resetDevice();
+        $window.chrome = $window.chrome || {};
+        var mock = $window.ChromeBluetoothMock();
+        $window.chrome.bluetooth = mock.bluetooth;
+        $window.chrome.bluetoothLowEnergy = mock.bluetoothLowEnergy;
+    };
 
-    $window.mockBluetooth();
-    $window.mockCordova();
+    //$window.mockCordovaBluetooth();
 
 }]);
 

@@ -5,4 +5,5 @@
 /coverage
 node_modules/
 bluetoothcar/www
+chrome/dist
 src/js/lib/bower

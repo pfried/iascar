@@ -11,12 +11,12 @@ angular.module('iasCar').config(['$urlRouterProvider', '$stateProvider', functio
                 }
             }
         })
-        .state('connecting', {
-            url: '/connecting',
+        .state('scan', {
+            url: '/scan',
             views: {
                 'mainPanel': {
-                    templateUrl: 'partials/connection.html',
-                    controller: 'ConnectionController'
+                    templateUrl: 'partials/scan.html',
+                    controller: 'ScanController'
                 }
             }
         })

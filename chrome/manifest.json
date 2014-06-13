@@ -1,0 +1,15 @@
+{
+    "name": "IAS Car",
+    "description": "Bluetooth Car for IAS Teamwork",
+    "version": "0.0.1",
+    "manifest_version": 2,
+    "app": {
+        "background": {
+            "scripts": ["background.js"]
+        }
+    },
+    "bluetooth": {
+        // TODO Add UUIDs to Bluetooth
+        "uuids": [ "1105", "1106" ]
+    }
+}
