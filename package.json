@@ -42,6 +42,7 @@
     "karma-phantomjs-launcher": "~0.1",
     "karma-coverage": "~0.1.4",
     "protractor": "~0.12.0",
-    "phantomjs": "1.9.1-0"
+    "phantomjs": "1.9.1-0",
+    "cordova" : "3.5.0-0.2.4"
   }
 }
