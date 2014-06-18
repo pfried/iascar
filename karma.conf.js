@@ -44,13 +44,12 @@ module.exports = function(config) {
 
         // source files, that you wanna generate coverage for
         preprocessors: {
-            'src/js/**/*.js': ['coverage']
+            'src/{js,js/!(lib)/**/}/!(*spec).js' : ['coverage']
         },
 
         coverageReporter : {
-            type : 'cobertura',
-            dir  : 'coverage/',
-            file : 'coverage.xml'
+            type : 'html',
+            dir  : 'coverage/'
         },
 
         junitReporter : {

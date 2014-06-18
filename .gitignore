@@ -3,6 +3,7 @@
 .bower-*/
 .idea/
 /coverage
+/reports
 node_modules/
 bluetoothcar/www
 bluetoothcar/platforms

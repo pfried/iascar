@@ -16,8 +16,11 @@ module.exports = function (grunt) {
         'src/js/lib/bower/angular-translate-loader-static-files/angular-translate-loader-static-files.js'
     ];
 
-    var MOCK_FILES = [
+    var MOCK_LIB = [
         'src/js/lib/bower/angular-mocks/angular-mocks.js',
+    ];
+
+    var MOCK_FILES = [
         'src/js/mocks/**/*.js'
     ];
 
@@ -30,6 +33,10 @@ module.exports = function (grunt) {
         'src/js/config/*.js',
         'src/js/routes/*.js',
         'src/js/startApp.js'
+    ];
+
+    var CLIENT_SPEC_FILES = [
+        'src/js/tests/**/*.spec.js'
     ];
 
     grunt.initConfig({
@@ -199,7 +206,7 @@ module.exports = function (grunt) {
                 dest: cordovaBuildPath + '/js/index.js'
             },
             cordovaMock: {
-                src: CLIENT_LIB_FILES.concat(MOCK_FILES).concat(CLIENT_SRC_FILES),
+                src: CLIENT_LIB_FILES.concat(MOCK_LIB).concat(MOCK_FILES).concat(CLIENT_SRC_FILES),
                 dest: cordovaBuildPath + '/js/index.js'
             },
             chromeDist : {
@@ -273,6 +280,16 @@ module.exports = function (grunt) {
                 browsers: ['PhantomJS']
             }
         },
+        plato: {
+            all : {
+                options: {
+                    jshint : grunt.file.readJSON('.jshintrc')
+                },
+                files : {
+                    'reports' : ['gruntfile.js'].concat(CLIENT_SRC_FILES).concat(CLIENT_SPEC_FILES).concat(MOCK_FILES)
+                }
+            }
+        },
         concurrent: {
             tasks: ['connect', 'watch', 'karma:endless'],
             options: {
@@ -331,6 +348,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-env');
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-plato');
 
     grunt.registerTask('runServer', ['buildCordovaClientMock', 'concurrent']);
 
@@ -342,7 +360,7 @@ module.exports = function (grunt) {
     grunt.registerTask('buildChromeClient', ['clean:chrome', 'env:prod', 'jshint', 'less:chrome', 'jade:chrome', 'copy:chrome', 'concat:chromeDist']);
 
     // Unit testing and JSHint Static Code Check
-    grunt.registerTask('test', ['jshint', 'karma:once']);
+    grunt.registerTask('test', ['jshint', 'karma:once', 'plato:all']);
 
     // Cordova prepare copies the resources from the bluetoothcar/www folder to its platform folders
     grunt.registerTask('cordovaPrepare', ['exec:prepare']);
