@@ -7,4 +7,9 @@ angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$st
         $state.go('scan');
     };
 
+    $scope.pos = {
+        x : 0,
+        y : 0
+    };
+
 }]);
