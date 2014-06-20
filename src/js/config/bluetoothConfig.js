@@ -2,7 +2,7 @@
 angular.module('iasCar.services').config(['bluetoothServiceProvider', function (bluetoothServiceProvider) {
 
     // Set the environment for the Bluetooth Service Provider
-    if(window.cordova && window.bluetoothle) {
+    if(window.bluetoothle) {
         bluetoothServiceProvider.setProvider('cordova');
     }
 
