@@ -18,13 +18,13 @@
 
         });
 
-        it('should return false if there is no bluetooth provider available', function() {
+        it('should throw an error if there is no bluetooth provider available', function() {
 
             // Config sets a provider, so set to empty string here
             bluetoothServiceProvider.setProvider('');
 
             inject(function ($injector) {
-                expect($injector.get('bluetoothService')).toBe(false);
+                expect(function () {$injector.get('bluetoothService');}).toThrow();
             });
         });
 

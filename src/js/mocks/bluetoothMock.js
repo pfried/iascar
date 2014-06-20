@@ -734,7 +734,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
     // Mocking the cordova bluetooth dependecy
     $window.mockCordovaBluetooth = function() {
-        //$window.console.log('Mocking cordova and bluetooth');
+        $window.console.log('Mocking cordova and bluetooth');
         resetDevice();
         $window.bluetoothle = window.CordovaBluetoothMock();
     };
@@ -782,7 +782,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
         $window.chrome.bluetoothLowEnergy = mock.bluetoothLowEnergy;
     };
 
-    //$window.mockCordovaBluetooth();
+    $window.mockCordovaBluetooth();
 
 }]);
 

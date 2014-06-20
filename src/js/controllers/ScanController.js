@@ -5,6 +5,9 @@ angular.module('iasCar').controller('ScanController', ['$scope', '$window', '$ti
 
     function scan() {
 
+        console.log(bluetoothService);
+
+
         // Clear the timeout
         $timeout.cancel(timeout);
 
