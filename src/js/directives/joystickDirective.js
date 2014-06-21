@@ -50,8 +50,8 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 var touch = event.targetTouches[0];
                 cursorTouchId = touch.identifier;
                 cursorTouch = {
-                    x : touch.clientX - touch.target.offsetLeft,
-                    y : touch.clientY - touch.target.offsetTop
+                    x : touch.pageX - touch.target.offsetLeft,
+                    y : touch.pageY - touch.target.offsetTop
                 };
             }
 
@@ -64,12 +64,11 @@ angular.module('iasCar.directives').directive('joystick', function() {
                     if(cursorTouchId === touch.identifier)
                     {
                         cursorTouch = {
-                            x : touch.clientX - touch.target.offsetLeft,
-                            y : touch.clientY - touch.target.offsetTop
+                            x : touch.pageX - touch.target.offsetLeft,
+                            y : touch.pageY - touch.target.offsetTop
                         };
 
                         var scale = radiusBound / Math.sqrt((Math.pow(cursorTouch.x - center.x, 2) + Math.pow(cursorTouch.y - center.y, 2)));
-                        console.log(scale);
 
                         if(scale < 1) {
                             cursorTouch = {
@@ -80,8 +79,8 @@ angular.module('iasCar.directives').directive('joystick', function() {
 
                         scope.$apply(
                             scope.position = {
-                                x : Math.round((touch.clientX -touch.target.offsetLeft) - center.x),
-                                y : Math.round((touch.clientY -touch.target.offsetTop) - center.y)
+                                x : Math.round(((cursorTouch.x - center.x)/radiusBound) * 100),
+                                y : Math.round(((cursorTouch.y - center.y)/radiusBound) * -100)
                             }
                         );
 
@@ -142,6 +141,13 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 window.onorientationchange = resetCanvas;
                 window.onresize = resetCanvas;
             }
+
+            scope.$watch('position', function(newval) {
+                cursorTouch = {
+                    x : ((newval.x * radiusBound) / 100) + center.x,
+                    y : ((newval.y * radiusBound) / -100) + center.y
+                }
+            });
 
             resetCanvas();
             draw();
