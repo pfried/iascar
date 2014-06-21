@@ -20,10 +20,14 @@ angular.module('iasCar.directives').directive('joystick', function() {
 
             var joystickHeight = 200;
             var joystickWidth  = 200;
+
             var center = {
                 x : joystickHeight / 2,
                 y : joystickWidth / 2
             };
+
+            var radiusCircle = 35;
+            var radiusBound = 50;
 
             // Canvas and context element
             var container = element[0];
@@ -46,10 +50,9 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 var touch = event.targetTouches[0];
                 cursorTouchId = touch.identifier;
                 cursorTouch = {
-                    x : touch.clientX -touch.target.offsetLeft,
+                    x : touch.clientX - touch.target.offsetLeft,
                     y : touch.clientY - touch.target.offsetTop
                 };
-                draw();
             }
 
             function onTouchMove(event) {
@@ -61,9 +64,19 @@ angular.module('iasCar.directives').directive('joystick', function() {
                     if(cursorTouchId === touch.identifier)
                     {
                         cursorTouch = {
-                            x : touch.clientX -touch.target.offsetLeft,
+                            x : touch.clientX - touch.target.offsetLeft,
                             y : touch.clientY - touch.target.offsetTop
                         };
+
+                        var scale = radiusBound / Math.sqrt((Math.pow(cursorTouch.x - center.x, 2) + Math.pow(cursorTouch.y - center.y, 2)));
+                        console.log(scale);
+
+                        if(scale < 1) {
+                            cursorTouch = {
+                                x : (cursorTouch.x - center.x) * scale + center.x,
+                                y : (cursorTouch.y - center.y) * scale + center.y
+                            }
+                        }
 
                         scope.$apply(
                             scope.position = {
@@ -76,17 +89,11 @@ angular.module('iasCar.directives').directive('joystick', function() {
                     }
                 }
 
-                requestAnimFrame(draw);
             }
 
             function onTouchEnd() {
 
                 cursorTouchId = -1;
-
-                cursorTouch = {
-                    x : center.x,
-                    y : center.y
-                };
 
                 scope.$apply(
                     scope.position = {
@@ -95,7 +102,8 @@ angular.module('iasCar.directives').directive('joystick', function() {
                     }
                 );
 
-                draw();
+                cursorTouch.x = center.x;
+                cursorTouch.y = center.y;
             }
 
             function draw() {
@@ -104,21 +112,23 @@ angular.module('iasCar.directives').directive('joystick', function() {
 
                 ctx.beginPath();
                 ctx.strokeStyle = 'cyan';
-                ctx.lineWidth = 6;
-                ctx.arc(center.x, center.y, 25, 0, Math.PI*2, true);
+                ctx.lineWidth = 5;
+                ctx.arc(center.x, center.y, radiusCircle, 0, Math.PI*2, true);
                 ctx.stroke();
 
                 ctx.beginPath();
                 ctx.strokeStyle = 'cyan';
                 ctx.lineWidth = 2;
-                ctx.arc(center.x, center.y, 40, 0, Math.PI*2, true);
+                ctx.arc(center.x, center.y, radiusBound, 0, Math.PI*2, true);
                 ctx.stroke();
 
                 ctx.beginPath();
                 ctx.strokeStyle = 'cyan';
                 ctx.lineWidth = 2;
-                ctx.arc(cursorTouch.x, cursorTouch.y, 25, 0, Math.PI*2, true);
+                ctx.arc(cursorTouch.x, cursorTouch.y, radiusCircle, 0, Math.PI*2, true);
                 ctx.stroke();
+
+                requestAnimFrame(draw);
             }
 
             // Check if touch is enabled
@@ -128,6 +138,9 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 canvas.addEventListener( 'touchstart', onTouchStart, false );
                 canvas.addEventListener( 'touchmove', onTouchMove, false );
                 canvas.addEventListener( 'touchend', onTouchEnd, false );
+
+                window.onorientationchange = resetCanvas;
+                window.onresize = resetCanvas;
             }
 
             resetCanvas();
