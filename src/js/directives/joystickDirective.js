@@ -68,13 +68,15 @@ angular.module('iasCar.directives').directive('joystick', function() {
                             y : touch.pageY - touch.target.offsetTop
                         };
 
-                        var scale = radiusBound / Math.sqrt((Math.pow(cursorTouch.x - center.x, 2) + Math.pow(cursorTouch.y - center.y, 2)));
+                        var scaleX = radiusBound / (cursorTouch.x - center.x);
+                        var scaleY = radiusBound / (cursorTouch.y - center.y);
 
-                        if(scale < 1) {
-                            cursorTouch = {
-                                x : (cursorTouch.x - center.x) * scale + center.x,
-                                y : (cursorTouch.y - center.y) * scale + center.y
-                            }
+                        if(Math.abs(scaleX) < 1) {
+                            cursorTouch.x = Math.abs(cursorTouch.x - center.x) * scaleX + center.x;
+                        }
+
+                        if (Math.abs(scaleY) < 1) {
+                            cursorTouch.y = Math.abs(cursorTouch.y - center.y) * scaleY + center.y;
                         }
 
                         scope.$apply(
@@ -142,11 +144,12 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 window.onresize = resetCanvas;
             }
 
+            // Bind to the values from outside as well
             scope.$watch('position', function(newval) {
                 cursorTouch = {
                     x : ((newval.x * radiusBound) / 100) + center.x,
                     y : ((newval.y * radiusBound) / -100) + center.y
-                }
+                };
             });
 
             resetCanvas();
