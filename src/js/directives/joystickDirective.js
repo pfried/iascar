@@ -1,8 +1,9 @@
+// https://github.com/sebleedelisle/JSTouchController/blob/master/TouchControl.html
 'use strict';
-angular.module('iasCar.directives').directive('joystick', ['$rootScope', function($rootScope) {
+angular.module('iasCar.directives').directive('joystick', function() {
 
     function joystickController ($scope, bluetoothService) {
-        console.log(bluetoothService, $rootScope);
+        console.log(bluetoothService);
     }
 
     return {
@@ -15,109 +16,125 @@ angular.module('iasCar.directives').directive('joystick', ['$rootScope', functio
             position : '='
         },
         templateUrl : 'directives/joystick.html',
-        link : function(scope, elem, attrs) {
+        link : function(scope, element) {
 
-            var id = attrs.id
-            var tween;
+            var joystickHeight = 200;
+            var joystickWidth  = 200;
+            var center = {
+                x : joystickHeight / 2,
+                y : joystickWidth / 2
+            };
 
-            if(!id) {
-                id = id = Math.random().toString(36).substring(7);
+            // Canvas and context element
+            var container = element[0];
+            var canvas = container.children[0];
+            var ctx = canvas.getContext('2d');
+
+            // Id of the touch on the cursor
+            var cursorTouchId = -1;
+            var cursorTouch = {
+                x : center.x,
+                y : center.y
+            };
+
+            function resetCanvas() {
+                canvas.height = joystickHeight;
+                canvas.width = joystickWidth;
             }
 
-            scope.kineticStageObject = new Kinetic.Stage({
-                container : id,
-                width : 200,
-                height : 200
-            });
-
-            if (!scope.kineticStageObject.container) {
-                scope.kineticStageObj.attrs.container = id;
+            function onTouchStart(event) {
+                var touch = event.targetTouches[0];
+                cursorTouchId = touch.identifier;
+                cursorTouch = {
+                    x : touch.clientX -touch.target.offsetLeft,
+                    y : touch.clientY - touch.target.offsetTop
+                };
+                draw();
             }
 
-            var layer = new Kinetic.Layer();
+            function onTouchMove(event) {
+                // Prevent the browser from doing its default thing (scroll, zoom)
+                event.preventDefault();
+                for(var i = 0; i < event.changedTouches.length; i++){
+                    var touch = event.changedTouches[i];
 
-            var centerX = scope.kineticStageObject.getWidth() / 2;
-            var centerY = scope.kineticStageObject.getHeight() / 2;
+                    if(cursorTouchId === touch.identifier)
+                    {
+                        cursorTouch = {
+                            x : touch.clientX -touch.target.offsetLeft,
+                            y : touch.clientY - touch.target.offsetTop
+                        };
 
-            var borderRadius = 60;
+                        scope.$apply(
+                            scope.position = {
+                                x : Math.round((touch.clientX -touch.target.offsetLeft) - center.x),
+                                y : Math.round((touch.clientY -touch.target.offsetTop) - center.y)
+                            }
+                        );
 
-            var options = {
-                x : centerX,
-                y : centerY,
-                radius: 40,
-                fill : '#ff0000',
-                stroke : '#000000',
-                strokeWidth : 2,
-                draggable : true,
-                // Bind the circle to a certain area
-                dragBoundFunc : function(pos) {
-                    var x = centerX;
-                    var y = centerY;
-                    var scale = borderRadius / Math.sqrt(Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2));
-                    if(scale < 1) {
-                        return {
-                            x : Math.round((pos.x - x) * scale + x),
-                            y : Math.round((pos.y - y) * scale + y),
-                        }
-                    } else {
-                        return pos;
+                        break;
                     }
                 }
-            };
 
-            var optionsBounds = {
-                x : centerX,
-                y : centerY,
-                radius : borderRadius,
-                stroke : '#0000ff',
-                strokeWidth : 2
-            };
-
-            function normalizeAmplitudeX(val) {
-                var res = (centerX / 100) * val
-                return val;
+                requestAnimFrame(draw);
             }
 
-            scope.cursor = new Kinetic.Circle(options);
+            function onTouchEnd() {
 
-            var boundCircle = new Kinetic.Circle(optionsBounds);
+                cursorTouchId = -1;
 
-            scope.cursor.on('dragmove', function (evt) {
-                scope.$apply(scope.position = {
-                    x : Math.round(evt.target.attrs.x),
-                    y : Math.round(evt.target.attrs.y)
-                });
-            });
+                cursorTouch = {
+                    x : center.x,
+                    y : center.y
+                };
 
-            scope.cursor.on('dragend', function(evt) {
-                console.log(evt);
-                // If we drop the cursor we set the position to 0
-                scope.$apply(scope.position = {
-                    x : 0,
-                    y : 0,
-                });
+                scope.$apply(
+                    scope.position = {
+                        x : 0,
+                        y : 0
+                    }
+                );
 
-                tween = new Kinetic.Tween({
-                    node : scope.cursor,
-                    duration : 0.4,
-                    x : centerX,
-                    y : centerY
-                });
+                draw();
+            }
 
-                tween.play();
-            });
+            function draw() {
+                // Clear the canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            scope.cursor.on('dragstart', function() {
-                if(tween) {
-                    tween.destroy();
-                }
-            });
+                ctx.beginPath();
+                ctx.strokeStyle = 'cyan';
+                ctx.lineWidth = 6;
+                ctx.arc(center.x, center.y, 25, 0, Math.PI*2, true);
+                ctx.stroke();
 
-            layer.add(boundCircle);
-            layer.add(scope.cursor);
-            scope.kineticStageObject.add(layer);
+                ctx.beginPath();
+                ctx.strokeStyle = 'cyan';
+                ctx.lineWidth = 2;
+                ctx.arc(center.x, center.y, 40, 0, Math.PI*2, true);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.strokeStyle = 'cyan';
+                ctx.lineWidth = 2;
+                ctx.arc(cursorTouch.x, cursorTouch.y, 25, 0, Math.PI*2, true);
+                ctx.stroke();
+            }
+
+            // Check if touch is enabled
+            var touchable = true;
+
+            if(touchable) {
+                canvas.addEventListener( 'touchstart', onTouchStart, false );
+                canvas.addEventListener( 'touchmove', onTouchMove, false );
+                canvas.addEventListener( 'touchend', onTouchEnd, false );
+            }
+
+            resetCanvas();
+            draw();
+
         }
 
     };
 
-}]);
+});

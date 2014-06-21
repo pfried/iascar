@@ -20,7 +20,8 @@
     "globals": {
         "angular": true,
         "jasmine" : true,
-        "chrome" : true
+        "chrome" : true,
+        "requestAnimFrame" : true
     },
     "predef": [
         "define",

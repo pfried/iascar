@@ -30,6 +30,10 @@ angular.module('iasCar.services').provider('bluetoothService', ['$windowProvider
     this.$get = ['$injector', function getBluetoothProvider ($injector) {
 
         // If there is no Provider set, we run the autodetect feature once again
+        if(!bluetoothProvider) {
+            this.setProvider(this.detectProviderName());
+        }
+
         if(bluetoothProvider === 'cordova') {
             return $injector.get('cordovaBluetoothService');
         }
@@ -39,9 +43,9 @@ angular.module('iasCar.services').provider('bluetoothService', ['$windowProvider
         }
 
         throw {
-            name: 'Bluetooth Error',
+            name: 'BluetoothMissingProviderError',
             message: 'No Bluetooth Low Energy Provider available'
-        }
+        };
     }];
 
 }]);

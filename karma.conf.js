@@ -14,7 +14,6 @@ module.exports = function(config) {
             'src/js/lib/bower/angular/angular.js',
             'src/js/lib/bower/angular-mocks/angular-mocks.js',
             'src/js/lib/bower/angular-cookies/angular-cookies.js',
-            'src/js/lib/bower/angular-touch/angular-touch.js',
             'src/js/lib/bower/angular-resource/angular-resource.js',
             'src/js/lib/bower/angular-bootstrap/ui-bootstrap.js',
             'src/js/lib/bower/angular-ui-router/release/angular-ui-router.js',

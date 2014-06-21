@@ -736,6 +736,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
     $window.mockCordovaBluetooth = function() {
         $window.console.log('Mocking cordova and bluetooth');
         resetDevice();
+        $window.cordova = {};
         $window.bluetoothle = window.CordovaBluetoothMock();
     };
 
