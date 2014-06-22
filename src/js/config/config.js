@@ -11,4 +11,9 @@ angular.module('iasCar.config').config([function() {
             };
     })();
 
+    // Disable the scrolling e.g. in iOS the elastic Scroll bouncing
+    document.body.addEventListener('touchmove', function(event) {
+        event.preventDefault();
+    }, false);
+
 }]);

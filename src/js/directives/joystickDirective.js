@@ -15,7 +15,7 @@ angular.module('iasCar.directives').directive('joystick', function() {
             // Using primitives here did not work, so we use an Object, see: http://stackoverflow.com/questions/14049480/what-are-the-nuances-of-scope-prototypal-prototypical-inheritance-in-angularjs
             position : '='
         },
-        templateUrl : 'directives/joystick.html',
+        template : '<canvas class="joystickCanvas"></canvas>',
         link : function(scope, element) {
 
             var joystickHeight = 200;
