@@ -81,6 +81,13 @@ module.exports = function (grunt) {
                     livereload : true
                 }
             },
+            lang : {
+                files : ['src/js/lang/**'],
+                tasks : ['copy'],
+                options : {
+                    livereload : true
+                }
+            },
             grunt : {
                 files : ['gruntfile.js']
             }
@@ -151,9 +158,17 @@ module.exports = function (grunt) {
                         expand  : true,
                         flatten : false,
                         filter  : 'isFile',
-                        dest    : 'bluetoothcar/www/',
-                        cwd     : 'src/',
-                        src     : ['fonts/**']
+                        dest    : 'bluetoothcar/www/fonts',
+                        cwd     : 'src/fonts/',
+                        src     : ['**',]
+                    },
+                    {
+                        expand  : true,
+                        flatten : false,
+                        filter  : 'isFile',
+                        dest    : 'bluetoothcar/www/fonts',
+                        cwd     : 'src/js/lib/bower/roboto-fontface/fonts/',
+                        src     : ['**']
                     },
                     {
                         expand  : true,
@@ -187,6 +202,14 @@ module.exports = function (grunt) {
                         filter  : 'isFile',
                         dest    : chromeBuildPath,
                         cwd     : 'src/',
+                        src     : ['fonts/**']
+                    },
+                    {
+                        expand  : true,
+                        flatten : false,
+                        filter  : 'isFile',
+                        dest    : chromeBuildPath,
+                        cwd     : 'src/js/lib/bower/roboto-fontface/',
                         src     : ['fonts/**']
                     },
                     {

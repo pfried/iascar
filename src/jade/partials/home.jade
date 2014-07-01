@@ -1,8 +1,15 @@
+paper-fab.search(focused icon="icons:search")
 core-header-panel
-  core-toolbar
-    h1 Test
+  core-toolbar.medium-tall
+    .middle
+      h1 {{ 'title' | translate }}
+    span(flex)
+    paper-icon-button.settings(icon="more-vert", on-tap="onSettingsTap")
+  div.subheader
+    paper-shadow(z="1")
+    span {{ 'scan.description' | translate }}
   div.content
-    a(ui-sref="scan") Search for bluetooth cars
 
-paper-fab(focused icon="icons:search")
+
+
 

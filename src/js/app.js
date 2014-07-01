@@ -9,8 +9,7 @@ angular.module('iasCar', [
     'iasCar.filters',
     'iasCar.services',
     'iasCar.directives',
-    'pascalprecht.translate',
-    'ngTouch'
+    'pascalprecht.translate'
 ]);
 
 // Initialize Submodules

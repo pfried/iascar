@@ -1,3 +1,5 @@
+@import "../js/lib/bower/roboto-fontface/roboto-fontface.less";
+
 @base-color: #3f51b5;
 @base-color-700 : #303f9f;
 @base-color-100 : #c5cae9;
@@ -14,6 +16,22 @@
 html, body {
   height: 100%;
   margin: 0;
+  font-family : "Roboto", "Helvetica Neue", Helvetica,Arial, sans-serif;
+  transition: opacity ease-in 0.2s;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-touch-callout: none;
+
+}
+
+body[unresolved] {
+  opacity: 0;
+  display: block;
+  overflow: hidden;
 }
 
 div.panel {
@@ -26,20 +44,41 @@ a {
 
 core-header-panel {
   height: 100%;
+
+  .subheader {
+    background : @divider-color;
+    margin : 0px;
+    padding : 20px;
+    padding-left : 80px;
+    width : 100%;
+    color : @font-seconday-color;
+  }
+
+  .content {
+    padding : 20px;
+  }
+
+  core-toolbar {
+
+    background-color : @base-color;
+    color : #fff;
+
+    paper-icon-button.settings {
+      fill : #fff;
+    }
+
+    h1 {
+      font-size : 24px;
+      font-weight : 400;
+    }
+  }
 }
 
-core-toolbar {
-  background-color : @base-color;
-  color : white;
-}
-
-.content {
-  padding : 20px;
-}
-
-paper-fab {
+paper-fab.search {
   position: absolute !important;
-  top: 32px;
-  right: 1em;
+  top: 99px;
+  right : 1em;
   z-index : 1;
+  outline:  none;
+  background: @accent-color;
 }
