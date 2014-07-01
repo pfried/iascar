@@ -3,15 +3,16 @@
   "version": "0.0.1",
   "dependencies": {
     "angular": "1.2.17",
-    "angular-touch" : "1.2.17",
+    "angular-touch": "1.2.17",
     "angular-resource": "1.2.17",
     "angular-route": "1.2.17",
     "angular-cookies": "1.2.17",
     "angular-ui-router": "#master",
-    "bootstrap": "3.1.1",
-    "angular-bootstrap": "0.11.0",
     "angular-translate": "2.2.0",
-    "angular-translate-loader-static-files": "latest"
+    "angular-translate-loader-static-files": "latest",
+    "polymer": "Polymer/polymer#~0.3.3",
+    "core-elements": "Polymer/core-elements#~0.3.3",
+    "paper-elements": "Polymer/paper-elements#~0.3.3"
   },
   "devDependencies": {
     "angular-mocks": "1.2.17"

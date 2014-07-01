@@ -1,11 +1,8 @@
-h1 IAS Car
+core-header-panel
+  core-toolbar
+    h1 Test
+  div.content
+    a(ui-sref="scan") Search for bluetooth cars
 
-.container
-  a(ui-sref="scan") Search for bluetooth cars
+paper-fab(focused icon="icons:search")
 
-  h2 Settings
-
-  p {{ pos.x }}
-  p {{ pos.y }}
-
-  joystick(id="joystick", position="pos")

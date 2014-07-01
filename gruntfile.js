@@ -11,7 +11,6 @@ module.exports = function (grunt) {
         'src/js/lib/bower/angular-cookies/angular-cookies.js',
         'src/js/lib/bower/angular-touch/angular-touch.js',
         'src/js/lib/bower/angular-resource/angular-resource.js',
-        'src/js/lib/bower/angular-bootstrap/ui-bootstrap.js',
         'src/js/lib/bower/angular-ui-router/release/angular-ui-router.js',
         'src/js/lib/bower/angular-translate/angular-translate.js',
         'src/js/lib/bower/angular-translate-loader-static-files/angular-translate-loader-static-files.js'
@@ -34,6 +33,13 @@ module.exports = function (grunt) {
         'src/js/config/*.js',
         'src/js/routes/*.js',
         'src/js/startApp.js'
+    ];
+
+    var POLYMER_OBJECTS = [
+        'platform/**',
+        'polymer/**',
+        'core-*/**',
+        'paper-*/**'
     ];
 
     var CLIENT_SPEC_FILES = [
@@ -74,6 +80,9 @@ module.exports = function (grunt) {
                 options : {
                     livereload : true
                 }
+            },
+            grunt : {
+                files : ['gruntfile.js']
             }
         },
         jshint: {
@@ -153,6 +162,12 @@ module.exports = function (grunt) {
                         dest    : 'bluetoothcar/www/',
                         cwd     : 'src/js/',
                         src     : ['lang/**']
+                    },
+                    {
+                        expand  : true,
+                        dest    : 'bluetoothcar/www/polymer',
+                        cwd     : 'src/js/lib/bower',
+                        src     : POLYMER_OBJECTS
                     }
                 ]
             },
@@ -181,6 +196,12 @@ module.exports = function (grunt) {
                         dest    : chromeBuildPath,
                         cwd     : 'src/js',
                         src     : ['lang/**']
+                    },
+                    {
+                        expand  : true,
+                        dest    : chromeBuildPath + '/polymer',
+                        cwd     : 'src/js/lib/bower',
+                        src     : POLYMER_OBJECTS
                     },
                     {
                         expand  : true,

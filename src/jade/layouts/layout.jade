@@ -8,12 +8,18 @@ html
     meta(name="viewport", content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-density=device-dpi")
     title(IAS Bluetooth Car)
     link(rel="stylesheet", href="css/index.css")
-  body
-    #pageWrapper
-      block header
-      block content
-      block footer
+    // Import the polymer web components
+    script(src="polymer/platform/platform.js")
+    link(rel="import", href="polymer/core-header-panel/core-header-panel.html")
+    link(rel="import", href="polymer/core-toolbar/core-toolbar.html")
+    link(rel="import", href="polymer/core-icons/core-icons.html")
+    link(rel="import", href="polymer/paper-fab/paper-fab.html")
+  body(unresolved touch-action="auto")
+
+    block content
+
     script(src="cordova.js")
     script(src="js/index.js")
+
     if livereload
       script(src="http://localhost:35729/livereload.js")

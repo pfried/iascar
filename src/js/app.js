@@ -1,7 +1,17 @@
 'use strict';
 
 // Initialize Module
-angular.module('iasCar', ['ngCookies', 'ngResource', 'ui.bootstrap', 'ui.router', 'iasCar.config', 'iasCar.filters', 'iasCar.services', 'iasCar.directives', 'pascalprecht.translate', 'ngTouch']);
+angular.module('iasCar', [
+    'ngCookies',
+    'ngResource',
+    'ui.router',
+    'iasCar.config',
+    'iasCar.filters',
+    'iasCar.services',
+    'iasCar.directives',
+    'pascalprecht.translate',
+    'ngTouch'
+]);
 
 // Initialize Submodules
 angular.module('iasCar.config', []);

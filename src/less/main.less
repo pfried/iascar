@@ -1,2 +1,45 @@
-@import "../js/lib/bower/bootstrap/less/bootstrap.less";
+@base-color: #3f51b5;
+@base-color-700 : #303f9f;
+@base-color-100 : #c5cae9;
 
+@accent-color: #ff4081;
+@accent-color-100: #ff80ab;
+@accent-color-400: #f50057;
+
+@divider-color : lighten(#000, 88%);
+@font-hint-color : lighten(#000, 74%);
+@font-seconday-color : lighten(#000, 46%);
+@font-text-color : lighten(#000, 13%);
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+div.panel {
+  height : 100%;
+}
+
+a {
+  color : @accent-color;
+}
+
+core-header-panel {
+  height: 100%;
+}
+
+core-toolbar {
+  background-color : @base-color;
+  color : white;
+}
+
+.content {
+  padding : 20px;
+}
+
+paper-fab {
+  position: absolute !important;
+  top: 32px;
+  right: 1em;
+  z-index : 1;
+}
