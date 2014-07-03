@@ -1,14 +1,20 @@
-paper-fab.search(focused icon="icons:search")
+paper-fab.search(focused icon="icons:search", role="button", ng-click="startScan()")
 core-header-panel
   core-toolbar.medium-tall
     .middle
       h1 {{ 'title' | translate }}
     span(flex)
-    paper-icon-button.settings(icon="more-vert", on-tap="onSettingsTap")
+    paper-icon-button.settings(icon="more-vert")
   div.subheader
     paper-shadow(z="1")
     span {{ 'scan.description' | translate }}
   div.content
+    core-menu
+      paper-item(icon="device:bluetooth", center, horizontal, ng-repeat="car in cars")
+        span.carName(flex) {{ car.name }}
+        core-icon(icon="device:signal-wifi-{{ car.rssi | signalStrength}}-bar")
+
+
 
 
 

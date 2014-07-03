@@ -55,7 +55,7 @@ core-header-panel {
   }
 
   .content {
-    padding : 20px;
+    margin: 0px;
   }
 
   core-toolbar {
@@ -70,6 +70,25 @@ core-header-panel {
     h1 {
       font-size : 24px;
       font-weight : 400;
+    }
+  }
+
+  core-menu {
+    color : @font-seconday-color;
+    font-size : 18px;
+    margin : 0px;
+
+    paper-item {
+      fill : @base-color;
+      height : 60px;
+
+      core-icon {
+        fill : @font-hint-color;
+      }
+
+      .carName {
+        padding-left : 1em;
+      }
     }
   }
 }

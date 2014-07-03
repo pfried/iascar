@@ -11,15 +11,6 @@ angular.module('iasCar').config(['$urlRouterProvider', '$stateProvider', functio
                 }
             }
         })
-        .state('scan', {
-            url: '/scan',
-            views: {
-                'mainPanel': {
-                    templateUrl: 'partials/scan.html',
-                    controller: 'ScanController'
-                }
-            }
-        })
         .state('car', {
             url: '/car/:carAddress',
             views : {
