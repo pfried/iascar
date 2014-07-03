@@ -366,7 +366,7 @@ module.exports = function (grunt) {
     grunt.registerTask('cordovaPrepare', ['exec:prepare']);
     grunt.registerTask('cordovaServe', ['exec:serve']);
     grunt.registerTask('cordovaBuild', ['exec:build']);
-    grunt.registerTask('cordovaRunAndroid', ['buildClient', 'exec:prepare', 'exec:runAndroid']);
+    grunt.registerTask('cordovaRunAndroid', ['buildCordovaClient', 'exec:prepare', 'exec:runAndroid']);
 
     grunt.registerTask('cordovaBuildAndroidRelease', ['exec:buildAndroidRelease']);
     grunt.registerTask('cordovaBuildIOSRelease', ['exec:buildIOSRelease']);
