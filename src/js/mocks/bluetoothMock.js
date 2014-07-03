@@ -208,7 +208,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
             if(!expectingError('stopScan')) {
                 window.clearInterval(interval);
-                deviceState.scanning = true;
+                deviceState.scanning = false;
                 successCallback({
                     'status': 'scanStopped'
                 });

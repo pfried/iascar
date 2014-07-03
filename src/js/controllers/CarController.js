@@ -1,27 +1,42 @@
-angular.module('iasCar').controller('CarController', ['$scope', '$window', '$state', '$stateParams', 'bluetoothService',  function($scope, $window, $state, $stateParams, bluetoothService) {
+angular.module('iasCar').controller('CarController', ['$scope', '$window', '$state', '$stateParams', 'bluetoothTools', 'bluetoothService',  function($scope, $window, $state, $stateParams, bluetoothTools, bluetoothService) {
     'use strict';
 
     var address = $stateParams.carAddress;
     $scope.connecting = false;
 
-    // If we are not initialized go to connect page
-    bluetoothService.isInitialized().catch(function() {
-        $state.go('scan');
-    });
-
-    if(!address || !bluetoothService.isValidAddress(address)) {
-        $state.go('scan');
+    if(!address || !bluetoothTools.isValidAddress(address)) {
+        $state.go('home');
     }
 
-    bluetoothService.connect(address).then(function(device) {
+    function connectToCar(address) {
+        console.log('connecting');
 
-        $scope.connecting = false;
-        $scope.car = device;
+        var params = {
+            address : address
+        };
 
-    }, function () {
-        $scope.connecting = false;
+        bluetoothService.connect(params).then(function(device) {
+
+            $scope.connecting = false;
+            $scope.car = device;
+
+            console.log('connected', device);
+
+        }, function () {
+            $scope.connecting = false;
+        }, function() {
+            $scope.connecting = true;
+        });
+    }
+
+    bluetoothService.isInitialized().then(function() {
+        console.log('isInitialized');
+        connectToCar(address);
     }, function() {
-        $scope.connecting = true;
+        console.log('initializing');
+        bluetoothService.initialize().then(function() {
+            connectToCar(address);
+        });
     });
 
 }]);

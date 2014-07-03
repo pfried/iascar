@@ -10,7 +10,7 @@ core-header-panel
     span {{ 'scan.description' | translate }}
   div.content
     core-menu
-      paper-item(icon="device:bluetooth", center, horizontal, ng-repeat="car in cars")
+      paper-item(icon="device:bluetooth", center, horizontal, ng-repeat="car in cars", ng-click="connectToDevice(car)")
         span.carName(flex) {{ car.name }}
         core-icon(icon="device:signal-wifi-{{ car.rssi | signalStrength}}-bar")
 
