@@ -29,8 +29,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
 
         bt.isInitialized(function(initialized) {
 
-            // TODO: Fix the typo here once it is fixed in plugin
-            if(initialized && initialized.isInitalized === true) {
+            if(initialized && initialized.isInitialized === true) {
                 deferred.resolve();
             } else {
                 deferred.reject();
