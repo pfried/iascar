@@ -28,6 +28,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         var deferred = $q.defer();
 
         bt.isInitialized(function(initialized) {
+
             if(initialized && initialized.isInitialized === true) {
                 deferred.resolve();
             } else {
