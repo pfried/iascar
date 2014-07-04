@@ -68,7 +68,6 @@
 
         // TODO Jasmine 2.0 changes jasmine clock, we need this feature here since there will be two callbacks
         it('should connect to a bluetooth device if an address is given', function() {
-            console.log('jasmine-version:' + jasmine.getEnv().versionString());
             bluetoothService.initialize().then(function() {
                 return bluetoothService.connect({
                     'address' : 'ab'

@@ -102,6 +102,7 @@
                 'address' : '01:23:45:67:89:AB'
             });
 
+            // TODO if clock ticking available activate this
             //expect(result).toEqual({ 'status': 'connecting', 'address': '01:23:45:67:89:AB', 'name': 'iasCar1' });
 
         });
@@ -116,6 +117,10 @@
         //it('should convert an encoded string to array buffer and back', function(){
         //    expect(bt.bytesToEncodedString(bt.encodedStringToBytes('foo'))).toBe('foo');
         //});
+
+
+
+
 
     });
 }());

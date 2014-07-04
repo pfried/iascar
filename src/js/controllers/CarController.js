@@ -17,6 +17,7 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
 
         $scope.connecting = false;
         $scope.car = device;
+        console.log('Connected to:', $scope.car.name);
 
     }, function () {
         $scope.connecting = false;
