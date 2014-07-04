@@ -92,6 +92,8 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
                 return deferred.reject(bluetoothTools.errorMessages.addressNotValid);
             }
 
+            var deviceAddress = bluetoothTools.addressToAndroidFormat(params.address);
+
             bt.connect(function(result) {
 
                 if(result && result.status === 'connecting') {
@@ -104,7 +106,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
             }, function (error) {
                 deferred.reject(error.message);
             }, {
-                address : params.address
+                address : deviceAddress
             });
 
         },function() {
