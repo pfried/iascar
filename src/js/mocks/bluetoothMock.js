@@ -8,6 +8,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
     // Pass through all dependencies
     $httpBackend.whenGET(/^partials\//).passThrough();
+    $httpBackend.whenGET(/^directives\//).passThrough();
     $httpBackend.whenGET(/^lang\//).passThrough();
 
     var OS = 'android';
@@ -735,6 +736,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
     $window.mockCordovaBluetooth = function() {
         $window.console.log('Mocking cordova and bluetooth');
         resetDevice();
+        $window.cordova = {};
         $window.bluetoothle = window.CordovaBluetoothMock();
     };
 

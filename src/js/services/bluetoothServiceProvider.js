@@ -43,7 +43,7 @@ angular.module('iasCar.services').provider('bluetoothService', ['$windowProvider
         }
 
         throw {
-            name: 'Bluetooth Error',
+            name: 'BluetoothMissingProviderError',
             message: 'No Bluetooth Low Energy Provider available'
         };
     }];
