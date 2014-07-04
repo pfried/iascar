@@ -20,6 +20,15 @@
             expect(bluetoothTools.isValidAddress(valid)).toBe(true);
             expect(bluetoothTools.isValidAddress(invalid)).toBe(false);
         });
+
+        it('should translate an address to the android format', function() {
+           var address =  '0123456789ab';
+           var androidFormat = bluetoothTools.addressToAndroidFormat(address);
+           expect(androidFormat).toBe('01:23:45:67:89:ab');
+           // Should be idempotent
+           expect(bluetoothTools.addressToAndroidFormat(androidFormat)).toBe('01:23:45:67:89:ab');
+           expect(bluetoothTools.isValidAddress(androidFormat)).toBe(true);
+        });
     });
 
 }());

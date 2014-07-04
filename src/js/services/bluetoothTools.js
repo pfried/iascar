@@ -22,10 +22,16 @@ angular.module('iasCar.services').factory('bluetoothTools', function() {
         return address.replace(/\:/g,'');
     }
 
+    function addressToAndroidFormat(address) {
+        // Replace each two Chars of alphanumeric characters if they are followed by another char by the chars + :. $& is the lastMath identifier
+        return address.replace(/\w{2}(?=\w)/g, '$&:');
+    }
+
     return {
         isValidAddress : isValidAddress,
         errorMessages  : errorMessages,
-        unifyAddress : unifyAddress
+        unifyAddress : unifyAddress,
+        addressToAndroidFormat : addressToAndroidFormat
     };
 
 });
