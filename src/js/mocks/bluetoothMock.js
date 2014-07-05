@@ -208,7 +208,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
             if(!expectingError('stopScan')) {
                 window.clearInterval(interval);
-                deviceState.scanning = true;
+                deviceState.scanning = false;
                 successCallback({
                     'status': 'scanStopped'
                 });
@@ -233,6 +233,13 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 });
             }
 
+            if(deviceState.connected) {
+                return errorCallback({
+                    'status' : 'connecting',
+                    'message': cordovaErrorMessages.connect.previouslyConnected
+                });
+            }
+
             var resultConnected = {
                 'status'  : 'connected',
                 'address' : params.address,
@@ -246,11 +253,11 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             };
 
             if(!expectingError('connect')) {
-                deviceState.connected = true;
                 window.setTimeout(function() {
                     successCallback(resultConnecting);
                 }, 200);
                 window.setTimeout(function() {
+                    deviceState.connected = true;
                     successCallback(resultConnected);
                 }, 2000);
             } else {
@@ -285,6 +292,13 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          * @param errorCallback
          */
         function disconnect(successCallback, errorCallback) {
+
+            if(!deviceState.connected) {
+                return errorCallback({
+                    'status' : 'connecting',
+                    'message': cordovaErrorMessages.connect.isNotConnected
+                });
+            }
 
             var resultDisconnecting = {
                 'status'  : 'disconnecting',
@@ -704,10 +718,12 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             expectingError       : expectingError,
             errorMessages        : cordovaErrorMessages,
             OS                   : OS,
+            deviceState          : deviceState,
             initialize           : initialize,
             startScan            : startScan,
             stopScan             : stopScan,
             connect              : connect,
+            disconnect           : disconnect,
             reconnect            : reconnect,
             close                : close,
             discover             : discover,

@@ -5,6 +5,8 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
 
     var bt = $window.bluetoothle;
 
+    var previouslyConnectedDevice;
+
     function initialize() {
 
         var deferred = $q.defer();
@@ -44,7 +46,10 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         var deferred = $q.defer();
 
         isInitialized().then(function() {
+
                 devices = {};
+
+                stopScan();
 
                 bt.startScan(function(result) {
 
@@ -67,6 +72,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
                 }, function(error) {
                     deferred.reject(error.message);
                 });
+
             }, function() {
                 deferred.reject(bluetoothTools.errorMessages.notInitialized);
             }
@@ -80,6 +86,12 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
     }
 
     function connect(params) {
+
+        // Check if we were connected to a device already
+        if(previouslyConnectedDevice) {
+            return reconnect(params);
+        }
+
         var deferred = $q.defer();
 
         isInitialized().then(function() {
@@ -94,12 +106,18 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
 
             var deviceAddress = bluetoothTools.addressToAndroidFormat(params.address);
 
+            // We get the disconnected event within this function
+            // so we do only notify on connected event in order to not resolve the promise
             bt.connect(function(result) {
 
                 if(result && result.status === 'connecting') {
                     deferred.notify(result);
                 }
                 if(result && result.status === 'connected') {
+                    previouslyConnectedDevice = params.address;
+                    deferred.notify(result);
+                }
+                if(result && result.status === 'disconnected') {
                     deferred.resolve(result);
                 }
 
@@ -116,13 +134,79 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         return deferred.promise;
     }
 
+    function reconnect(params) {
+        var deferred = $q.defer();
+
+        isInitialized().then(function() {
+
+            if(!params || !params.address) {
+                return deferred.reject(bluetoothTools.errorMessages.noAddress);
+            }
+
+            if(!bluetoothTools.isValidAddress(params.address)) {
+                return deferred.reject(bluetoothTools.errorMessages.addressNotValid);
+            }
+
+            var deviceAddress = bluetoothTools.addressToAndroidFormat(params.address);
+
+            // We get the disconnected event within this function
+            // so we do only notify on connected event in order to not resolve the promise
+            bt.reconnect(function(result) {
+
+                if(result && result.status === 'connecting') {
+                    deferred.notify(result);
+                }
+                if(result && result.status === 'connected') {
+                    deferred.notify(result);
+                }
+                if(result && result.status === 'disconnected') {
+                    deferred.resolve(result);
+                }
+
+            }, function (error) {
+                deferred.reject(error.message);
+            }, {
+                address : deviceAddress
+            });
+
+        },function() {
+            deferred.reject(bluetoothTools.errorMessages.notInitialized);
+        });
+
+        return deferred.promise;
+    }
+
+    function disconnect() {
+        var deferred = $q.defer();
+
+        bt.disconnect(function(result) {
+            console.log('disco status');
+            console.log(result.status);
+
+            if(result && result.status === 'disconnecting') {
+                deferred.notify(result);
+            }
+
+            if(result && result.status === 'disconnected') {
+                deferred.resolve(result);
+            }
+
+        }, function(error) {
+            deferred.reject(error.message);
+        });
+
+        return deferred.promise;
+    }
+
     return {
         _bt : bt,
         initialize     : initialize,
         isInitialized  : isInitialized,
         startScan      : startScan,
         stopScan       : stopScan,
-        connect        : connect
+        connect        : connect,
+        reconnect      : reconnect,
+        disconnect     : disconnect
     };
 
 }]);

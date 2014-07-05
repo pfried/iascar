@@ -21,6 +21,13 @@
             expect(bluetoothTools.isValidAddress(invalid)).toBe(false);
         });
 
+        it('should validate a unified address', function() {
+            var validUnified = '0123456789ab';
+            var invalidUnified = '01234';
+            expect(bluetoothTools.isValidAddress(validUnified)).toBe(true);
+            expect(bluetoothTools.isValidAddress(invalidUnified)).toBe(false);
+        });
+
         it('should unify the address format between android and ios', function() {
             var android =  '01:23:45:67:89:ab';
             var ios = '0123456789ab';

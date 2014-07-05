@@ -6,12 +6,14 @@ angular.module('iasCar.services').factory('bluetoothTools', function() {
     var errorMessages = {
         notInitialized : 'Initialize Bluetooth first',
         noAddress : 'Please provide an address for connecting to a device',
-        addressNotValid : 'Please provide the address in the correct format'
+        addressNotValid : 'Please provide the address in the correct format',
+        notPreviouslyConnected : 'Device was not previously connected',
+        notConnected : 'Device is not connected'
     };
 
     function isValidAddress(address) {
 
-        if (address && macRegex.test(address)) {
+        if (address && (macRegex.test(address) || macRegex.test(addressToAndroidFormat(address)))) {
             return true;
         }
 

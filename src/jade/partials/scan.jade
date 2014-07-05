@@ -5,6 +5,6 @@ h1 Connection Controller
   button(ng-show="!scanning", ng-click="startScan()") Restart Scanning
 
   ul(ng-repeat='(address, car) in cars')
-    li(ng-click='connectToDevice(address)') {{ car.name }}: {{ car.rssi }}
+    li(ng-click='connectToDevice(car)') {{ car.name }}: {{ car.rssi }}
       br
       span {{ address }}

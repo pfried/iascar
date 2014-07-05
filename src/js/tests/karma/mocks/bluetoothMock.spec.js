@@ -5,9 +5,14 @@
 
         var bt;
 
+        var success, error;
+
         beforeEach(function() {
             window.mockCordovaBluetooth();
             bt = window.bluetoothle;
+
+            success = jasmine.createSpy('success');
+            error = jasmine.createSpy('error');
         });
 
         it('should be present on the window object', function() {
@@ -104,6 +109,50 @@
 
             // TODO if clock ticking available activate this
             //expect(result).toEqual({ 'status': 'connecting', 'address': '01:23:45:67:89:AB', 'name': 'iasCar1' });
+
+        });
+
+        it('doesnt connect to a device when it is currently connected', function() {
+            var error;
+            bt.deviceState.connected = true;
+
+            bt.connect(function(){
+
+            }, function(err) {
+                error = err;
+            }, {
+                'address' : '01:23:45:67:89:AC'
+            });
+
+            expect(error.message).toBe(bt.errorMessages.connect.previouslyConnected);
+        });
+
+        it('disconnects from a device', function() {
+            bt.deviceState.connected = true;
+            bt.disconnect(success, error);
+            expect(success).toHaveBeenCalled();
+        });
+
+        it('doesnt disconnect if it wasnt previously connected', function() {
+            bt.deviceState.connected = false;
+            bt.disconnect(success, error);
+            expect(error).toHaveBeenCalled();
+        });
+
+        it('returns the connection state', function() {
+            bt.deviceState.connected = true;
+
+            bt.isConnected(success);
+            expect(success).toHaveBeenCalledWith({
+                'isConncted' : true
+            });
+
+            bt.deviceState.connected = false;
+
+            bt.isConnected(success);
+            expect(success).toHaveBeenCalledWith({
+                'isConncted' : false
+            });
 
         });
 

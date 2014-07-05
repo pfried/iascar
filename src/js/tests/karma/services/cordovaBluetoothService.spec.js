@@ -77,6 +77,23 @@
             //expect(notify).toHaveBeenCalled();
         });
 
+        it('should disconnect from a bluetooth device', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            bluetoothService.disconnect().then(success, error);
+
+            $rootScope.$apply();
+            expect(success).toHaveBeenCalled();
+        });
+
+        it('should not disconnect if the device is not connected', function() {
+            bluetoothService._bt.deviceState.connected = false;
+
+            bluetoothService.disconnect().then(success, error);
+
+            $rootScope.$apply();
+            expect(error).toHaveBeenCalled();
+        });
 
 
     });

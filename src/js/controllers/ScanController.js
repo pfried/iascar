@@ -52,7 +52,7 @@ angular.module('iasCar').controller('ScanController', ['$scope', '$window', '$ti
         // Cancel the scan timeout and stop scanning
         $timeout.cancel(timeout);
         bluetoothService.stopScan();
-
+        console.log(device);
         // Connect to device
         $state.go('car', {
             carAddress : device.address

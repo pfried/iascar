@@ -12,9 +12,4 @@ angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$st
         y : 0
     };
 
-    $scope.pos2 = {
-        x : 0,
-        y : 0
-    };
-
 }]);

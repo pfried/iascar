@@ -1,28 +1,67 @@
-angular.module('iasCar').controller('CarController', ['$scope', '$window', '$state', '$stateParams', 'bluetoothService',  function($scope, $window, $state, $stateParams, bluetoothService) {
+angular.module('iasCar').controller('CarController', ['$scope', '$window', '$state', '$stateParams', 'bluetoothTools', 'bluetoothService',  function($scope, $window, $state, $stateParams, bluetoothTools, bluetoothService) {
     'use strict';
 
     var address = $stateParams.carAddress;
-    $scope.connecting = false;
+    $scope.state = '';
 
-    // If we are not initialized go to connect page
-    bluetoothService.isInitialized().catch(function() {
-        $state.go('scan');
-    });
+    console.log(address);
 
-    if(!address || !bluetoothService.isValidAddress(address)) {
-        $state.go('scan');
+    if(!address || !bluetoothTools.isValidAddress(address)) {
+        return $state.go('home');
     }
 
-    bluetoothService.connect(address).then(function(device) {
+    function disconnect() {
+        bluetoothService.disconnect().then(function() {
+            return $state.go('home');
+        });
+    }
 
-        $scope.connecting = false;
-        $scope.car = device;
-        console.log('Connected to:', $scope.car.name);
+    function connectToCar(address) {
 
-    }, function () {
-        $scope.connecting = false;
+        console.log('Connecting to: ' + address);
+
+        var params = {
+            address : address
+        };
+
+        bluetoothService.connect(params).then(function() {
+
+            // If this is called the promise is fullfilled and we are disconnected
+            $scope.state = 'disconnected';
+            return $state.go('home');
+
+        }, function (error) {
+            console.log('cc error: ' + error.message);
+            console.log('cc error: ' + error);
+            $scope.state = 'error';
+        }, function(result) {
+            if(result) {
+                if(result.status === 'connecting') {
+                    $scope.state = 'cc connecting';
+                    console.log('connecting', result);
+                }
+
+                if(result.status === 'connected') {
+                    $scope.state = 'connected';
+                    $scope.car = result;
+                    console.log('cc connected', result);
+                    $scope.disconnect = disconnect;
+                }
+
+                if(result.status === 'disconnecting') {
+                    console.log('cc connecting', result);
+                    $scope.state = 'disconnecting';
+                }
+            }
+        });
+    }
+
+    bluetoothService.isInitialized().then(function() {
+        connectToCar(address);
     }, function() {
-        $scope.connecting = true;
+        bluetoothService.initialize().then(function() {
+            connectToCar(address);
+        });
     });
 
 }]);

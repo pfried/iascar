@@ -1,3 +1,6 @@
 .container
   p(ng-show="connecting") Loading
   h1 {{ car.name }}
+
+  button(ng-show="state === 'connected'", ng-click="disconnect()") Disconnect
+
