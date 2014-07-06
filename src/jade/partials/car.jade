@@ -1,6 +1,6 @@
 .container
-  p(ng-show="connecting") Loading
+  p(ng-show="car.state === 'connecting'") Loading
   h1 {{ car.name }}
 
-  button(ng-show="state === 'connected'", ng-click="disconnect()") Disconnect
+  button(ng-show="car.state === 'connected'", ng-click="disconnect()") Disconnect
 
