@@ -221,6 +221,8 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          */
         connect : function connect(successCallback, errorCallback, params) {
 
+            var that = this;
+
             if(!params || !params.address) {
                 return errorCallback({
                     'status' : 'connecting',
@@ -252,7 +254,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                     successCallback(resultConnecting);
                 }, 200);
                 window.setTimeout(function() {
-                    this.deviceState.connected = true;
+                    that.deviceState.connected = true;
                     successCallback(resultConnected);
                 }, 2000);
             } else {
