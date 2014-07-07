@@ -10,7 +10,17 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
 
     function connectToCar(address) {
         $scope.car = new Car(address);
-        $scope.car.connect();
+
+        $scope.car.connect().then(function() {
+
+        }, function() {
+
+        }, function() {
+            if($scope.car.state === 'connected') {
+                $scope.car.discover();
+            }
+        });
+
         $scope.disconnect = function() {
             $scope.car.disconnect().then(function() {
                 $state.go('home');

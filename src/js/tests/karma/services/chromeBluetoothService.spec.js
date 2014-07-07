@@ -11,7 +11,7 @@
 
             module('iasCar.services');
 
-            window.mockBluetooth();
+            window.mockChromeBluetooth();
 
             inject(function ($injector) {
                 bluetoothService = ($injector.get('cordovaBluetoothService'));

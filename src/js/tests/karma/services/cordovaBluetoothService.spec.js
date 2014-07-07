@@ -95,6 +95,16 @@
             expect(error).toHaveBeenCalled();
         });
 
+        it('should discover services and characteristics', function() {
+            bluetoothService._bt.deviceState.connected = true;
+            bluetoothService._bt.deviceState.discovered = false;
+
+            bluetoothService.discover().then(success);
+
+            $rootScope.$apply();
+            expect(success).toHaveBeenCalled();
+        });
+
 
     });
 }());

@@ -180,8 +180,6 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         var deferred = $q.defer();
 
         bt.disconnect(function(result) {
-            console.log('disco status');
-            console.log(result.status);
 
             if(result && result.status === 'disconnecting') {
                 deferred.notify(result);
@@ -198,6 +196,18 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         return deferred.promise;
     }
 
+    function discover() {
+        var deferred = $q.defer();
+
+        bt.discover(function(result) {
+            deferred.resolve(result);
+        }, function(error) {
+            deferred.reject(error.message);
+        });
+
+        return deferred.promise;
+    }
+
     return {
         _bt : bt,
         initialize     : initialize,
@@ -206,7 +216,8 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         stopScan       : stopScan,
         connect        : connect,
         reconnect      : reconnect,
-        disconnect     : disconnect
+        disconnect     : disconnect,
+        discover       : discover
     };
 
 }]);

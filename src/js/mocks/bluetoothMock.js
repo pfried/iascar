@@ -184,11 +184,11 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 deviceState.scanning = true;
                 // We dont use $interval here since the real thin will happen outside of angularjs as well
                 interval = window.setInterval(function() {
-                    if(OS === 'android') {
+                    if(this.OS === 'android') {
                         resultAndroid.rssi = -50 - getRandomInt(0,20);
                         successCallback(resultAndroid);
                     }
-                    if(OS === 'ios') {
+                    if(this.OS === 'ios') {
                         resultIOS.rssi = -50 - getRandomInt(0,20);
                         successCallback(resultIOS);
                     }
@@ -371,15 +371,14 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             };
 
             if(!expectingError('discover')) {
-                if(OS === 'ios') {
-                    successCallback(void(0));
+                if(this.OS === 'ios') {
+                    return successCallback(void(0));
                 }
-                successCallback(result);
+                deviceState.discovered = true;
+                return successCallback(result);
             } else {
-                produceError(errorCallback, 'discover');
+                return produceError(errorCallback, 'discover');
             }
-
-
         }
 
         /**
@@ -399,7 +398,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             };
 
             if(!expectingError('services')) {
-                if(OS === 'android') {
+                if(this.OS === 'android') {
                     successCallback(void(0));
                 }
                 successCallback(result);
@@ -427,7 +426,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             };
 
             if(!expectingError('characteristics')) {
-                if(OS === 'android') {
+                if(this.OS === 'android') {
                     successCallback(void(0));
                 }
                 successCallback(result);
@@ -454,7 +453,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             };
 
             if(!expectingError('descriptors')) {
-                if(OS === 'android') {
+                if(this.OS === 'android') {
                     successCallback(void(0));
                 }
                 successCallback(result);
@@ -543,7 +542,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          * @param params
          */
         function write(successCallback, errorCallback, params) {
-            
+
             var result = {
                 'status' : 'written',
                 'serviceUuid' : params.serviceUuid,
@@ -556,7 +555,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             } else {
                 produceError(errorCallback, 'write');
             }
-            
+
         }
 
         /**
@@ -657,7 +656,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          * @param successCallback
          */
         function isDiscovered(successCallback) {
-            if (OS === 'ios') {
+            if (this.OS === 'ios') {
                 return successCallback({
                     'isDiscovered' : false
                 });
