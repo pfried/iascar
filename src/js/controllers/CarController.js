@@ -21,7 +21,14 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
             if($scope.car.state === 'connected') {
 
                 $scope.car.discover().then(function() {
+
                     $scope.car.subscribeTemperature();
+                    $scope.car.subscribeBattery();
+                    $scope.car.subscribeBrightness();
+                    $scope.car.subscribeDistanceUSFront();
+                    $scope.car.subscribeDistanceUSRear();
+                    $scope.car.subscribeDistanceIRFront();
+                    $scope.car.subscribeDistanceIRRear();
 
                 }).catch(function(error) {
                     console.error(error);

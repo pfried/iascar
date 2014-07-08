@@ -213,6 +213,7 @@ angular.module('iasCar.services').factory('Car', ['$q', 'bluetoothService', func
 
             return bluetoothService.unsubscribe(params);
         },
+
         subscribeTemperature : function() {
             var that = this;
 
@@ -225,6 +226,90 @@ angular.module('iasCar.services').factory('Car', ['$q', 'bluetoothService', func
                      that.sensors.temperature = bluetoothService.encodedStringToBytes(result.value)[0];
                  }
              });
+        },
+
+        subscribeBrightness : function() {
+            var that = this;
+
+            that.subscribe('brightness', 'brightness').then(function() {
+
+            }, function () {
+
+            }, function(result) {
+                if(result.status === 'subscribedResult') {
+                    that.sensors.brightness = bluetoothService.encodedStringToBytes(result.value)[0];
+                }
+            });
+        },
+
+        subscribeBattery : function() {
+            var that = this;
+
+            that.subscribe('battery', 'battery').then(function() {
+
+            }, function () {
+
+            }, function(result) {
+                if(result.status === 'subscribedResult') {
+                    that.sensors.battery = bluetoothService.encodedStringToBytes(result.value)[0];
+                }
+            });
+        },
+
+        subscribeDistanceUSFront : function() {
+            var that = this;
+
+            that.subscribe('distance', 'distanceUSFront').then(function() {
+
+            }, function () {
+
+            }, function(result) {
+                if(result.status === 'subscribedResult') {
+                    that.sensors.distanceUSFront = bluetoothService.encodedStringToBytes(result.value)[0];
+                }
+            });
+        },
+
+        subscribeDistanceUSRear : function() {
+            var that = this;
+
+            that.subscribe('distance', 'distanceUSRear').then(function() {
+
+            }, function () {
+
+            }, function(result) {
+                if(result.status === 'subscribedResult') {
+                    that.sensors.distanceUSRear = bluetoothService.encodedStringToBytes(result.value)[0];
+                }
+            });
+        },
+
+        subscribeDistanceIRFront : function() {
+            var that = this;
+
+            that.subscribe('distance', 'distanceIRFront').then(function() {
+
+            }, function () {
+
+            }, function(result) {
+                if(result.status === 'subscribedResult') {
+                    that.sensors.distanceIRFront = bluetoothService.encodedStringToBytes(result.value)[0];
+                }
+            });
+        },
+
+        subscribeDistanceIRRear : function() {
+            var that = this;
+
+            that.subscribe('distance', 'distanceIRRear').then(function() {
+
+            }, function () {
+
+            }, function(result) {
+                if(result.status === 'subscribedResult') {
+                    that.sensors.distanceIRRear = bluetoothService.encodedStringToBytes(result.value)[0];
+                }
+            });
         }
 
 };
