@@ -182,7 +182,7 @@
 
             bt.discover(success);
 
-            expect(success).toHaveBeenCalledWith({ address: '01:23:45:67:89:AB', name: 'iasCar1', services: [
+            expect(success).toHaveBeenCalledWith({ address: '01:23:45:67:89:AB', name: 'iasCar1', status : 'discovered', services: [
                 { serviceUuid: '180d', characteristics: [
                     { characteristicUuid: '2a37', descriptors: [
                         { descriptorUuid: '2902' }
@@ -210,13 +210,32 @@
         it('should read a characteristic\'s value once', function () {
             bt.deviceState.connected = true;
 
-            bt.read(success);
+            var params = {
+                'serviceUuid' : '1234',
+                'characteristicUuid' : '5678'
+            };
 
-            expect(success).toHaveBeenCalledWith({ status: 'read', serviceUuid: '180F', characteristicUuid: '2A19', value: '' });
+            bt.read(success, error, params);
+
+            expect(success).toHaveBeenCalledWith({ status: 'read', serviceUuid: '1234', characteristicUuid: '5678', value: '' });
         });
 
         it('should subscribe to a characteristics value', function() {
+            bt.deviceState.connected = true;
 
+            var params = {
+                'serviceUuid' : '2a37',
+                'characteristicUuid' : '1234',
+                'isNotification' : true
+            };
+
+            bt.subscribe(success, error, params);
+
+            expect(success).toHaveBeenCalledWith({
+                'status' : 'subscribed',
+                'serviceUuid' : '2a37',
+                'characteristicUuid' : '1234'
+            });
         });
 
 

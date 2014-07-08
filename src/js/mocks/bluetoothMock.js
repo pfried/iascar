@@ -346,10 +346,11 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
             var result = {
                 'address':'01:23:45:67:89:AB',
                 'name':'iasCar1',
+                'status' : 'discovered',
                 'services':[
                     {
                         'serviceUuid':'180d',
-                        'characteristics':[
+                        'characteristics' : [
                             {
                                 'characteristicUuid':'2a37',
                                 'descriptors':[
@@ -468,8 +469,8 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
             var result = {
                 'status': 'read',
-                'serviceUuid': '180F',
-                'characteristicUuid': '2A19',
+                'serviceUuid': params.serviceUuid,
+                'characteristicUuid': params.characteristicUuid,
                 'value': ''
             };
 
@@ -490,14 +491,14 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
             var subscribedResult = {
                 'status' : 'subscribed',
-                'serviceUuid' : '180D',
-                'characteristicUuid' : '2A37'
+                'serviceUuid' : params.serviceUuid,
+                'characteristicUuid' : params.characteristicUuid
             };
 
             var subscriptionValue = {
                 'status' : 'subscribedResult',
-                'serviceUuid' : '180D',
-                'characteristicUuid' : '2A37',
+                'serviceUuid' : params.serviceUuid,
+                'characteristicUuid' : params.characteristicUuid,
                 'value' : ''
             };
 
@@ -518,8 +519,8 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
             var result = {
                 'status' : 'unsubscribed',
-                'serviceUuid' : '180D',
-                'characteristicUuid' : '2A37'
+                'serviceUuid' : params.serviceUuid,
+                'characteristicUuid' : params.characteristicUuid
             };
 
             if(!this.expectingError('unsubscribe')) {
@@ -688,11 +689,11 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          * Helper function to convert a string to bytes.
          * @param str
          */
-        stringToBytes : function stringToBytes(str) {
-            var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+        stringToBytes : function stringToBytes(string) {
+            var buf = new ArrayBuffer(string.length*2); // 2 bytes for each char
             var bufView = new Uint16Array(buf);
-            for (var i=0, strLen=str.length; i<strLen; i++) {
-                bufView[i] = str.charCodeAt(i);
+            for (var i=0, strLen=string.length; i<strLen; i++) {
+                bufView[i] = string.charCodeAt(i);
             }
             return buf;
         },

@@ -200,7 +200,9 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         var deferred = $q.defer();
 
         bt.discover(function(result) {
-            deferred.resolve(result);
+            if(result.status === 'discovered') {
+                deferred.resolve(result);
+            }
         }, function(error) {
             deferred.reject(error.message);
         });
@@ -208,16 +210,101 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         return deferred.promise;
     }
 
+    function read(params) {
+        var deferred = $q.defer();
+
+        bt.read(function(result) {
+            deferred.resolve(result);
+        }, function(error) {
+            deferred.reject(error.message);
+        }, params);
+
+        return deferred.promise;
+    }
+
+    function write(params) {
+        var deferred = $q.defer();
+
+        bt.write(function(result) {
+            deferred.resolve(result);
+        }, function(error) {
+            deferred.reject(error.message);
+        }, params);
+
+        return deferred.promise;
+    }
+
+    function subscribe(params) {
+        var deferred = $q.defer();
+
+        // If not set it is regarded as indication
+        params.isNotification = true;
+
+        bt.subscribe(function(result) {
+
+            if(result.status === 'subscribed' || result.status === 'subscribedResult') {
+                deferred.notify(result);
+            }
+
+            if(result.status === 'unsubscribed') {
+                deferred.resolve(result);
+            }
+
+        }, function(error) {
+            deferred.reject(error.message);
+        }, params);
+
+        return deferred.promise;
+    }
+
+    function unsubscribe(params) {
+        var deferred = $q.defer();
+
+        bt.unsubscribe(function(result) {
+
+            deferred.resolve(result);
+
+        }, function(error) {
+            deferred.reject(error.message);
+        }, params);
+
+        return deferred.promise;
+    }
+
+    function stringToBytes(string) {
+        return bt.stringToBytes(string);
+    }
+
+    function bytesToString(bytes) {
+        return bt.bytesToString(bytes);
+    }
+
+    function bytesToEncodedString(bytes) {
+        return bt.bytesToEncodedString(bytes);
+    }
+
+    function encodedStringToBytes(string) {
+        return bt.encodedStringToBytes(string);
+    }
+
     return {
         _bt : bt,
-        initialize     : initialize,
-        isInitialized  : isInitialized,
-        startScan      : startScan,
-        stopScan       : stopScan,
-        connect        : connect,
-        reconnect      : reconnect,
-        disconnect     : disconnect,
-        discover       : discover
+        initialize           : initialize,
+        isInitialized        : isInitialized,
+        startScan            : startScan,
+        stopScan             : stopScan,
+        connect              : connect,
+        reconnect            : reconnect,
+        disconnect           : disconnect,
+        discover             : discover,
+        read                 : read,
+        write                : write,
+        subscribe            : subscribe,
+        unsubscribe          : unsubscribe,
+        bytesToString        : bytesToString,
+        stringToByts         : stringToBytes,
+        bytesToEncodedString : bytesToEncodedString,
+        encodedStringToBytes : encodedStringToBytes
     };
 
 }]);

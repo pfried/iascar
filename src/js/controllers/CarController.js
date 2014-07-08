@@ -2,6 +2,7 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
     'use strict';
 
     var address = $stateParams.carAddress;
+
     $scope.state = '';
 
     if(!address || !bluetoothTools.isValidAddress(address)) {
@@ -9,6 +10,7 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
     }
 
     function connectToCar(address) {
+
         $scope.car = new Car(address);
 
         $scope.car.connect().then(function() {
@@ -17,7 +19,13 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
 
         }, function() {
             if($scope.car.state === 'connected') {
-                $scope.car.discover();
+
+                $scope.car.discover().then(function() {
+                    $scope.car.subscribeTemperature();
+
+                }).catch(function(error) {
+                    console.error(error);
+                });
             }
         });
 

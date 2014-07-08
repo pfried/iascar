@@ -102,9 +102,70 @@
             bluetoothService.discover().then(success);
 
             $rootScope.$apply();
+
             expect(success).toHaveBeenCalled();
         });
 
+        it('should read a characeristic\'s value', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            var params = {
+                'serviceUuid' : '5678',
+                'characteristicUuid' : '1234'
+            };
+
+            bluetoothService.read(params).then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalledWith({ 'status' : 'read', 'serviceUuid' : '5678', 'characteristicUuid' : '1234', 'value' : ''});
+        });
+
+        it('should write a value to a characteristic', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            var params = {
+                'serviceUuid' : '5678',
+                'characteristicUuid' : '1234',
+                'value' : 1
+            };
+
+            bluetoothService.write(params).then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalledWith({ 'status' : 'written', 'serviceUuid' : '5678', 'characteristicUuid' : '1234', 'value' : 1});
+        });
+
+        it('should subscribe to a characteristic', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            var params = {
+                'serviceUuid' : '5678',
+                'characteristicUuid' : '1234'
+            };
+
+            bluetoothService.subscribe(params).then(success, error, notify);
+
+            $rootScope.$apply();
+
+            //expect(notify).toHaveBeenCalledWith({ 'status' : 'subscribed', 'serviceUuid' : '5678', 'characteristicUuid' : '1234'});
+        });
+
+        it('should unsubscribe to a characteristic', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            var params = {
+                'serviceUuid' : '5678',
+                'characteristicUuid' : '1234'
+            };
+
+            bluetoothService.unsubscribe(params).then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalledWith({ 'status' : 'unsubscribed', 'serviceUuid' : '5678', 'characteristicUuid' : '1234'});
+        });
 
     });
 }());
