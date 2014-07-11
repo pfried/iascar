@@ -2,6 +2,11 @@
     "title" : "IAS Bluetooth Auto",
     "description" : "Studienarbeit am IAS über das Bluetooth Teamarbeit Auto",
 
+    "scan" : {
+        "description" : "nach Fahrzeugen suchen",
+        "noCars" : "keine Fahrzeuge gefunden"
+    },
+
     "settings" : {
         "title" : "Einstellungen"
     }

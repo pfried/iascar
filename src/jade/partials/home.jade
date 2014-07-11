@@ -1,11 +1,11 @@
-h1 IAS Car
+header
+  .header
+    .container
+      h1 {{ 'title' | translate }}
 
 .container
-  a(ui-sref="scan") Search for bluetooth cars
+  button(ng-click="startScan()") Search for bluetooth cars
 
-  h2 Settings
-
-  p {{ pos.x }}
-  p {{ pos.y }}
-
-  joystick(id="joystick", position="pos")
+  ul(ng-repeat="car in cars")
+    li {{ car.name }}
+      i(class="icon-signal{{ car.rssi | signalStrength }}")

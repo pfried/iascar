@@ -1,2 +1,48 @@
 @import "../js/lib/bower/bootstrap/less/bootstrap.less";
+@import "./fonts.less";
 
+@base-color: #3f51b5;
+@base-color-700 : #303f9f;
+@base-color-100 : #c5cae9;
+
+@accent-color: #ff4081;
+@accent-color-100: #ff80ab;
+@accent-color-400: #f50057;
+
+@divider-color : lighten(#000, 88%);
+@font-hint-color : lighten(#000, 74%);
+@font-seconday-color : lighten(#000, 46%);
+@font-text-color : lighten(#000, 13%);
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family : "Roboto", "Helvetica Neue", Helvetica,Arial, sans-serif;
+  transition: opacity ease-in 0.2s;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-touch-callout: none;
+
+}
+
+body[unresolved] {
+  opacity: 0;
+  display: block;
+  overflow: hidden;
+}
+
+a {
+  color : @accent-color;
+}
+
+.header {
+  background-color : @base-color;
+
+  h1 {
+    color : white;
+  }
+}
