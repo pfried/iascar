@@ -193,7 +193,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetooth
             var params = {
                 serviceUuid: that.services[service].uuid,
                 characteristicUuid: that.services[service].characteristics[characteristic].uuid,
-                value : value
+                value : bluetoothService.bytesToEncodedString(value)
             };
 
             return bluetoothService.write(params);
@@ -302,6 +302,18 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetooth
                     that.actors.horn = bluetoothService.encodedStringToBytes(result.value)[0];
                 }
             });
+        },
+
+        setHorn : function(value) {
+            var that = this;
+
+            var values = [value];
+
+            if(value) {
+                return that.write('horn', 'horn', values);
+            } else {
+                return that.write('horn', 'horn', values);
+            }
         },
 
         subscribeLights : function() {
