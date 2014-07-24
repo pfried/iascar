@@ -3,7 +3,7 @@
     "description" : "Study work at the IAS about the Bluetooth Teamwork Car",
 
     "scan" : {
-        "description" : "search for cars",
+        "scanForCars" : "search for cars",
         "noCars" : "no cars found"
     },
 

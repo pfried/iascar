@@ -7,7 +7,6 @@ angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$ti
 
         console.log(bluetoothService);
 
-
         // Clear the timeout
         $timeout.cancel(timeout);
 

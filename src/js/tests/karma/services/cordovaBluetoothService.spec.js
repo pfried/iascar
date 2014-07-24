@@ -86,6 +86,15 @@
             expect(success).toHaveBeenCalled();
         });
 
+        it('should close a connection', function() {
+
+            bluetoothService.close().then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalled();
+        });
+
         it('should not disconnect if the device is not connected', function() {
             bluetoothService._bt.deviceState.connected = false;
 

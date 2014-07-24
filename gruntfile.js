@@ -73,6 +73,16 @@ module.exports = function (grunt) {
                 options : {
                     livereload : true
                 }
+            },
+            lang : {
+                files : ['src/js/lang/**'],
+                tasks : ['copy'],
+                options : {
+                    livereload : true
+                }
+            },
+            grunt : {
+                files : ['gruntfile.js']
             }
         },
         jshint: {

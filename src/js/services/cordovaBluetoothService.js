@@ -88,9 +88,9 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
     function connect(params) {
 
         // Check if we were connected to a device already
-        if(previouslyConnectedDevice) {
-            return reconnect(params);
-        }
+        //if(previouslyConnectedDevice) {
+        //    return reconnect(params);
+        //}
 
         var deferred = $q.defer();
 
@@ -186,6 +186,22 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
             }
 
             if(result && result.status === 'disconnected') {
+                deferred.resolve(result);
+            }
+
+        }, function(error) {
+            deferred.reject(error.message);
+        });
+
+        return deferred.promise;
+    }
+
+    function close() {
+        var deferred = $q.defer();
+
+        bt.close(function(result) {
+
+            if(result && result.status === 'closed') {
                 deferred.resolve(result);
             }
 
@@ -296,6 +312,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         connect              : connect,
         reconnect            : reconnect,
         disconnect           : disconnect,
+        close                : close,
         discover             : discover,
         read                 : read,
         write                : write,

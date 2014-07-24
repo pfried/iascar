@@ -166,7 +166,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetooth
             });
         },
         disconnect :  function () {
-            return bluetoothService.disconnect();
+            return bluetoothService.disconnect().then(bluetoothService.close);
         },
         discover : function() {
             var that = this;

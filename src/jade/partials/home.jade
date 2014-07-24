@@ -3,9 +3,11 @@ header
     .container
       h1 {{ 'title' | translate }}
 
-.container
-  button(ng-click="startScan()") Search for bluetooth cars
+.container.search
 
-  ul(ng-repeat="car in cars")
-    li {{ car.name }}
-      i(class="icon-signal{{ car.rssi | signalStrength }}")
+  ul.cars(ng-repeat="car in cars")
+    li(ng-click="connectToDevice(car)") {{ car.name }}
+      i.pull-right(class="icon-signal{{ car.rssi | signalStrength }}")
+
+  div.text-center
+    button.btn.btn-success(ng-click="startScan()", ng-disabled="scanning") {{ 'scan.scanForCars' | translate }}

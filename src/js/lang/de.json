@@ -3,7 +3,7 @@
     "description" : "Studienarbeit am IAS über das Bluetooth Teamarbeit Auto",
 
     "scan" : {
-        "description" : "nach Fahrzeugen suchen",
+        "scanForCars" : "nach Fahrzeugen suchen",
         "noCars" : "keine Fahrzeuge gefunden"
     },
 
