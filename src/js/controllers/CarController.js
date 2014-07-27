@@ -13,6 +13,11 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
 
         $scope.car = new Car(address);
 
+        $scope.position = {
+            x : 0,
+            y : 0
+        };
+
         $scope.car.connect().then(function() {
 
         }, function() {
@@ -23,6 +28,7 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
                 $scope.car.discover().then(function() {
 
                     $scope.car.subscribeToSensorValues();
+                    $scope.car.setDrivingControl();
                     // Only 7 Notifications possible on Android 4.4, so dont register to actors, since sensors are already 7
                     //$scope.car.subscribeToActorValues();
 

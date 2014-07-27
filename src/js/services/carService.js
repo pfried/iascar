@@ -1,7 +1,8 @@
 'use strict';
-angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetoothService', function($rootScope, $q, bluetoothService) {
+angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval', '$filter', 'bluetoothService', function($rootScope, $q, $interval, $filter, bluetoothService) {
 
     function Car(address) {
+
         if(address) {
             this.address = address;
             this.state = 'initializing';
@@ -12,7 +13,8 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetooth
                 distanceIRRear  : 0,
                 distanceUSFront : 0,
                 distanceUSRear  : 0,
-                temperature     : 0
+                temperature     : 0,
+                signal          : 0
             };
             this.actors = {
                 speed       : 0,
@@ -29,6 +31,12 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetooth
                 generic1    : 0,
                 generic2    : 0
             };
+
+            this.joystick = {
+                x : 0,
+                y : 0
+            };
+
         }
     }
 
@@ -166,6 +174,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetooth
             });
         },
         disconnect :  function () {
+            this.unsetDrivingControl();
             return bluetoothService.disconnect().then(bluetoothService.close);
         },
         discover : function() {
@@ -262,6 +271,14 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetooth
             });
         },
 
+        setSpeedAndAngle : function(angle, speed) {
+            var servoAngle = $filter('steering')(angle);
+            var servoSpeed = $filter('speed')(speed);
+            console.log('writing steering:', servoAngle,800);
+            console.log('writing speed:', servoSpeed,990);
+            return this.write('drive', 'speedAndAngle', [800, 990]);
+        },
+
         subscribeSpeedMode : function() {
             var that = this;
 
@@ -305,15 +322,8 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetooth
         },
 
         setHorn : function(value) {
-            var that = this;
-
-            var values = [value];
-
-            if(value) {
-                return that.write('horn', 'horn', values);
-            } else {
-                return that.write('horn', 'horn', values);
-            }
+            var char = value ? 1 : 0;
+            return this.write('horn', 'horn', [char]);
         },
 
         subscribeLights : function() {
@@ -348,7 +358,10 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetooth
             }, function(result) {
                 if(result.status === 'subscribedResult') {
                     // Well not really 16bit, simply take the number from the dataview
-                    that.setProperty(carProperty, bluetoothService.encodedStringToBytes(result.value)[0]);
+                    var bytes = bluetoothService.encodedStringToBytes(result.value);
+                    var u16bytes = bytes.buffer.slice(0, 2);
+                    var u16 = new Uint16Array(u16bytes)[0];
+                    that.setProperty(carProperty, u16);
                 }
             });
         },
@@ -373,13 +386,36 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', 'bluetooth
         // 7 Notifications possible in android 4.4?
         subscribeToSensorValues : function() {
             var that = this;
-            that.subscribeTemperature();
-            that.subscribeBattery();
-            that.subscribeBrightness();
-            that.subscribeDistanceUSFront();
-            that.subscribeDistanceUSRear();
+            //that.subscribeTemperature();
+            //that.subscribeBattery();
+            //that.subscribeBrightness();
+            //that.subscribeDistanceUSFront();
+            //that.subscribeDistanceUSRear();
             that.subscribeDistanceIRFront();
-            that.subscribeDistanceIRRear();
+            //that.subscribeDistanceIRRear();
+        },
+
+        setDrivingControl : function() {
+            var that = this;
+
+            var oldSpeed;
+            var oldSteering;
+
+            that.drivingInterval = $interval(function() {
+                // Check if values have changed
+                if(oldSpeed !== that.joystick.x | oldSteering !== that.joystick.y) {
+                    console.log(that.joystick.x, that.joystick.y);
+                    //that.setSpeedAndAngle(that.joystick.x, that.joystick.y);
+                }
+                oldSpeed = that.joystick.x;
+                oldSteering = that.joystick.y;
+            }, 1000);
+        },
+
+        unsetDrivingControl : function() {
+            if(this.drivingInterval) {
+                $interval.cancel(this.drivingInterval);
+            }
         },
 
         subscribeToActorValues : function() {

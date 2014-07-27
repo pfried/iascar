@@ -1,11 +1,28 @@
-.container
-  p(ng-show="car.state === 'connecting'") Loading
-
-  h1 {{ car.name }}
-
-  h2 {{ car.sensors.temperature | temperatureCelcius }} °C
-
-  horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+.container.car
 
   button(ng-show="car.state === 'connected'", ng-click="disconnect()") Disconnect
+
+  p(ng-show="car.state === 'connecting'") Loading
+
+  div.car(ng-show="car.state === 'connected'")
+
+    div.carHeaderBar
+      ul.carAttrs
+        li {{ car.sensors.temperature | temperatureCelcius }} °C
+        li {{ car.sensors.battery }}
+        li {{ car.sensors.signal }}
+
+    h1 {{ car.name }}
+
+    p Distance IR Front: {{ car.sensors.distanceIRFront }}
+    p Distance IR Rear: {{ car.sensors.distanceIRRear }}
+    p Distance US Front: {{ car.sensors.distanceUSFront }}
+    p Distance US Rear: {{ car.sensors.distanceUSRear }}
+
+    horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+
+    joystick(position="car.joystick", ng-if="car.joystick.x")
+
+
+
 
