@@ -29,8 +29,13 @@
         });
 
         it('should return false if no bluetooth provider is present', function() {
-            delete window.bluetoothle;
-            delete window.chrome;
+            // TODO: Tests wont work in chrome itself since window.chrome is not deleteable
+            try {
+                delete window.bluetoothle;
+                delete window.chrome;
+            } catch(e) {
+                console.error(e);
+            }
 
             expect(bluetoothServiceProvider.detectProviderName()).toBeFalsy();
         });

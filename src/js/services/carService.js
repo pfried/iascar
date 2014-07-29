@@ -1,9 +1,9 @@
 'use strict';
-angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval', '$filter', 'bluetoothService', function($rootScope, $q, $interval, $filter, bluetoothService) {
+angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval', '$filter', 'bluetoothService', 'bluetoothTools', function($rootScope, $q, $interval, $filter, bluetoothService, bluetoothTools) {
 
     function Car(address) {
 
-        if(address) {
+        if(address && bluetoothTools.isValidAddress(address)) {
             this.address = address;
             this.state = 'initializing';
             this.sensors = {
@@ -37,6 +37,8 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 y : 0
             };
 
+        } else {
+            throw new Error('Car Address invalid');
         }
     }
 
@@ -139,6 +141,26 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 }
             }
         },
+        encode8Bit : function(value) {
+            var u8 = new Uint8Array([value]);
+            return bluetoothService.bytesToEncodedString(u8);
+        },
+        encode16Bit : function(value) {
+            var u16 = new Uint16Array([value]);
+            var u8 = new Uint8Array(u16.buffer);
+            return bluetoothService.bytesToEncodedString(u8);
+        },
+        encodeSpeedAndAngle : function(speed, angle) {
+            var u16 = new Uint16Array([angle, speed]);
+            var u8 = new Uint8Array(u16.buffer);
+            return bluetoothService.bytesToEncodedString(u8);
+        },
+        decode16Bit : function(value) {
+            var bytes = bluetoothService.encodedStringToBytes(value);
+            var u16bytes = bytes.buffer.slice(0, 2);
+            var u16 = new Uint16Array(u16bytes)[0];
+            return u16;
+        },
         connect : function() {
 
             var that = this;
@@ -154,6 +176,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
 
             }, function (error) {
                 that.state = 'error';
+                console.error(error);
                 console.error(error.message);
             }, function(result) {
                 if(result) {
@@ -199,10 +222,12 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         write : function(service, characteristic, value) {
            var that = this;
 
+            console.log('Writing ', service, ': ', characteristic, ': ', value);
+
             var params = {
                 serviceUuid: that.services[service].uuid,
                 characteristicUuid: that.services[service].characteristics[characteristic].uuid,
-                value : bluetoothService.bytesToEncodedString(value)
+                value : value
             };
 
             return bluetoothService.write(params);
@@ -271,12 +296,11 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             });
         },
 
-        setSpeedAndAngle : function(angle, speed) {
+        setSpeedAndAngle : function(speed, angle) {
             var servoAngle = $filter('steering')(angle);
             var servoSpeed = $filter('speed')(speed);
-            console.log('writing steering:', servoAngle,800);
-            console.log('writing speed:', servoSpeed,990);
-            return this.write('drive', 'speedAndAngle', [800, 990]);
+            var value = this.encodeSpeedAndAngle(servoSpeed, servoAngle);
+            return this.write('drive', 'speedAndAngle', value);
         },
 
         subscribeSpeedMode : function() {
@@ -323,7 +347,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
 
         setHorn : function(value) {
             var char = value ? 1 : 0;
-            return this.write('horn', 'horn', [char]);
+            return this.write('horn', 'horn', this.encode8Bit(char));
         },
 
         subscribeLights : function() {
@@ -357,11 +381,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 console.error(error);
             }, function(result) {
                 if(result.status === 'subscribedResult') {
-                    // Well not really 16bit, simply take the number from the dataview
-                    var bytes = bluetoothService.encodedStringToBytes(result.value);
-                    var u16bytes = bytes.buffer.slice(0, 2);
-                    var u16 = new Uint16Array(u16bytes)[0];
-                    that.setProperty(carProperty, u16);
+                    that.setProperty(carProperty, that.decode16Bit(result.value));
                 }
             });
         },
@@ -403,13 +423,12 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
 
             that.drivingInterval = $interval(function() {
                 // Check if values have changed
-                if(oldSpeed !== that.joystick.x | oldSteering !== that.joystick.y) {
-                    console.log(that.joystick.x, that.joystick.y);
-                    //that.setSpeedAndAngle(that.joystick.x, that.joystick.y);
+                if(oldSpeed !== that.joystick.y | oldSteering !== that.joystick.x) {
+                    that.setSpeedAndAngle(that.joystick.y, that.joystick.x);
                 }
-                oldSpeed = that.joystick.x;
-                oldSteering = that.joystick.y;
-            }, 1000);
+                oldSpeed = that.joystick.y;
+                oldSteering = that.joystick.x;
+            }, 200);
         },
 
         unsetDrivingControl : function() {

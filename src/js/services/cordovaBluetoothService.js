@@ -5,8 +5,6 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
 
     var bt = $window.bluetoothle;
 
-    var previouslyConnectedDevice;
-
     function initialize() {
 
         var deferred = $q.defer();
@@ -87,11 +85,6 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
 
     function connect(params) {
 
-        // Check if we were connected to a device already
-        //if(previouslyConnectedDevice) {
-        //    return reconnect(params);
-        //}
-
         var deferred = $q.defer();
 
         isInitialized().then(function() {
@@ -114,15 +107,15 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
                     deferred.notify(result);
                 }
                 if(result && result.status === 'connected') {
-                    previouslyConnectedDevice = params.address;
                     deferred.notify(result);
                 }
                 if(result && result.status === 'disconnected') {
                     deferred.resolve(result);
                 }
 
-            }, function (error) {
-                deferred.reject(error.message);
+            }, function () {
+                // Try reconnecting
+                return disconnect().then(close).then(function(params){ connect(params); });
             }, {
                 address : deviceAddress
             });
