@@ -1,5 +1,5 @@
 'use strict';
-angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval', '$filter', 'bluetoothService', 'bluetoothTools', function($rootScope, $q, $interval, $filter, bluetoothService, bluetoothTools) {
+angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval', '$timeout', '$filter', 'bluetoothService', 'bluetoothTools', function($rootScope, $q, $interval, $timeout, $filter, bluetoothService, bluetoothTools) {
 
     function Car(address) {
 
@@ -17,14 +17,15 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 signal          : 0
             };
             this.actors = {
-                speed       : 0,
-                angle       : 0,
+                speed       : 750,
+                angle       : 750,
                 speedMode   : 0,
-                sensorServo : 0,
+                sensorServo : 750,
                 horn        : 0,
                 lights      : {
                     front        : 0,
                     back         : 0,
+                    brake        : 0,
                     blinkerLeft  : 0,
                     blinkerRight : 0
                 },
@@ -49,111 +50,62 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 'characteristics' : {
                     'speedAndAngle' : {
                         'uuid'   : '5d5f0001-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 4
-                    },
-                    'speedMode' : {
-                        'uuid'   : '5d5f0002-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 1
+                        'length' : 6
                     }
                 }
             },
-            'horn' : {
-                'uuid' : '5d5f0010-e670-11e3-a4f3-0002a5d5c51b',
-                'characteristics' : {
-                    'horn' : {
-                        'uuid'   : '5d5f0011-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 1
-                    }
-                }
-            },
-            'lights' : {
+            'actors' : {
                 'uuid' : '5d5f0020-e670-11e3-a4f3-0002a5d5c51b',
                 'characteristics' : {
-                    'lights' : {
+                    'actors' : {
                         'uuid'   : '5d5f0021-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 1
-                    }
-                }
-            },
-            'battery' : {
-                'uuid' : '5d5f0030-e670-11e3-a4f3-0002a5d5c51b',
-                'characteristics' : {
-                    'battery' : {
-                        'uuid'   : '5d5f0031-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
+                        'length' : 6
                     }
                 }
             },
             'distance' : {
-                'uuid' : '5d5f0040-e670-11e3-a4f3-0002a5d5c51b',
+                'uuid' : '5d5f0030-e670-11e3-a4f3-0002a5d5c51b',
                 'characteristics' : {
-                    'distanceUSFront' : {
-                        'uuid'   : '5d5f0041-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
-                    },
-                    'distanceUSRear' : {
-                        'uuid'   : '5d5f0042-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
-                    },
-                    'distanceIRFront' : {
-                        'uuid'   : '5d5f0043-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
-                    },
-                    'distanceIRRear' : {
-                        'uuid'   : '5d5f0044-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
-                    },
-                    'sensorServo' : {
-                        'uuid'   : '5d5f0045-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
+                    'distance' : {
+                        'uuid'   : '5d5f0031-e670-11e3-a4f3-0002a5d5c51b',
+                        'length' : 8
                     }
                 }
             },
-            'brightness' : {
-                'uuid' : '5d5f0050-e670-11e3-a4f3-0002a5d5c51b',
+            'sensors' : {
+                'uuid' : '5d5f0010-e670-11e3-a4f3-0002a5d5c51b',
                 'characteristics' : {
-                    'brightness' : {
-                        'uuid'   : '5d5f0051-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
-                    }
-                }
-            },
-            'generic' : {
-                'uuid' : '5d5f0070-e670-11e3-a4f3-0002a5d5c51b',
-                'characteristics' : {
-                    'genericActor1' : {
-                        'uuid'   : '5d5f0071-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
-                    },
-                    'genericActor2' : {
-                        'uuid'   : '5d5f0072-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
-                    }
-                }
-            },
-            'temperature' : {
-                'uuid' : '5d5f0090-e670-11e3-a4f3-0002a5d5c51b',
-                'characteristics' : {
-                    'temperature' : {
-                        'uuid'   : '5d5f0091-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
+                    'sensors' : {
+                        'uuid'   : '5d5f0011-e670-11e3-a4f3-0002a5d5c51b',
+                        'length' : 6
                     }
                 }
             }
         },
-        encode8Bit : function(value) {
-            var u8 = new Uint8Array([value]);
-            return bluetoothService.bytesToEncodedString(u8);
-        },
-        encode16Bit : function(value) {
-            var u16 = new Uint16Array([value]);
+        encodeSpeedAndAngle : function(speed, angle, sensorServo) {
+            var u16 = new Uint16Array([angle, speed, sensorServo]);
             var u8 = new Uint8Array(u16.buffer);
             return bluetoothService.bytesToEncodedString(u8);
         },
-        encodeSpeedAndAngle : function(speed, angle) {
-            var u16 = new Uint16Array([angle, speed]);
-            var u8 = new Uint8Array(u16.buffer);
-            return bluetoothService.bytesToEncodedString(u8);
+        encodeActors : function(horn, lights ,generic1, generic2) {
+            var u16 = new Uint16Array([generic1, generic2]);
+            var u8  = new Uint8Array(2);
+            u8[0] = horn;
+
+            u8[1] = 0x00;
+
+            if(lights) {
+                u8[1] |= (lights.front << 0);
+                u8[1] |= (lights.back  << 1);
+                u8[1] |= (lights.brake << 2);
+                u8[1] |= (lights.blinkerLeft << 3);
+                u8[1] |= (lights.blinkerRight << 4);
+            }
+
+            // buffer, offset, length
+            var actor_values = new Uint8Array(u8, 0, 6);
+            actor_values.set(u16.buffer, 2);
+            return bluetoothService.bytesToEncodedString(actor_values);
         },
         decode16Bit : function(value) {
             var bytes = bluetoothService.encodedStringToBytes(value);
@@ -222,7 +174,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         write : function(service, characteristic, value) {
            var that = this;
 
-            console.log('Writing ', service, ': ', characteristic, ': ', value);
+            //console.log('Writing ', service, ': ', characteristic, ': ', value);
 
             var params = {
                 serviceUuid: that.services[service].uuid,
@@ -253,32 +205,65 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             return bluetoothService.unsubscribe(params);
         },
 
-        subscribeTemperature : function() {
-            return this.subscribeTo16BitValue('temperature', 'temperature', 'sensors.temperature');
+        subscribeActors : function() {
+            var that = this;
+
+            return that.subscribe('actors', 'actors').then(function() {
+
+            }, function(error) {
+                console.error(error);
+            }, function(result) {
+                if(result.status === 'subscribedResult') {
+
+                    // Getting the bytes from the result
+                    var bytes = bluetoothService.encodedStringToBytes(result.value);
+
+                    var u16bytes = bytes.buffer.slice(2, 6);
+                    var u16 = new Uint16Array(u16bytes);
+                    var u8bytes = bytes.buffer.slice(0,2);
+                    var u8 = new Uint8Array(u8bytes);
+
+                    that.actors.generic1 = u16[0];
+                    that.actors.generic2 = u16[1];
+
+                    // We can just set horn as 0x01 will be 1
+                    that.horn = u8[0];
+
+                    var lights = u8[1];
+
+                    // Get the single bits from the lights byte
+                    that.actors.lights.front        = (lights & (1 << 0));
+                    that.actors.lights.back         = (lights & (1 << 1));
+                    that.actors.lights.brake        = (lights & (1 << 2));
+                    that.actors.lights.blinkerLeft  = (lights & (1 << 3));
+                    that.actors.lights.blinkerRight = (lights & (1 << 4));
+
+                }
+            });
         },
 
-        subscribeBrightness : function() {
-            return this.subscribeTo16BitValue('brightness', 'brightness', 'sensors.brightness');
-        },
+        subscribeDistance : function() {
+            var that = this;
 
-        subscribeBattery : function() {
-            return this.subscribeTo16BitValue('battery', 'battery', 'sensors.battery');
-        },
+            return that.subscribe('distance', 'distance').then(function() {
 
-        subscribeDistanceUSFront : function() {
-            return this.subscribeTo16BitValue('distance', 'distanceUSFront', 'sensors.distanceUSFront');
-        },
+            }, function(error) {
+                console.error(error);
+            }, function(result) {
+                if(result.status === 'subscribedResult') {
 
-        subscribeDistanceUSRear : function() {
-            return this.subscribeTo16BitValue('distance', 'distanceUSRear', 'sensors.distanceUSRear');
-        },
+                    // Getting the bytes from the result
+                    var bytes = bluetoothService.encodedStringToBytes(result.value);
+                    var u16bytes = bytes.buffer.slice(0, 8);
+                    var u16 = new Uint16Array(u16bytes);
 
-        subscribeDistanceIRFront : function() {
-            return this.subscribeTo16BitValue('distance', 'distanceIRFront', 'sensors.distanceIRFront');
-        },
+                    that.sensors.distanceIRFront = u16[0];
+                    that.sensors.distanceIRRear  = u16[1];
+                    that.sensors.distanceUSFront = u16[2];
+                    that.sensors.distanceUSRear  = u16[3];
 
-        subscribeDistanceIRRear : function() {
-            return this.subscribeTo16BitValue('distance', 'distanceIRRear', 'sensors.distanceIRRear');
+                }
+            });
         },
 
         subscribeSpeedAndAngle : function() {
@@ -290,8 +275,35 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
 
             }, function(result) {
                 if(result.status === 'subscribedResult') {
-                    that.actors.speed = bluetoothService.encodedStringToBytes(result.value)[1];
-                    that.actors.angle = bluetoothService.encodedStringToBytes(result.value)[0];
+                    // Getting the bytes from the result
+                    var bytes = bluetoothService.encodedStringToBytes(result.value);
+                    var u16bytes = bytes.buffer.slice(0, 6);
+                    var u16 = new Uint16Array(u16bytes);
+
+                    that.actors.speed       = u16[0];
+                    that.actors.angle       = u16[1];
+                    that.actors.sensorServo = u16[2];
+                }
+            });
+        },
+
+        subscribeSensors : function() {
+            var that = this;
+
+            return that.subscribe('sensors', 'sensors').then(function() {
+
+            }, function () {
+
+            }, function(result) {
+                if(result.status === 'subscribedResult') {
+                    // Getting the bytes from the result
+                    var bytes = bluetoothService.encodedStringToBytes(result.value);
+                    var u16bytes = bytes.buffer.slice(0, 6);
+                    var u16 = new Uint16Array(u16bytes);
+
+                    that.actors.brightness  = u16[0];
+                    that.actors.temperature = u16[1];
+                    that.actors.battery     = u16[2];
                 }
             });
         },
@@ -299,120 +311,26 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         setSpeedAndAngle : function(speed, angle) {
             var servoAngle = $filter('steering')(angle);
             var servoSpeed = $filter('speed')(speed);
-            var value = this.encodeSpeedAndAngle(servoSpeed, servoAngle);
+            var sensorServo = $filter('steering')(this.actors.sensorServo);
+            var value = this.encodeSpeedAndAngle(servoSpeed, servoAngle, sensorServo);
             return this.write('drive', 'speedAndAngle', value);
         },
 
-        subscribeSpeedMode : function() {
-            var that = this;
-
-            return that.subscribe('drive', 'speedMode').then(function() {
-
-            }, function () {
-
-            }, function(result) {
-                if(result.status === 'subscribedResult') {
-                    that.actors.speedMode = bluetoothService.encodedStringToBytes(result.value)[0];
-                }
-            });
-        },
-
-        subscribeSensorServo : function() {
-            var that = this;
-
-            return that.subscribe('distance', 'sensorServo').then(function() {
-
-            }, function () {
-
-            }, function(result) {
-                if(result.status === 'subscribedResult') {
-                    that.actors.sensorServo = bluetoothService.encodedStringToBytes(result.value)[0];
-                }
-            });
-        },
-
-        subscribeHorn : function() {
-            var that = this;
-
-            return that.subscribe('horn', 'horn').then(function() {
-
-            }, function () {
-
-            }, function(result) {
-                if(result.status === 'subscribedResult') {
-                    that.actors.horn = bluetoothService.encodedStringToBytes(result.value)[0];
-                }
-            });
-        },
-
         setHorn : function(value) {
+            var that = this;
             var char = value ? 1 : 0;
-            return this.write('horn', 'horn', this.encode8Bit(char));
-        },
-
-        subscribeLights : function() {
-            var that = this;
-
-            return that.subscribe('lights', 'lights').then(function() {
-
-            }, function () {
-
-            }, function(result) {
-                if(result.status === 'subscribedResult') {
-                    that.actors.lights = bluetoothService.encodedStringToBytes(result.value)[0];
-                }
-            });
-        },
-
-        subscribeGeneric1 : function() {
-            return this.subscribeTo16BitValue('generic', 'generic1', 'actors.generic1');
-        },
-
-        subscribeGeneric2 : function() {
-            return this.subscribeTo16BitValue('generic', 'generic2', 'actors.generic2');
-        },
-
-        subscribeTo16BitValue : function(service, characteristic, carProperty) {
-            var that = this;
-
-            return that.subscribe(service, characteristic).then(function() {
-
-            }, function(error) {
-                console.error(error);
-            }, function(result) {
-                if(result.status === 'subscribedResult') {
-                    that.setProperty(carProperty, that.decode16Bit(result.value));
-                }
-            });
-        },
-
-        // Set a property based on a property string
-        setProperty : function(property, value) {
-            var that = this,
-                parts = property.split('.'),
-                last = parts.pop(),
-                l = parts.length,
-                i = 1,
-                current = parts[0];
-
-            while((that = that[current]) && i < l) {
-                current = parts[i];
-                i++;
-            }
-
-            that[last] = value;
+            that.actors.horn = char;
+            return this.write('actors', 'actors', that.encodeActors(that.actors.horn, that.actors.lights, that.actors.generic1, that.actors.generic2 ));
         },
 
         // 7 Notifications possible in android 4.4?
-        subscribeToSensorValues : function() {
+        // Well the timeout is basically bullshit, but the android bt doesnt take the commands at once.
+        subscribeToCar : function() {
             var that = this;
-            //that.subscribeTemperature();
-            //that.subscribeBattery();
-            //that.subscribeBrightness();
-            //that.subscribeDistanceUSFront();
-            //that.subscribeDistanceUSRear();
-            that.subscribeDistanceIRFront();
-            //that.subscribeDistanceIRRear();
+            that.subscribeDistance();
+            $timeout(function() { that.subscribeSensors(); }, 200);
+            $timeout(function() { that.subscribeActors(); }, 400);
+            $timeout(function() { that.subscribeSpeedAndAngle(); }, 600);
         },
 
         setDrivingControl : function() {
@@ -420,32 +338,23 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
 
             var oldSpeed;
             var oldSteering;
+            var oldSensorServo;
 
             that.drivingInterval = $interval(function() {
                 // Check if values have changed
-                if(oldSpeed !== that.joystick.y | oldSteering !== that.joystick.x) {
-                    that.setSpeedAndAngle(that.joystick.y, that.joystick.x);
+                if(oldSpeed !== that.joystick.y | oldSteering !== that.joystick.x | oldSensorServo !== that.actors.sensorServo) {
+                    that.setSpeedAndAngle(that.joystick.y, that.joystick.x, that.actors.sensorServo);
                 }
                 oldSpeed = that.joystick.y;
                 oldSteering = that.joystick.x;
-            }, 200);
+                oldSensorServo = that.actors.sensorServo;
+            }, 100);
         },
 
         unsetDrivingControl : function() {
             if(this.drivingInterval) {
                 $interval.cancel(this.drivingInterval);
             }
-        },
-
-        subscribeToActorValues : function() {
-            var that = this;
-            that.subscribeSpeedAndAngle();
-            that.subscribeSpeedMode();
-            that.subscribeSensorServo();
-            that.subscribeHorn();
-            that.subscribeLights();
-            that.subscribeGeneric1();
-            that.subscribeGeneric2();
         }
 
 };

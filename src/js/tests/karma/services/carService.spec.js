@@ -32,7 +32,7 @@
         });
 
         it('should encode an integer to a 16-bit value', function() {
-            var value = 1000;
+            //var value = 1000;
 
             //var encoded = car.encode16Bit(value);
             //var decoded = car.decode16Bit(encoded);

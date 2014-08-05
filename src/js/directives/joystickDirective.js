@@ -2,18 +2,12 @@
 'use strict';
 angular.module('iasCar.directives').directive('joystick', function() {
 
-    function joystickController ($scope, bluetoothService) {
-        console.log(bluetoothService);
-    }
-
     return {
         restrict : 'E',
-        controller : ['$scope', 'bluetoothService', function ($scope, bluetoothService) {
-            return joystickController($scope, bluetoothService);
-        }],
         scope : {
             // Using primitives here did not work, so we use an Object, see: http://stackoverflow.com/questions/14049480/what-are-the-nuances-of-scope-prototypal-prototypical-inheritance-in-angularjs
-            position : '='
+            position : '=',
+            controls : '@'
         },
         template : '<canvas class="joystickCanvas"></canvas>',
         link : function(scope, element) {
@@ -41,6 +35,16 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 y : center.y
             };
 
+            var scaleX = 1, scaleY = 1;
+
+            function isControlX() {
+                return scope.controls.indexOf('X') >= 0;
+            }
+
+            function isControlY() {
+                return scope.controls.indexOf('Y') >= 0;
+            }
+
             function resetCanvas() {
                 canvas.height = joystickHeight;
                 canvas.width = joystickWidth;
@@ -49,10 +53,39 @@ angular.module('iasCar.directives').directive('joystick', function() {
             function onTouchStart(event) {
                 var touch = event.targetTouches[0];
                 cursorTouchId = touch.identifier;
-                cursorTouch = {
-                    x : touch.pageX - touch.target.offsetLeft,
-                    y : touch.pageY - touch.target.offsetTop
-                };
+                setPosition(touch);
+            }
+
+            function applyPosition() {
+                scope.$apply(function() {
+                    if(isControlX()) {
+                        scope.position.x = Math.round(((cursorTouch.x - center.x) / radiusBound) * 100);
+                    }
+                    if(isControlY()) {
+                        scope.position.y = Math.round(((cursorTouch.y - center.y) / radiusBound) * -100);
+                    }
+                });
+            }
+
+            function setPosition(touch) {
+
+                if(isControlX()) {
+                    cursorTouch.x = touch.pageX - touch.target.offsetLeft;
+                    scaleX = radiusBound / (cursorTouch.x - center.x);
+                    if(Math.abs(scaleX) < 1) {
+                        cursorTouch.x = Math.abs(cursorTouch.x - center.x) * scaleX + center.x;
+                    }
+                }
+
+                if(isControlY()) {
+                    cursorTouch.y = touch.pageY - touch.target.offsetTop;
+                    scaleY = radiusBound / (cursorTouch.y - center.y);
+                    if (Math.abs(scaleY) < 1) {
+                        cursorTouch.y = Math.abs(cursorTouch.y - center.y) * scaleY + center.y;
+                    }
+                }
+
+                applyPosition();
             }
 
             function onTouchMove(event) {
@@ -61,31 +94,8 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 for(var i = 0; i < event.changedTouches.length; i++){
                     var touch = event.changedTouches[i];
 
-                    if(cursorTouchId === touch.identifier)
-                    {
-                        cursorTouch = {
-                            x : touch.pageX - touch.target.offsetLeft,
-                            y : touch.pageY - touch.target.offsetTop
-                        };
-
-                        var scaleX = radiusBound / (cursorTouch.x - center.x);
-                        var scaleY = radiusBound / (cursorTouch.y - center.y);
-
-                        if(Math.abs(scaleX) < 1) {
-                            cursorTouch.x = Math.abs(cursorTouch.x - center.x) * scaleX + center.x;
-                        }
-
-                        if (Math.abs(scaleY) < 1) {
-                            cursorTouch.y = Math.abs(cursorTouch.y - center.y) * scaleY + center.y;
-                        }
-
-                        scope.$apply(
-                            scope.position = {
-                                x : Math.round(((cursorTouch.x - center.x)/radiusBound) * 100),
-                                y : Math.round(((cursorTouch.y - center.y)/radiusBound) * -100)
-                            }
-                        );
-
+                    if(cursorTouchId === touch.identifier) {
+                        setPosition(touch);
                         break;
                     }
                 }
@@ -113,19 +123,19 @@ angular.module('iasCar.directives').directive('joystick', function() {
 
                 ctx.beginPath();
                 ctx.strokeStyle = 'cyan';
-                ctx.lineWidth = 5;
+                ctx.lineWidth = 8;
                 ctx.arc(center.x, center.y, radiusCircle, 0, Math.PI*2, true);
                 ctx.stroke();
 
                 ctx.beginPath();
                 ctx.strokeStyle = 'cyan';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 3;
                 ctx.arc(center.x, center.y, radiusBound, 0, Math.PI*2, true);
                 ctx.stroke();
 
                 ctx.beginPath();
                 ctx.strokeStyle = 'cyan';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 3;
                 ctx.arc(cursorTouch.x, cursorTouch.y, radiusCircle, 0, Math.PI*2, true);
                 ctx.stroke();
 

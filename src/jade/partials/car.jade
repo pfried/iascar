@@ -1,16 +1,20 @@
 .container.car
 
-  button(ng-show="car.state === 'connected'", ng-click="disconnect()") Disconnect
-
   p(ng-show="car.state === 'connecting'") Loading
 
   div.car(ng-show="car.state === 'connected'")
 
     div.carHeaderBar
-      ul.carAttrs
-        li {{ car.sensors.temperature | temperatureCelcius }} °C
-        li {{ car.sensors.battery }}
-        li {{ car.sensors.signal }}
+      .row
+        .col-xs-3
+          temperature(temperature-value="car.sensors.temperature")
+        .col-xs-3
+          battery(battery-value="car.sensors.battery")
+        .col-xs-3
+          signal(signal-value="car.sensors.signal")
+        .col-xs-3
+          .btn
+            i.icon-cross(ng-show="car.state === 'connected'", ng-click="disconnect()")
 
     h1 {{ car.name }}
 
@@ -18,10 +22,13 @@
     p Distance IR Rear: {{ car.sensors.distanceIRRear }}
     p Distance US Front: {{ car.sensors.distanceUSFront }}
     p Distance US Rear: {{ car.sensors.distanceUSRear }}
+    p Battery: {{ car.sensors.battery }}
 
-    horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+    .row
+      .col-xs-3.col-xs-offset-9
+        horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
 
-    joystick(position="car.joystick")
+    joystick(position="car.joystick", controls="XY")
 
 
 

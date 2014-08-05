@@ -35,6 +35,10 @@ body[unresolved] {
   overflow: hidden;
 }
 
+.mainPanel {
+  height : 100%;
+}
+
 a {
   color : @accent-color;
 }
@@ -72,27 +76,24 @@ a {
 
 .car {
 
-  padding : 0px;
-  margin  : 0px;
+  height : 100%;
 
   .carHeaderBar {
-    border : 1px solid black;
-
-    ul.carAttrs {
-      width : 100%;
-
-      li {
-        list-style-type : none;
-        float : left;
-      }
-    }
+    font-size : 1.5em;
   }
 
 }
 
-
 horn .horn {
-  height: 2em;
-  width: 2em;
+  height: 50px;
+  width: 50px;
   background-color: @accent-color;
+  color : white;
+  padding : 5px;
+
+  border-radius : 25px;
+
+  i {
+    font-size : 40px;
+  }
 }
