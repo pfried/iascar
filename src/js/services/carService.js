@@ -9,10 +9,10 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             this.sensors = {
                 brightness      : 0,
                 battery         : 0,
-                distanceIRFront : 0,
-                distanceIRRear  : 0,
-                distanceUSFront : 0,
-                distanceUSRear  : 0,
+                distanceIRFront : 500,
+                distanceIRRear  : 3000,
+                distanceUSFront : 65,
+                distanceUSRear  : 40,
                 temperature     : 0,
                 signal          : 0
             };

@@ -18,15 +18,13 @@
 
     h1 {{ car.name }}
 
-    p Distance IR Front: {{ car.sensors.distanceIRFront }}
-    p Distance IR Rear: {{ car.sensors.distanceIRRear }}
-    p Distance US Front: {{ car.sensors.distanceUSFront }}
-    p Distance US Rear: {{ car.sensors.distanceUSRear }}
     p Battery: {{ car.sensors.battery }}
 
     .row
       .col-xs-3.col-xs-offset-9
         horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+
+    distance(sensors="car.sensors")
 
     joystick(position="car.joystick", controls="XY")
 
