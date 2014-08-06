@@ -10,8 +10,8 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 brightness      : 0,
                 battery         : 0,
                 distanceIRFront : 500,
-                distanceIRRear  : 3000,
-                distanceUSFront : 65,
+                distanceIRRear  : 2000,
+                distanceUSFront : 5,
                 distanceUSRear  : 40,
                 temperature     : 0,
                 signal          : 0
@@ -279,7 +279,6 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                     var bytes = bluetoothService.encodedStringToBytes(result.value);
                     var u16bytes = bytes.buffer.slice(0, 6);
                     var u16 = new Uint16Array(u16bytes);
-
                     that.actors.speed       = u16[0];
                     that.actors.angle       = u16[1];
                     that.actors.sensorServo = u16[2];

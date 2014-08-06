@@ -16,8 +16,8 @@ angular.module('iasCar.directives').directive('joystick', function() {
             var joystickWidth  = 200;
 
             var center = {
-                x : joystickHeight / 2,
-                y : joystickWidth / 2
+                y : joystickHeight / 2,
+                x : joystickWidth / 2
             };
 
             var radiusCircle = 35;

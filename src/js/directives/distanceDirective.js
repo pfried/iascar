@@ -4,19 +4,30 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
     return {
         restrict : 'E',
         scope : {
-            sensors : '='
+            sensors : '=',
+            actors  : '='
         },
         template : '<canvas class="distanceCanvas"></canvas>',
         link : function(scope, element) {
 
+            // The canvas
             var height = 200;
-            var width  = 200;
+            var width  = 175;
+
+            // Top Center
+            var angle = scope.sensors && scope.actors.sensorServo ? $filter('sensorServoToRad')(scope.actors.angle) : 12/8 * Math.PI;
+            var angleBack = angle - Math.PI;
+            // Width of the beams
+            var widthIR = 1/8 * Math.PI;
+            var widthUS = 2/8 * Math.PI;
+            // The width of the beam lines
             var lineWidth = 5;
+            // The three colors of the distance beams
             var colorUSFront, colorUSRear, colorIRFront, colorIRRear;
 
             var center = {
-                x : height / 2,
-                y : width / 2
+                y : height / 2,
+                x : width / 2
             };
 
             // Canvas and context element
@@ -34,11 +45,18 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
                 // Clear the canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+                // Set the colors for the different distance sensors
                 if (scope.sensors) {
                     colorUSFront = $filter('distanceColor')($filter('distanceUS')(scope.sensors.distanceUSFront));
                     colorUSRear = $filter('distanceColor')($filter('distanceUS')(scope.sensors.distanceUSRear));
                     colorIRFront = $filter('distanceColor')($filter('distanceIR')(scope.sensors.distanceIRFront));
                     colorIRRear  = $filter('distanceColor')($filter('distanceIR')(scope.sensors.distanceIRRear));
+                }
+
+                if(scope.actors && scope.actors.sensorServo) {
+                    // Set the angle of the sensor servo instead of the steering angle
+                    angle = $filter('sensorServoToRad')(scope.actors.sensorServo);
+                    angleBack = angle - Math.PI;
                 }
 
                 for (var i = 1; i < 7; i++) {
@@ -49,7 +67,7 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
                             ctx.beginPath();
                             ctx.strokeStyle = colorUSFront;
                             ctx.lineWidth = lineWidth;
-                            ctx.arc(center.x, center.y, i * 12, 10 / 8 * Math.PI, 14 / 8 * Math.PI, false);
+                            ctx.arc(center.x, center.y, i * 12, angle - widthUS, angle + widthUS, false);
                             ctx.stroke();
                         }
                     }
@@ -59,9 +77,9 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
 
                         if ($filter('distanceIR')(scope.sensors.distanceIRFront) >= i) {
                             ctx.beginPath();
-                            ctx.strokeStyle = colorUSFront;
+                            ctx.strokeStyle = colorIRFront;
                             ctx.lineWidth = lineWidth;
-                            ctx.arc(center.x, center.y, (i * 12) + 6, 11 / 8 * Math.PI, 13 / 8 * Math.PI, false);
+                            ctx.arc(center.x, center.y, (i * 12) + 6, angle - widthIR, angle + widthIR, false);
                             ctx.stroke();
                         }
                     }
@@ -73,7 +91,7 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
                             ctx.beginPath();
                             ctx.strokeStyle = colorUSRear;
                             ctx.lineWidth = lineWidth;
-                            ctx.arc(center.x, center.y, i * 12, 2 / 8 * Math.PI, 6 / 8 * Math.PI, false);
+                            ctx.arc(center.x, center.y, i * 12, angleBack - widthUS, angleBack + widthUS, false);
                             ctx.stroke();
                         }
                     }
@@ -85,7 +103,7 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
                             ctx.beginPath();
                             ctx.strokeStyle = colorIRRear;
                             ctx.lineWidth = lineWidth;
-                            ctx.arc(center.x, center.y, (i * 12) + 6, 3 / 8 * Math.PI, 5 / 8 * Math.PI, false);
+                            ctx.arc(center.x, center.y, (i * 12) + 6, angleBack - widthIR, angleBack + widthIR, false);
                             ctx.stroke();
                         }
                     }
@@ -96,11 +114,6 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
 
             window.onorientationchange = resetCanvas;
             window.onresize = resetCanvas;
-
-            // Bind to the values from outside
-            scope.$watch('sensors', function() {
-
-            });
 
             resetCanvas();
             draw();

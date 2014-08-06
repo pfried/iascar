@@ -21,10 +21,10 @@
     p Battery: {{ car.sensors.battery }}
 
     .row
-      .col-xs-3.col-xs-offset-9
+      .col-xs-6.col-xs-offset-3.distanceContainer
+        distance(sensors="car.sensors", actors="car.actors")
+      .col-xs-3
         horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
-
-    distance(sensors="car.sensors")
 
     joystick(position="car.joystick", controls="XY")
 

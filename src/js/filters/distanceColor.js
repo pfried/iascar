@@ -9,18 +9,22 @@ angular.module('iasCar.filters').filter('distanceColor', function() {
         switch(distance) {
             case 6:
             case 5:
-                color = 'green';
+                // green
+                color = '#0a8f08';
                 break;
             case 4:
             case 3:
-                color = 'orange';
+                // orange
+                color = '#fb8c00';
                 break;
             case 2:
             case 1:
-                color = 'red';
+                // red
+                color = '#dd191d';
                 break;
             default:
-                color = 'green';
+                // green
+                color = '#0a8f08';
                 break;
         }
 
