@@ -88,16 +88,18 @@ a {
 
 }
 
-horn .horn {
-  height: 50px;
-  width: 50px;
-  background-color: @accent-color;
-  color : white;
-  padding : 5px;
+.joystickPortrait, .joystickLandscape {
+  display : none;
+}
 
-  border-radius : 25px;
+@media screen and (orientation: portrait) {
+    .joystickPortrait {
+        display : block;
+    }
+}
 
-  i {
-    font-size : 40px;
+@media screen and (orientation: landscape) {
+  .joystickLandscape {
+      display : block;
   }
 }

@@ -11,22 +11,29 @@
         .col-xs-3
           battery(battery-value="car.sensors.battery")
         .col-xs-3
-          signal(signal-value="car.sensors.signal")
+          span {{ car.name }}
         .col-xs-3
           .btn
             i.icon-cross(ng-show="car.state === 'connected'", ng-click="disconnect()")
 
-    h1 {{ car.name }}
-
     p Battery: {{ car.sensors.battery }}
 
-    .row
-      .col-xs-6.col-xs-offset-3.distanceContainer
-        distance(sensors="car.sensors", actors="car.actors")
-      .col-xs-3
+    .row.joystickLandscape
+      .col-xs-3.col-xs-offset-9
         horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+      .row
+        .col-xs-4
+          joystick(position="car.joystick", controls="Y")
+        .col-xs-4.distanceContainer
+          distance(sensors="car.sensors", actors="car.actors")
+        .col-xs-4
+          joystick(position="car.joystick", controls="X")
 
-    joystick(position="car.joystick", controls="XY")
+    .row.joystickPortrait
+      .col-xs-12
+        distance(sensors="car.sensors", actors="car.actors")
+      .col-xs-12
+        joystick(position="car.joystick", controls="XY")
 
 
 

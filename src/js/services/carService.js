@@ -16,7 +16,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 temperature     : 0,
                 signal          : 0
             };
-            this.actors = {
+            this.actuators = {
                 speed       : 750,
                 angle       : 750,
                 speedMode   : 0,
@@ -54,10 +54,10 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                     }
                 }
             },
-            'actors' : {
+            'actuators' : {
                 'uuid' : '5d5f0020-e670-11e3-a4f3-0002a5d5c51b',
                 'characteristics' : {
-                    'actors' : {
+                    'actuators' : {
                         'uuid'   : '5d5f0021-e670-11e3-a4f3-0002a5d5c51b',
                         'length' : 6
                     }
@@ -208,7 +208,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         subscribeActors : function() {
             var that = this;
 
-            return that.subscribe('actors', 'actors').then(function() {
+            return that.subscribe('actuators', 'actuators').then(function() {
 
             }, function(error) {
                 console.error(error);
@@ -223,8 +223,8 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                     var u8bytes = bytes.buffer.slice(0,2);
                     var u8 = new Uint8Array(u8bytes);
 
-                    that.actors.generic1 = u16[0];
-                    that.actors.generic2 = u16[1];
+                    that.actuators.generic1 = u16[0];
+                    that.actuators.generic2 = u16[1];
 
                     // We can just set horn as 0x01 will be 1
                     that.horn = u8[0];
@@ -232,11 +232,11 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                     var lights = u8[1];
 
                     // Get the single bits from the lights byte
-                    that.actors.lights.front        = (lights & (1 << 0));
-                    that.actors.lights.back         = (lights & (1 << 1));
-                    that.actors.lights.brake        = (lights & (1 << 2));
-                    that.actors.lights.blinkerLeft  = (lights & (1 << 3));
-                    that.actors.lights.blinkerRight = (lights & (1 << 4));
+                    that.actuators.lights.front        = (lights & (1 << 0));
+                    that.actuators.lights.back         = (lights & (1 << 1));
+                    that.actuators.lights.brake        = (lights & (1 << 2));
+                    that.actuators.lights.blinkerLeft  = (lights & (1 << 3));
+                    that.actuators.lights.blinkerRight = (lights & (1 << 4));
 
                 }
             });
@@ -279,9 +279,9 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                     var bytes = bluetoothService.encodedStringToBytes(result.value);
                     var u16bytes = bytes.buffer.slice(0, 6);
                     var u16 = new Uint16Array(u16bytes);
-                    that.actors.speed       = u16[0];
-                    that.actors.angle       = u16[1];
-                    that.actors.sensorServo = u16[2];
+                    that.actuators.speed       = u16[0];
+                    that.actuators.angle       = u16[1];
+                    that.actuators.sensorServo = u16[2];
                 }
             });
         },
@@ -300,9 +300,9 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                     var u16bytes = bytes.buffer.slice(0, 6);
                     var u16 = new Uint16Array(u16bytes);
 
-                    that.actors.brightness  = u16[0];
-                    that.actors.temperature = u16[1];
-                    that.actors.battery     = u16[2];
+                    that.actuators.brightness  = u16[0];
+                    that.actuators.temperature = u16[1];
+                    that.actuators.battery     = u16[2];
                 }
             });
         },
@@ -310,7 +310,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         setSpeedAndAngle : function(speed, angle) {
             var servoAngle = $filter('steering')(angle);
             var servoSpeed = $filter('speed')(speed);
-            var sensorServo = $filter('steering')(this.actors.sensorServo);
+            var sensorServo = $filter('steering')(this.actuators.sensorServo);
             var value = this.encodeSpeedAndAngle(servoSpeed, servoAngle, sensorServo);
             return this.write('drive', 'speedAndAngle', value);
         },
@@ -318,8 +318,8 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         setHorn : function(value) {
             var that = this;
             var char = value ? 1 : 0;
-            that.actors.horn = char;
-            return this.write('actors', 'actors', that.encodeActors(that.actors.horn, that.actors.lights, that.actors.generic1, that.actors.generic2 ));
+            that.actuators.horn = char;
+            return this.write('actuators', 'actuators', that.encodeActors(that.actuators.horn, that.actuators.lights, that.actuators.generic1, that.actuators.generic2 ));
         },
 
         // 7 Notifications possible in android 4.4?
@@ -341,12 +341,12 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
 
             that.drivingInterval = $interval(function() {
                 // Check if values have changed
-                if(oldSpeed !== that.joystick.y | oldSteering !== that.joystick.x | oldSensorServo !== that.actors.sensorServo) {
-                    that.setSpeedAndAngle(that.joystick.y, that.joystick.x, that.actors.sensorServo);
+                if(oldSpeed !== that.joystick.y | oldSteering !== that.joystick.x | oldSensorServo !== that.actuators.sensorServo) {
+                    that.setSpeedAndAngle(that.joystick.y, that.joystick.x, that.actuators.sensorServo);
                 }
                 oldSpeed = that.joystick.y;
                 oldSteering = that.joystick.x;
-                oldSensorServo = that.actors.sensorServo;
+                oldSensorServo = that.actuators.sensorServo;
             }, 100);
         },
 

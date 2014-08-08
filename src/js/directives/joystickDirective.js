@@ -9,7 +9,7 @@ angular.module('iasCar.directives').directive('joystick', function() {
             position : '=',
             controls : '@'
         },
-        template : '<canvas class="joystickCanvas"></canvas>',
+        template : '<canvas width="200px" height="200px"></canvas>',
         link : function(scope, element) {
 
             var joystickHeight = 200;
@@ -28,13 +28,18 @@ angular.module('iasCar.directives').directive('joystick', function() {
             var canvas = container.children[0];
             var ctx = canvas.getContext('2d');
 
+            // The outer bounds of the canvas, needed for correct relative pointer position calculation
+            var rect = canvas.getBoundingClientRect();
+
             // Id of the touch on the cursor
             var cursorTouchId = -1;
+
             var cursorTouch = {
                 x : center.x,
                 y : center.y
             };
 
+            // Calculation of the bounds
             var scaleX = 1, scaleY = 1;
 
             function isControlX() {
@@ -48,9 +53,13 @@ angular.module('iasCar.directives').directive('joystick', function() {
             function resetCanvas() {
                 canvas.height = joystickHeight;
                 canvas.width = joystickWidth;
+                rect = canvas.getBoundingClientRect();
             }
 
             function onTouchStart(event) {
+                // Somehow the values calculated on instantiation are not correct, so we have to do this here
+                // as there is no better place to get a point in time after the compilation and linking
+                resetCanvas();
                 var touch = event.targetTouches[0];
                 cursorTouchId = touch.identifier;
                 setPosition(touch);
@@ -68,9 +77,8 @@ angular.module('iasCar.directives').directive('joystick', function() {
             }
 
             function setPosition(touch) {
-
                 if(isControlX()) {
-                    cursorTouch.x = touch.pageX - touch.target.offsetLeft;
+                    cursorTouch.x = touch.pageX - rect.left;
                     scaleX = radiusBound / (cursorTouch.x - center.x);
                     if(Math.abs(scaleX) < 1) {
                         cursorTouch.x = Math.abs(cursorTouch.x - center.x) * scaleX + center.x;
@@ -78,7 +86,7 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 }
 
                 if(isControlY()) {
-                    cursorTouch.y = touch.pageY - touch.target.offsetTop;
+                    cursorTouch.y = touch.pageY - rect.top;
                     scaleY = radiusBound / (cursorTouch.y - center.y);
                     if (Math.abs(scaleY) < 1) {
                         cursorTouch.y = Math.abs(cursorTouch.y - center.y) * scaleY + center.y;
@@ -150,8 +158,8 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 canvas.addEventListener( 'touchmove', onTouchMove, false );
                 canvas.addEventListener( 'touchend', onTouchEnd, false );
 
-                window.onorientationchange = resetCanvas;
-                window.onresize = resetCanvas;
+                window.addEventListener('orientationchange', resetCanvas);
+                window.addEventListener('resize', resetCanvas);
             }
 
             // Bind to the values from outside as well
@@ -162,7 +170,6 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 };
             });
 
-            resetCanvas();
             draw();
 
         }

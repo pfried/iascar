@@ -5,9 +5,9 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
         restrict : 'E',
         scope : {
             sensors : '=',
-            actors  : '='
+            actuators  : '='
         },
-        template : '<canvas class="distanceCanvas"></canvas>',
+        template : '<canvas></canvas>',
         link : function(scope, element) {
 
             // The canvas
@@ -15,7 +15,7 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
             var width  = 175;
 
             // Top Center
-            var angle = scope.sensors && scope.actors.sensorServo ? $filter('sensorServoToRad')(scope.actors.angle) : 12/8 * Math.PI;
+            var angle = scope.sensors && scope.actuators.sensorServo ? $filter('sensorServoToRad')(scope.actuators.angle) : 12/8 * Math.PI;
             var angleBack = angle - Math.PI;
             // Width of the beams
             var widthIR = 1/8 * Math.PI;
@@ -53,9 +53,9 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
                     colorIRRear  = $filter('distanceColor')($filter('distanceIR')(scope.sensors.distanceIRRear));
                 }
 
-                if(scope.actors && scope.actors.sensorServo) {
+                if(scope.actuators && scope.actuators.sensorServo) {
                     // Set the angle of the sensor servo instead of the steering angle
-                    angle = $filter('sensorServoToRad')(scope.actors.sensorServo);
+                    angle = $filter('sensorServoToRad')(scope.actuators.sensorServo);
                     angleBack = angle - Math.PI;
                 }
 
