@@ -1,4 +1,4 @@
-angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$timeout', '$state', 'bluetoothService',  function($scope, $window, $timeout, $state, bluetoothService) {
+angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$timeout', '$state', 'bluetoothService', function($scope, $window, $timeout, $state, bluetoothService) {
     'use strict';
 
     var timeout;
@@ -8,7 +8,13 @@ angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$ti
         // Clear the timeout
         $timeout.cancel(timeout);
 
-        bluetoothService.startScan().then(function(devices) {
+        // Filter for our services only, i dont know but this doesnt work, maybe the services must be in the advertisement
+        // Car.prototype.services.drive.uuid
+        var services = {
+            'serviceUuids' : []
+        };
+
+        bluetoothService.startScan(services).then(function(devices) {
             $scope.scanning = true;
             $scope.cars = devices;
 

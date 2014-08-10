@@ -8,6 +8,8 @@
     },
 
     "settings" : {
-        "title" : "Einstellungen"
+        "title" : "Einstellungen",
+        "steeringTrim" : "Lenktrimmung",
+        "sensorServoTrim" : "Sensor-Servo Trimmung"
     }
 }

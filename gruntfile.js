@@ -11,6 +11,7 @@ module.exports = function (grunt) {
         'src/js/lib/bower/angular-cookies/angular-cookies.js',
         'src/js/lib/bower/angular-resource/angular-resource.js',
         'src/js/lib/bower/angular-bootstrap/ui-bootstrap.js',
+        'src/js/lib/bower/angular-bootstrap/ui-bootstrap-tpls.js',
         'src/js/lib/bower/angular-ui-router/release/angular-ui-router.js',
         'src/js/lib/bower/angular-translate/angular-translate.js',
         'src/js/lib/bower/angular-translate-loader-static-files/angular-translate-loader-static-files.js'

@@ -1,4 +1,4 @@
-angular.module('iasCar').controller('CarController', ['$scope', '$window', '$state', '$stateParams', 'bluetoothTools', 'Car', 'bluetoothService', function($scope, $window, $state, $stateParams, bluetoothTools, Car, bluetoothService) {
+angular.module('iasCar').controller('CarController', ['$scope', '$window', '$state', '$stateParams', '$modal', 'bluetoothTools', 'Car', 'bluetoothService', function($scope, $window, $state, $stateParams, $modal, bluetoothTools, Car, bluetoothService) {
     'use strict';
 
     var address = $stateParams.carAddress;
@@ -9,11 +9,36 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
         return $state.go('home');
     }
 
+    var ModalInstanceController = function ($scope, $modalInstance, car) {
+
+        $scope.closeSettings = function() {
+            car.toJSON();
+            $modalInstance.close();
+        };
+
+        $scope.car = car;
+    };
+
+    $scope.openSettings = function () {
+
+        $modal.open({
+            controller : ModalInstanceController,
+            templateUrl: 'partials/settings.html',
+            size: 'sm',
+            resolve: {
+                car : function () {
+                    return $scope.car;
+                }
+            }
+        });
+
+    };
+
     function connectToCar(address) {
 
         $scope.car = new Car(address);
         $scope.car.connect().then(function() {
-
+            return $state.go('home');
         }, function() {
 
         }, function() {

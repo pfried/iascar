@@ -21,9 +21,16 @@
             var right = 100;
             var center = 0;
 
-            expect($filter('steering')(left)).toBe(500);
-            expect($filter('steering')(right)).toBe(1000);
-            expect($filter('steering')(center)).toBe(750);
+            var trim = 50;
+
+            expect($filter('steering')(left, 0)).toBe(500);
+            expect($filter('steering')(right, 0)).toBe(1000);
+            expect($filter('steering')(center, 0)).toBe(750);
+
+            // Trimming  to the max value
+            expect($filter('steering')(center, trim)).toBe(800);
+            expect($filter('steering')(right, trim)).toBe(1000);
+            expect($filter('steering')(left, -trim)).toBe(500);
         });
 
     });

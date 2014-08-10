@@ -39,9 +39,10 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         return deferred.promise;
     }
 
-    function startScan() {
+    function startScan(params) {
 
         var deferred = $q.defer();
+        var scanParams = params ? params : { 'serviceUuids' : [] };
 
         isInitialized().then(function() {
 
@@ -69,7 +70,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
                     }
                 }, function(error) {
                     deferred.reject(error.message);
-                });
+                }, scanParams);
 
             }, function() {
                 deferred.reject(bluetoothTools.errorMessages.notInitialized);

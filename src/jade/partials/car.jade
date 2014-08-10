@@ -1,26 +1,30 @@
 .container.car
 
-  p(ng-show="car.state === 'connecting'") Loading
-
   div.car(ng-show="car.state === 'connected'")
 
+    btn.btn.btn-info(ng-click="openSettings()") Settings
+
     div.carHeaderBar
+      .row
+        .col-xs-12
+          span Connected to {{ car.name }}
       .row
         .col-xs-3
           temperature(temperature-value="car.sensors.temperature")
         .col-xs-3
           battery(battery-value="car.sensors.battery")
         .col-xs-3
-          span {{ car.name }}
+          brightness(brightness-value="car.sensors.brightness")
         .col-xs-3
           .btn
             i.icon-cross(ng-show="car.state === 'connected'", ng-click="disconnect()")
 
     p Battery: {{ car.sensors.battery }}
 
-    .row.joystickLandscape
-      .col-xs-3.col-xs-offset-9
-        horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+    .joystickLandscape
+      .row
+        .col-xs-3.col-xs-offset-9
+          horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
       .row
         .col-xs-4
           joystick(position="car.joystick", controls="Y")
@@ -29,9 +33,14 @@
         .col-xs-4
           joystick(position="car.joystick", controls="X")
 
-    .row.joystickPortrait
-      .col-xs-12
-        distance(sensors="car.sensors", actors="car.actors")
+    .joystickPortrait
+      .row
+        .col-xs-6.col-xs-offset-3.distanceContainer
+          distance(sensors="car.sensors", actors="car.actors")
+        .col-xs-3
+          horn.actionButton(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+          generic-actor.actionButton(number="1")
+          generic-actor.actionButton(number="2")
       .col-xs-12
         joystick(position="car.joystick", controls="XY")
 

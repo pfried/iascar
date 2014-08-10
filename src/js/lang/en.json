@@ -8,6 +8,8 @@
     },
 
     "settings" : {
-        "title" : "Settings"
+        "title" : "Settings",
+        "steeringTrim" : "Steering trim",
+        "sensorServoTrim" : "Sensor Servo trim"
     }
 }

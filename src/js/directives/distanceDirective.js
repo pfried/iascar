@@ -54,7 +54,7 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
                 }
 
                 if(scope.actuators && scope.actuators.sensorServo) {
-                    // Set the angle of the sensor servo instead of the steering angle
+                    // Set the angle of the sensor servo
                     angle = $filter('sensorServoToRad')(scope.actuators.sensorServo);
                     angleBack = angle - Math.PI;
                 }

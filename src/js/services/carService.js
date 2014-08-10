@@ -1,11 +1,12 @@
 'use strict';
-angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval', '$timeout', '$filter', 'bluetoothService', 'bluetoothTools', function($rootScope, $q, $interval, $timeout, $filter, bluetoothService, bluetoothTools) {
+angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval', '$timeout', '$filter', 'bluetoothService', 'bluetoothTools', 'storageService', function($rootScope, $q, $interval, $timeout, $filter, bluetoothService, bluetoothTools, storageService) {
 
     function Car(address) {
 
         if(address && bluetoothTools.isValidAddress(address)) {
             this.address = address;
             this.state = 'initializing';
+
             this.sensors = {
                 brightness      : 0,
                 battery         : 0,
@@ -20,7 +21,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 speed       : 750,
                 angle       : 750,
                 speedMode   : 0,
-                sensorServo : 750,
+                sensorServo : 500,
                 horn        : 0,
                 lights      : {
                     front        : 0,
@@ -37,6 +38,9 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 x : 0,
                 y : 0
             };
+
+            this.steeringTrim = 0;
+            this.sensorServoTrim = 0;
 
         } else {
             throw new Error('Car Address invalid');
@@ -60,6 +64,12 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                     'actuators' : {
                         'uuid'   : '5d5f0021-e670-11e3-a4f3-0002a5d5c51b',
                         'length' : 6
+                    }
+                },
+                'descriptors' : {
+                    'genericActors' : {
+                        'uuid' : '5d5f0021-e670-11e3-a4f3-0002a5d5c51b',
+                        'length' : 2
                     }
                 }
             },
@@ -129,7 +139,6 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             }, function (error) {
                 that.state = 'error';
                 console.error(error);
-                console.error(error.message);
             }, function(result) {
                 if(result) {
 
@@ -140,6 +149,8 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                     if(result.status === 'connected') {
                         that.state = 'connected';
                         that.name = result.name;
+                        // Restore settings from localstorage
+                        that.fromJSON();
                     }
 
                     if(result.status === 'disconnecting') {
@@ -308,9 +319,9 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         },
 
         setSpeedAndAngle : function(speed, angle) {
-            var servoAngle = $filter('steering')(angle);
+            var servoAngle = $filter('steering')(angle, this.steeringTrim);
             var servoSpeed = $filter('speed')(speed);
-            var sensorServo = $filter('steering')(this.actuators.sensorServo);
+            var sensorServo = $filter('steering')(this.actuators.sensorServo, this.sensorServoTrim);
             var value = this.encodeSpeedAndAngle(servoSpeed, servoAngle, sensorServo);
             return this.write('drive', 'speedAndAngle', value);
         },
@@ -338,21 +349,48 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var oldSpeed;
             var oldSteering;
             var oldSensorServo;
+            var oldSteeringTrim;
+            var oldSensorServoTrim;
 
             that.drivingInterval = $interval(function() {
                 // Check if values have changed
-                if(oldSpeed !== that.joystick.y | oldSteering !== that.joystick.x | oldSensorServo !== that.actuators.sensorServo) {
+                if(oldSpeed !== that.joystick.y | oldSteering !== that.joystick.x | oldSensorServo !== that.actuators.sensorServo | oldSteeringTrim !== that.steeringTrim | oldSensorServoTrim !== that.sensorServoTrim) {
                     that.setSpeedAndAngle(that.joystick.y, that.joystick.x, that.actuators.sensorServo);
                 }
                 oldSpeed = that.joystick.y;
                 oldSteering = that.joystick.x;
                 oldSensorServo = that.actuators.sensorServo;
+                oldSteeringTrim = that.steeringTrim;
+                oldSensorServoTrim = that.sensorServoTrim;
             }, 100);
         },
 
         unsetDrivingControl : function() {
             if(this.drivingInterval) {
                 $interval.cancel(this.drivingInterval);
+            }
+        },
+
+        // Save this car's settings to the storage
+        toJSON : function() {
+            var that = this;
+
+            var settings = {
+                'steeringTrim' : that.steeringTrim,
+                'sensorServotrim' : that.sensorServoTrim
+            };
+
+            storageService.localStorage.setItem(that.address, JSON.stringify(settings));
+        },
+
+        // Retrieve settings from the storage
+        fromJSON : function() {
+            var that = this;
+            var data = storageService.localStorage.getItem(that.address);
+            if(data) {
+                data = JSON.parse(data);
+                that.steeringTrim = data.hasOwnProperty('steeringTrim') ? data.steeringTrim : 0;
+                that.sensorServoTrim = data.hasOwnProperty('sensorServoTrim')? data.sensorServoTrim : 0;
             }
         }
 
