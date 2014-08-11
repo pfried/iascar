@@ -5,7 +5,8 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
         restrict : 'E',
         scope : {
             sensors : '=',
-            actuators  : '='
+            actuators  : '=',
+            settings : '='
         },
         template : '<canvas width="175px" height="200px"></canvas>',
         link : function(scope, element) {
@@ -54,11 +55,17 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
                     colorIRRear  = $filter('distanceColor')($filter('distanceIR')(scope.sensors.distanceIRRear));
                 }
 
+                // Set the angle of the sensor servo
                 if(scope.actuators && scope.actuators.sensorServo) {
-                    // Set the angle of the sensor servo
                     angle = $filter('sensorServoToRad')(scope.actuators.sensorServo);
-                    angleBack = angle - Math.PI;
                 }
+
+                // Check if the rotation is disabled
+                if(scope.settings && scope.settings.lockDistanceRotation) {
+                    angle = 12/8 * Math.PI;
+                }
+
+                angleBack = angle - Math.PI;
 
                 for (var i = 1; i < 7; i++) {
                     // US Front

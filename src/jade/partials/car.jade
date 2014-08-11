@@ -34,7 +34,7 @@ div.car(ng-show="car.state === 'connected'")
       .pull-left
         joystick(position="car.joystick", controls="Y")
       .distanceContainer
-        distance(sensors="car.sensors", actuators="car.actuators")
+        distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings")
 
   .joystickPortrait.container
 
@@ -51,7 +51,7 @@ div.car(ng-show="car.state === 'connected'")
 
     .row
       .col-xs-6.col-xs-offset-3.distanceContainer
-        distance(sensors="car.sensors", actuators="car.actuators")
+        distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings")
       .col-xs-3
         horn.actionButton(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
         generic-actor.actionButton(number="1")

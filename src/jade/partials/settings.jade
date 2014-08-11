@@ -1,17 +1,26 @@
 .modal-header
   h3 {{ 'settings.title' | translate }}
 .modal-body
-  .row
-    .col-xs-12
-      label(for="steeringTrim") {{ 'settings.steeringTrim' | translate }}
-    .col-xs-4.text-center
-      button.btn.btn-warning(ng-click="car.steeringTrim = car.steeringTrim - 1") -
-    .col-xs-4.text-center
-      span(name="steeringTrim") {{ car.steeringTrim }}
-    .col-xs-4.text-center
-      button.btn.btn-success(ng-click="car.steeringTrim = car.steeringTrim + 1") +
-    .col-xs-12
-      span.help-block {{ 'settings.steeringTrimDescr' | translate }}
+  form(role="form")
+    .row
+      .col-xs-12
+        label(for="steeringTrim") {{ 'settings.steeringTrim' | translate }}
+      .col-xs-4.text-center
+        button.btn.btn-warning(ng-click="car.settings.steeringTrim = car.settings.steeringTrim - 1") -
+      .col-xs-4.text-center
+        span(name="steeringTrim") {{ car.settings.steeringTrim }}
+      .col-xs-4.text-center
+        button.btn.btn-success(ng-click="car.settings.steeringTrim = car.settings.steeringTrim + 1") +
+      .col-xs-12
+        span.help-block {{ 'settings.steeringTrimDescr' | translate }}
+
+    .row
+      .col-xs-12
+        label(for="lockDistanceRotation")  {{ 'settings.distanceRotation' | translate }}
+      .col-xs-12
+        .checkbox
+          label(for="lockDistanceRotation")  {{ 'settings.lockDistanceRotation' | translate }}
+            input(type="checkbox", ng-model="car.settings.lockDistanceRotation", name="lockDistanceRotation")
 
 .modal-footer
   button.btn.btn-primary(ng-click="closeSettings()") OK

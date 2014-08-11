@@ -49,7 +49,8 @@
             var store = {};
 
             spyOn(localStorage, 'setItem').andCallFake(function (key, value) {
-                return store[key] = value + '';
+                store[key] = value + '';
+                return true;
             });
 
             car = new Car('ab:cd:ef:12:34:56');
@@ -63,9 +64,8 @@
         });
 
         it('can restore its settings from the localstorage', function() {
-            var store = {};
 
-            spyOn(localStorage, 'getItem').andCallFake(function (key) {
+            spyOn(localStorage, 'getItem').andCallFake(function () {
                 return '{"steeringTrim" : 10, "sensorServoTrim" : 2, "lockDistanceRotation" : true}';
             });
 
@@ -73,6 +73,7 @@
 
             car.restoreSettings();
 
+            expect(localStorage.getItem).toHaveBeenCalledWith('ab:cd:ef:12:34:56');
             expect(car.settings).toEqual({ steeringTrim : 10, sensorServoTrim : 2, lockDistanceRotation : true });
         });
 

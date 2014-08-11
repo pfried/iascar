@@ -20,6 +20,7 @@
     "globals": {
         "angular": true,
         "jasmine" : true,
+        "spyOn" : true,
         "chrome" : true,
         "requestAnimFrame" : true
     },

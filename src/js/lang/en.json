@@ -11,6 +11,8 @@
         "title" : "Settings",
         "steeringTrim" : "Steering trim",
         "steeringTrimDescr" : "The steering ranges between 500 left to 1000 right and is corrected by this value.",
-        "sensorServoTrim" : "Sensor Servo trim"
+        "sensorServoTrim" : "Sensor Servo trim",
+        "distanceRotation" : "Angle adjustment distance sensors",
+        "lockDistanceRotation" : "Disable rotation"
     }
 }

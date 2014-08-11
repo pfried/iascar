@@ -389,7 +389,9 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var data = storageService.localStorage.getItem(that.address);
             if(data) {
                 data = JSON.parse(data);
-                that.settings = data;
+                for (var key in data) {
+                    that.settings[key] = data[key];
+                }
             }
         }
 
