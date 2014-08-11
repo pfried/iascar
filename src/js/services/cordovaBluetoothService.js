@@ -281,6 +281,32 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         return deferred.promise;
     }
 
+    function readDescriptor(params) {
+        var deferred = $q.defer();
+
+        bt.readDescriptor(function(result) {
+
+            deferred.resolve(result);
+
+        }, function(error) {
+            deferred.reject(error.message);
+        }, params);
+
+        return deferred.promise;
+    }
+
+    function rssi() {
+        var deferred = $q.defer();
+
+        bt.rssi(function(result) {
+            deferred.resolve(result);
+        }, function(error) {
+            deferred.reject(error.message);
+        });
+
+        return deferred.promise;
+    }
+
     function stringToBytes(string) {
         return bt.stringToBytes(string);
     }
@@ -312,8 +338,10 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         write                : write,
         subscribe            : subscribe,
         unsubscribe          : unsubscribe,
+        readDescriptor       : readDescriptor,
+        rssi                 : rssi,
         bytesToString        : bytesToString,
-        stringToByts         : stringToBytes,
+        stringToBytes        : stringToBytes,
         bytesToEncodedString : bytesToEncodedString,
         encodedStringToBytes : encodedStringToBytes
     };

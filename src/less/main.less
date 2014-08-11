@@ -1,11 +1,14 @@
 @import "../js/lib/bower/bootstrap/less/bootstrap.less";
 @import "./fonts.less";
 
-@base-color: #3f51b5;
+// Indigo
+@base-color-500: #3f51b5;
 @base-color-700 : #303f9f;
+@base-color-900 : #1a237e;
 @base-color-100 : #c5cae9;
 
-@accent-color: #ff4081;
+// Pink
+@accent-color-500: #ff4081;
 @accent-color-100: #ff80ab;
 @accent-color-400: #f50057;
 
@@ -18,6 +21,7 @@ html, body {
   height: 100%;
   margin: 0;
   font-family : "Roboto", "Helvetica Neue", Helvetica,Arial, sans-serif;
+  color : @font-text-color;
   transition: opacity ease-in 0.2s;
 
   -webkit-user-select: none;
@@ -40,11 +44,11 @@ body[unresolved] {
 }
 
 a {
-  color : @accent-color;
+  color : @accent-color-500;
 }
 
 .header {
-  background-color : @base-color;
+  background-color : @base-color-500;
 
   h1 {
     color : white;
@@ -79,11 +83,30 @@ a {
 
   height : 100%;
 
+  .pageHeader {
+    background-color : @base-color-500;
+    color : @base-color-900;
+    margin-bottom : 8px;
+
+    h1 {
+      color : white;
+      font-size : 24px;
+    }
+
+    .settings {
+      margin : 12px;
+      font-size : 1.6em;
+
+      i {
+        margin-right : 14px;
+      }
+    }
+  }
+
   .carHeaderBar {
 
     font-size : 1.5em;
     text-align : center;
-    margin-bottom : 12px;
 
     i {
       margin-right : 8px;

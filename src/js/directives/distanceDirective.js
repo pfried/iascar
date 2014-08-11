@@ -7,7 +7,7 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
             sensors : '=',
             actuators  : '='
         },
-        template : '<canvas></canvas>',
+        template : '<canvas width="175px" height="200px"></canvas>',
         link : function(scope, element) {
 
             // The canvas
@@ -34,6 +34,7 @@ angular.module('iasCar.directives').directive('distance', ['$filter', function($
             var container = element[0];
             var canvas = container.children[0];
             var ctx = canvas.getContext('2d');
+            ctx.scale(2,2);
 
             function resetCanvas() {
                 canvas.height = height;

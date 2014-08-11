@@ -559,12 +559,13 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          * @param params
          */
         readDescriptor : function readDescriptor(successCallback, errorCallback, params) {
+
             var result = {
                 'status' : 'readDescriptor',
                 'serviceUuid' : params.serviceUuid,
                 'characteristicUuid' : params.characteristicUuid,
                 'descriptorUuid' : params.descriptorUuid,
-                'value' : params.value
+                'value' : 'abcd'
             };
 
             if(!this.expectingError('readDescriptor')) {
@@ -605,6 +606,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
         rssi : function rssi(successCallback, errorCallback) {
 
             var result = {
+                'status' : 'rssi',
                 'rssi' : -5
             };
 

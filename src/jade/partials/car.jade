@@ -1,13 +1,46 @@
-.container.car
+div.car(ng-show="car.state === 'connected'")
 
-  div.car(ng-show="car.state === 'connected'")
-
-    btn.btn.btn-info(ng-click="openSettings()") Settings
-
-    div.carHeaderBar
+  .pageHeader
+    .container
       .row
-        .col-xs-12
-          span Connected to {{ car.name }}
+        .col-xs-8
+          h1 {{ car.name }}
+        .pull-right.settings
+          div
+            i.icon-bolt(ng-click="disconnect()")
+            i.icon-tools(ng-click="openSettings()")
+
+
+
+  .joystickLandscape.container
+    .carHeaderBar
+      .row
+        .col-xs-2
+          temperature(temperature-value="car.sensors.temperature")
+        .col-xs-2
+          battery(battery-value="car.sensors.battery")
+        .col-xs-2
+          brightness(brightness-value="car.sensors.brightness")
+        .col-xs-2
+          signal(signal-value="car.sensors.signal")
+        .col-xs-1
+          horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+        .col-xs-1
+          generic-actor.actionButton(number="1")
+        .col-xs-1
+          generic-actor.actionButton(number="2")
+
+    .row
+      .pull-right
+        joystick(position="car.joystick", controls="X")
+      .pull-left
+        joystick(position="car.joystick", controls="Y")
+      .distanceContainer
+        distance(sensors="car.sensors", actuators="car.actuators")
+
+  .joystickPortrait.container
+
+    .carHeaderBar
       .row
         .col-xs-3
           temperature(temperature-value="car.sensors.temperature")
@@ -18,30 +51,15 @@
         .col-xs-3
           signal(signal-value="car.sensors.signal")
 
-    i.icon-cross(ng-show="car.state === 'connected'", ng-click="disconnect()")
-
-    .joystickLandscape
-      .row
-        .col-xs-3.col-xs-offset-9
-          horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
-      .row
-        .col-xs-4
-          joystick(position="car.joystick", controls="Y")
-        .col-xs-4.distanceContainer
-          distance(sensors="car.sensors", actors="car.actors")
-        .col-xs-4
-          joystick(position="car.joystick", controls="X")
-
-    .joystickPortrait
-      .row
-        .col-xs-6.col-xs-offset-3.distanceContainer
-          distance(sensors="car.sensors", actors="car.actors")
-        .col-xs-3
-          horn.actionButton(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
-          generic-actor.actionButton(number="1")
-          generic-actor.actionButton(number="2")
-      .col-xs-12
-        joystick(position="car.joystick", controls="XY")
+    .row
+      .col-xs-6.col-xs-offset-3.distanceContainer
+        distance(sensors="car.sensors", actuators="car.actuators")
+      .col-xs-3
+        horn.actionButton(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+        generic-actor.actionButton(number="1")
+        generic-actor.actionButton(number="2")
+    .col-xs-12
+      joystick(position="car.joystick", controls="XY")
 
 
 

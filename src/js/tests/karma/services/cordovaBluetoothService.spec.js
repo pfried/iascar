@@ -176,5 +176,33 @@
             expect(success).toHaveBeenCalledWith({ 'status' : 'unsubscribed', 'serviceUuid' : '5678', 'characteristicUuid' : '1234'});
         });
 
+        it('should read a descriptor\'s value', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            var params = {
+                'serviceUuid' : '5678',
+                'characteristicUuid' : '1234',
+                'descriptorUuid' : '7890'
+            };
+
+            bluetoothService.readDescriptor(params).then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalledWith({ 'status' : 'readDescriptor', 'serviceUuid' : '5678', 'characteristicUuid' : '1234', 'descriptorUuid' : '7890', 'value' : 'abcd'});
+
+        });
+
+        it('should return the bluetooth device rssi (signal strength)', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            bluetoothService.rssi().then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalledWith({ 'status' : 'rssi', 'rssi' : -5 });
+
+        });
+
     });
 }());
