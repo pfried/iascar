@@ -565,7 +565,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 'serviceUuid' : params.serviceUuid,
                 'characteristicUuid' : params.characteristicUuid,
                 'descriptorUuid' : params.descriptorUuid,
-                'value' : 'abcd'
+                'value' : 'AAE='
             };
 
             if(!this.expectingError('readDescriptor')) {

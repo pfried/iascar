@@ -6,11 +6,11 @@
       .col-xs-12
         label(for="steeringTrim") {{ 'settings.steeringTrim' | translate }}
       .col-xs-4.text-center
-        button.btn.btn-warning(ng-click="car.settings.steeringTrim = car.settings.steeringTrim - 1") -
+        button.btn.btn-warning(ng-click="car.settings.steeringTrim = car.settings.steeringTrim - 10") -
       .col-xs-4.text-center
         span(name="steeringTrim") {{ car.settings.steeringTrim }}
       .col-xs-4.text-center
-        button.btn.btn-success(ng-click="car.settings.steeringTrim = car.settings.steeringTrim + 1") +
+        button.btn.btn-success(ng-click="car.settings.steeringTrim = car.settings.steeringTrim + 10") +
       .col-xs-12
         span.help-block {{ 'settings.steeringTrimDescr' | translate }}
 

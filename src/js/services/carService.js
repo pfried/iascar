@@ -39,6 +39,11 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 y : 0
             };
 
+            this.genericActorButtonSettings = {
+                generic1 : 0,
+                generic2 : 0
+            };
+
             this.settings = {
                 steeringTrim : 0,
                 sensorServoTrim : 0,
@@ -66,15 +71,15 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 'characteristics' : {
                     'actuators' : {
                         'uuid'   : '5d5f0021-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 6
-                    }
+                        'length' : 6,
+                        'descriptors' : {
+                            'genericActors' : {
+                                'uuid' : '5d5f00f0-e670-11e3-a4f3-0002a5d5c51b',
+                                'length' : 2
+                            }
+                        }
+                    },
                 },
-                'descriptors' : {
-                    'genericActors' : {
-                        'uuid' : '5d5f0021-e670-11e3-a4f3-0002a5d5c51b',
-                        'length' : 2
-                    }
-                }
             },
             'distance' : {
                 'uuid' : '5d5f0030-e670-11e3-a4f3-0002a5d5c51b',
@@ -100,20 +105,20 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var u8 = new Uint8Array(u16.buffer);
             return bluetoothService.bytesToEncodedString(u8);
         },
-        encodeActors : function(horn, lights ,generic1, generic2) {
-            var u16 = new Uint16Array([generic1, generic2]);
+        encodeActors : function() {
+            var that = this;
+
+            var u16 = new Uint16Array([that.actuators.generic1, that.actuators.generic2]);
             var u8  = new Uint8Array(2);
-            u8[0] = horn;
+            u8[0] = that.actuators.horn;
 
             u8[1] = 0x00;
 
-            if(lights) {
-                u8[1] |= (lights.front << 0);
-                u8[1] |= (lights.back  << 1);
-                u8[1] |= (lights.brake << 2);
-                u8[1] |= (lights.blinkerLeft << 3);
-                u8[1] |= (lights.blinkerRight << 4);
-            }
+            u8[1] |= (that.actuators.lights.front << 0);
+            u8[1] |= (that.actuators.lights.back  << 1);
+            u8[1] |= (that.actuators.lights.brake << 2);
+            u8[1] |= (that.actuators.lights.blinkerLeft << 3);
+            u8[1] |= (that.actuators.lights.blinkerRight << 4);
 
             // buffer, offset, length
             var actor_values = new Uint8Array(u8, 0, 6);
@@ -172,7 +177,6 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             return bluetoothService.discover().then(function(result) {
                 that.name = result.name;
                 // We do not take the result from the discover since we already know everything about the car
-                //that.services = result.services;
             });
         },
         read : function(service, characteristic) {
@@ -197,6 +201,37 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             };
 
             return bluetoothService.write(params);
+        },
+        readDescriptor : function(service, characteristic, descriptor) {
+            //var that = this;
+
+            var params = {
+                'serviceUuid' : service,
+                'characteristicUuid' : characteristic,
+                'descriptorUuid' :  descriptor
+            };
+
+            return bluetoothService.readDescriptor(params);
+        },
+        readGenericActorButtonConfiguration : function() {
+            var that = this;
+
+            this.readDescriptor(
+                that.services.actuators.uuid,
+                that.services.actuators.characteristics.actuators.uuid,
+                that.services.actuators.characteristics.actuators.descriptors.genericActors.uuid
+            ).then(function(result) {
+                    var bytes = bluetoothService.encodedStringToBytes(result.value);
+                    var u8bytes = bytes.buffer.slice(0,4);
+                    var u8 = new Uint8Array(u8bytes);
+
+                    that.genericActorButtonSettings.generic1 = u8[0];
+                    that.genericActorButtonSettings.generic2 = u8[1];
+
+                }, function(error) {
+                    console.log(error.message);
+                }
+            );
         },
         subscribe : function(service, characteristic) {
             var that = this;
@@ -322,9 +357,9 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         },
 
         setSpeedAndAngle : function(speed, angle) {
-            var servoAngle = $filter('steering')(angle, this.steeringTrim);
+            var servoAngle = $filter('steering')(angle, this.settings.steeringTrim);
             var servoSpeed = $filter('speed')(speed);
-            var sensorServo = $filter('steering')(this.actuators.sensorServo, this.sensorServoTrim);
+            var sensorServo = $filter('steering')(this.actuators.sensorServo, this.settings.sensorServoTrim);
             var value = this.encodeSpeedAndAngle(servoSpeed, servoAngle, sensorServo);
             return this.write('drive', 'speedAndAngle', value);
         },
@@ -333,17 +368,36 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var that = this;
             var char = value ? 1 : 0;
             that.actuators.horn = char;
-            return this.write('actuators', 'actuators', that.encodeActors(that.actuators.horn, that.actuators.lights, that.actuators.generic1, that.actuators.generic2 ));
+            return that.write('actuators', 'actuators', that.encodeActors());
+        },
+
+        setGenericActor : function(number, value) {
+            var that = this;
+            if(number === '1') {
+                that.actuators.generic1 = value;
+            }
+            if(number === '2') {
+                that.actuators.generic2 = value;
+            }
+            console.log(that.actuators.generic1, that.actuators.generic2);
+            return that.write('actuators', 'actuators', that.encodeActors());
         },
 
         // 7 Notifications possible in android 4.4?
         // Well the timeout is basically bullshit, but the android bt doesnt take the commands at once.
         subscribeToCar : function() {
             var that = this;
-            that.subscribeDistance();
-            $timeout(function() { that.subscribeSensors(); }, 200);
-            $timeout(function() { that.subscribeActors(); }, 400);
-            $timeout(function() { that.subscribeSpeedAndAngle(); }, 600);
+            var deferred = $q.defer();
+            // Read the desriptors configuration
+            that.readGenericActorButtonConfiguration();
+
+            $timeout(function() { that.subscribeDistance(); }, 200);
+            $timeout(function() { that.subscribeSensors(); }, 400);
+            $timeout(function() { that.subscribeActors(); }, 600);
+            $timeout(function() { that.subscribeSpeedAndAngle(); }, 800);
+            $timeout(function() { deferred.resolve(); }, 1000);
+
+            return deferred.promise;
         },
 
         setDrivingControl : function() {
@@ -357,14 +411,14 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
 
             that.drivingInterval = $interval(function() {
                 // Check if values have changed
-                if(oldSpeed !== that.joystick.y | oldSteering !== that.joystick.x | oldSensorServo !== that.actuators.sensorServo | oldSteeringTrim !== that.steeringTrim | oldSensorServoTrim !== that.sensorServoTrim) {
+                if(oldSpeed !== that.joystick.y | oldSteering !== that.joystick.x | oldSensorServo !== that.actuators.sensorServo | oldSteeringTrim !== that.settings.steeringTrim | oldSensorServoTrim !== that.settings.sensorServoTrim) {
                     that.setSpeedAndAngle(that.joystick.y, that.joystick.x, that.actuators.sensorServo);
                 }
                 oldSpeed = that.joystick.y;
                 oldSteering = that.joystick.x;
                 oldSensorServo = that.actuators.sensorServo;
-                oldSteeringTrim = that.steeringTrim;
-                oldSensorServoTrim = that.sensorServoTrim;
+                oldSteeringTrim = that.settings.steeringTrim;
+                oldSensorServoTrim = that.settings.sensorServoTrim;
             }, 100);
         },
 
