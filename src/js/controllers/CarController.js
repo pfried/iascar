@@ -12,7 +12,7 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
     var ModalInstanceController = function ($scope, $modalInstance, car) {
 
         $scope.closeSettings = function() {
-            car.toJSON();
+            car.storeSettings();
             $modalInstance.close();
         };
 

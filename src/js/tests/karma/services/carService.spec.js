@@ -24,6 +24,7 @@
             success = jasmine.createSpy('success');
             error = jasmine.createSpy('error');
             notify = jasmine.createSpy('notify');
+
         });
 
         it('should throw an error if the address is not valid', function() {
@@ -41,6 +42,38 @@
 
         it('should encode the speed and angle into a 32Bit Integer value', function() {
 
+        });
+
+        it('can store its settings to the localstorage', function() {
+
+            var store = {};
+
+            spyOn(localStorage, 'setItem').andCallFake(function (key, value) {
+                return store[key] = value + '';
+            });
+
+            car = new Car('ab:cd:ef:12:34:56');
+
+            car.settings.steeringTrim = 10;
+
+            car.storeSettings();
+
+            expect(localStorage.setItem).toHaveBeenCalledWith('ab:cd:ef:12:34:56', '{"steeringTrim":10,"sensorServoTrim":0,"lockDistanceRotation":false}');
+
+        });
+
+        it('can restore its settings from the localstorage', function() {
+            var store = {};
+
+            spyOn(localStorage, 'getItem').andCallFake(function (key) {
+                return '{"steeringTrim" : 10, "sensorServoTrim" : 2, "lockDistanceRotation" : true}';
+            });
+
+            car = new Car('ab:cd:ef:12:34:56');
+
+            car.restoreSettings();
+
+            expect(car.settings).toEqual({ steeringTrim : 10, sensorServoTrim : 2, lockDistanceRotation : true });
         });
 
     });

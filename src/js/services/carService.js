@@ -39,8 +39,11 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 y : 0
             };
 
-            this.steeringTrim = 0;
-            this.sensorServoTrim = 0;
+            this.settings = {
+                steeringTrim : 0,
+                sensorServoTrim : 0,
+                lockDistanceRotation : false
+            };
 
         } else {
             throw new Error('Car Address invalid');
@@ -150,7 +153,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                         that.state = 'connected';
                         that.name = result.name;
                         // Restore settings from localstorage
-                        that.fromJSON();
+                        that.restoreSettings();
                     }
 
                     if(result.status === 'disconnecting') {
@@ -183,7 +186,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             return bluetoothService.read(params);
         },
         write : function(service, characteristic, value) {
-           var that = this;
+            var that = this;
 
             //console.log('Writing ', service, ': ', characteristic, ': ', value);
 
@@ -372,29 +375,25 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         },
 
         // Save this car's settings to the storage
-        toJSON : function() {
+        storeSettings : function() {
             var that = this;
 
-            var settings = {
-                'steeringTrim' : that.steeringTrim,
-                'sensorServotrim' : that.sensorServoTrim
-            };
+            var settings = that.settings;
 
             storageService.localStorage.setItem(that.address, JSON.stringify(settings));
         },
 
         // Retrieve settings from the storage
-        fromJSON : function() {
+        restoreSettings : function() {
             var that = this;
             var data = storageService.localStorage.getItem(that.address);
             if(data) {
                 data = JSON.parse(data);
-                that.steeringTrim = data.hasOwnProperty('steeringTrim') ? data.steeringTrim : 0;
-                that.sensorServoTrim = data.hasOwnProperty('sensorServoTrim')? data.sensorServoTrim : 0;
+                that.settings = data;
             }
         }
 
-};
+    };
 
     return Car;
 }]);
