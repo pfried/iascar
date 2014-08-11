@@ -3,13 +3,15 @@
 .modal-body
   .row
     .col-xs-12
-      p {{ 'settings.steeringTrim' | translate }}
+      label(for="steeringTrim") {{ 'settings.steeringTrim' | translate }}
     .col-xs-4.text-center
       button.btn.btn-warning(ng-click="car.steeringTrim = car.steeringTrim - 1") -
     .col-xs-4.text-center
-      span {{ car.steeringTrim }}
+      span(name="steeringTrim") {{ car.steeringTrim }}
     .col-xs-4.text-center
       button.btn.btn-success(ng-click="car.steeringTrim = car.steeringTrim + 1") +
+    .col-xs-12
+      span.help-block {{ 'settings.steeringTrimDescr' | translate }}
 
 .modal-footer
   button.btn.btn-primary(ng-click="closeSettings()") OK

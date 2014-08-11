@@ -15,7 +15,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 distanceUSFront : 5,
                 distanceUSRear  : 40,
                 temperature     : 0,
-                signal          : 0
+                signal          : -40,
             };
             this.actuators = {
                 speed       : 750,

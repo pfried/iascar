@@ -16,10 +16,9 @@
         .col-xs-3
           brightness(brightness-value="car.sensors.brightness")
         .col-xs-3
-          .btn
-            i.icon-cross(ng-show="car.state === 'connected'", ng-click="disconnect()")
+          signal(signal-value="car.sensors.signal")
 
-    p Battery: {{ car.sensors.battery }}
+    i.icon-cross(ng-show="car.state === 'connected'", ng-click="disconnect()")
 
     .joystickLandscape
       .row

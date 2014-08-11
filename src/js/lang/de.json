@@ -10,6 +10,7 @@
     "settings" : {
         "title" : "Einstellungen",
         "steeringTrim" : "Lenktrimmung",
+        "steeringTrimDescr" : "Der Lenkwert reicht von 500 links bis 1000 rechts und wird um diesen Wert korrigiert.",
         "sensorServoTrim" : "Sensor-Servo Trimmung"
     }
 }
