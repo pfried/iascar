@@ -373,13 +373,14 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
 
         setGenericActor : function(number, value) {
             var that = this;
+
             if(number === '1') {
                 that.actuators.generic1 = value;
             }
             if(number === '2') {
                 that.actuators.generic2 = value;
             }
-            console.log(that.actuators.generic1, that.actuators.generic2);
+
             return that.write('actuators', 'actuators', that.encodeActors());
         },
 
