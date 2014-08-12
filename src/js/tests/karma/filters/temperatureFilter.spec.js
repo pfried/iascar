@@ -19,7 +19,7 @@
         it('should calculate the right transformation for the temperature sensor to degrees celcius', function() {
             var temperatureSensor = 103;
 
-            expect($filter('temperatureCelcius')(temperatureSensor)).toBe(25.75);
+            expect($filter('temperatureCelcius')(temperatureSensor)).toBe(26);
         });
 
     });

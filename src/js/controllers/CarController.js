@@ -38,6 +38,7 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
 
         $scope.car = new Car(address);
         $scope.car.connect().then(function() {
+            // Here we get disconnected
             return $state.go('home');
         }, function() {
 
@@ -47,8 +48,9 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
                 $scope.car.discover().then(function() {
 
                     // Subscribe to updated values from the car
-                    $scope.car.subscribeToCar();
-                    $scope.car.setDrivingControl();
+                    $scope.car.subscribeToCar().then(function() {
+                        $scope.car.setDrivingControl();
+                    });
 
                 }).catch(function(error) {
                     console.error(error);

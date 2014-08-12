@@ -128,6 +128,23 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         return deferred.promise;
     }
 
+    function isConnected() {
+
+        var deferred = $q.defer();
+
+        bt.isConnected(function(result) {
+            if(result) {
+                if(result.isConnected === true) {
+                    deferred.resolve();
+                } else {
+                    deferred.reject();
+                }
+            }
+        });
+
+        return deferred.promise;
+    }
+
     function reconnect(params) {
         var deferred = $q.defer();
 
@@ -330,6 +347,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         startScan            : startScan,
         stopScan             : stopScan,
         connect              : connect,
+        isConnected          : isConnected,
         reconnect            : reconnect,
         disconnect           : disconnect,
         close                : close,

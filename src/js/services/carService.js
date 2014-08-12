@@ -10,18 +10,18 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             this.sensors = {
                 brightness      : 0,
                 battery         : 0,
-                distanceIRFront : 500,
-                distanceIRRear  : 2000,
-                distanceUSFront : 5,
-                distanceUSRear  : 40,
+                distanceIRFront : 0,
+                distanceIRRear  : 0,
+                distanceUSFront : 0,
+                distanceUSRear  : 0,
                 temperature     : 0,
-                signal          : -40,
+                signal          : 0,
             };
             this.actuators = {
                 speed       : 750,
                 angle       : 750,
                 speedMode   : 0,
-                sensorServo : 500,
+                sensorServo : 750,
                 horn        : 0,
                 lights      : {
                     front        : 0,
@@ -349,9 +349,9 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                     var u16bytes = bytes.buffer.slice(0, 6);
                     var u16 = new Uint16Array(u16bytes);
 
-                    that.actuators.brightness  = u16[0];
-                    that.actuators.temperature = u16[1];
-                    that.actuators.battery     = u16[2];
+                    that.sensors.brightness  = u16[0];
+                    that.sensors.temperature = u16[1];
+                    that.sensors.battery     = u16[2];
                 }
             });
         },
@@ -389,14 +389,16 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         subscribeToCar : function() {
             var that = this;
             var deferred = $q.defer();
+
             // Read the desriptors configuration
             that.readGenericActorButtonConfiguration();
 
-            $timeout(function() { that.subscribeDistance(); }, 200);
-            $timeout(function() { that.subscribeSensors(); }, 400);
-            $timeout(function() { that.subscribeActors(); }, 600);
-            $timeout(function() { that.subscribeSpeedAndAngle(); }, 800);
-            $timeout(function() { deferred.resolve(); }, 1000);
+            $timeout(function() { that.subscribeDistance(); }, 400);
+            $timeout(function() { that.subscribeSensors(); }, 600);
+            $timeout(function() { that.subscribeActors(); }, 800);
+            $timeout(function() { that.subscribeSpeedAndAngle(); }, 1000);
+
+            $timeout(function() { deferred.resolve(); }, 1200);
 
             return deferred.promise;
         },

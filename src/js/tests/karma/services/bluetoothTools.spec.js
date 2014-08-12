@@ -43,6 +43,14 @@
            expect(bluetoothTools.addressToAndroidFormat(androidFormat)).toBe('01:23:45:67:89:ab');
            expect(bluetoothTools.isValidAddress(androidFormat)).toBe(true);
         });
+
+        it('should recognice mac addresses which are from nordic semiconductor', function() {
+            var nordicSemiAddress = 'E4:47:3F:67:89:AB';
+            var otherVendorAddress = '01:23:45:67:89:ab';
+
+            expect(bluetoothTools.isNordicSemiVendorMac(nordicSemiAddress)).toBe(true);
+            expect(bluetoothTools.isNordicSemiVendorMac(otherVendorAddress)).toBe(false);
+        });
     });
 
 }());

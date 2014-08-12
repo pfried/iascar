@@ -152,7 +152,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
 
             var resultAndroid = {
                 'status': 'scanResult',
-                'address': '01:23:45:67:89:AB',
+                'address': 'E4:47:3F:67:89:AB',
                 'name': 'IASCar1',
                 'rssi': -50
             };
@@ -256,7 +256,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
                 window.setTimeout(function() {
                     that.deviceState.connected = true;
                     successCallback(resultConnected);
-                }, 2000);
+                }, 1500);
             } else {
                 this.produceError(errorCallback, 'connect');
             }
@@ -643,7 +643,7 @@ angular.module('iasCarMock', ['iasCar', 'ngMockE2E']).run(['$httpBackend', '$win
          */
         isConnected : function isConnected(successCallback) {
             successCallback({
-                'isConncted' : this.deviceState.connected
+                'isConnected' : this.deviceState.connected
             });
         },
 

@@ -15,6 +15,9 @@ angular.module('iasCar.directives').directive('joystick', function() {
             var joystickHeight = 200;
             var joystickWidth  = 200;
 
+            var color = '#ff4081';
+            var boundaryColor = '#bdbdbd';
+
             var center = {
                 y : joystickHeight / 2,
                 x : joystickWidth / 2
@@ -129,20 +132,59 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 // Clear the canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                ctx.beginPath();
-                ctx.strokeStyle = 'cyan';
-                ctx.lineWidth = 8;
-                ctx.arc(center.x, center.y, radiusCircle, 0, Math.PI*2, true);
-                ctx.stroke();
+                // If X and Y
+                if(isControlX() && isControlY()) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 8;
+                    ctx.arc(center.x, center.y, radiusCircle, 0, Math.PI * 2, true);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 3;
+                    ctx.arc(center.x, center.y, radiusBound, 0, Math.PI * 2, true);
+                    ctx.stroke();
+                }
+
+                var height = radiusCircle / 2;
+                var radius = height;
+                var width = radiusBound + radius;
+                var x = center.x;
+                var y = center.y;
+
+                // If the joystick is limited in one direction we want to draw some limit visualization
+                if(!(isControlX() && isControlY())) {
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = boundaryColor;
+
+                    // Rotate the boundaries
+                    if(isControlY()) {
+                        var temp = height;
+                        height = width;
+                        width = temp;
+                    }
+
+                    ctx.moveTo(x , y - height);
+                    ctx.arcTo(x + width, y - height, x + width, y - height + radius, radius);
+                    ctx.arcTo(x + width, y + height, x, y + height, radius);
+                    ctx.arcTo(x - width, y + height, x - width, y - height, radius);
+                    ctx.arcTo(x - width, y - height, x, y - height, radius);
+                    ctx.lineTo(x, y - height);
+
+                    ctx.stroke();
+
+                    //Draw a little circle inside the big one
+                    ctx.beginPath();
+                    ctx.strokeStyle = boundaryColor;
+                    ctx.lineWidth = 3;
+                    ctx.arc(cursorTouch.x, cursorTouch.y, radiusCircle / 2, 0, Math.PI*2, true);
+                    ctx.stroke();
+                }
 
                 ctx.beginPath();
-                ctx.strokeStyle = 'cyan';
-                ctx.lineWidth = 3;
-                ctx.arc(center.x, center.y, radiusBound, 0, Math.PI*2, true);
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.strokeStyle = 'cyan';
+                ctx.strokeStyle = color;
                 ctx.lineWidth = 3;
                 ctx.arc(cursorTouch.x, cursorTouch.y, radiusCircle, 0, Math.PI*2, true);
                 ctx.stroke();

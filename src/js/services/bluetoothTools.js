@@ -3,6 +3,8 @@ angular.module('iasCar.services').factory('bluetoothTools', function() {
 
     var macRegex = /^([0-9a-fA-F]{2}[:]){5}([0-9a-fA-F]{2})$/;
 
+    var nordicSemiRegex = /^(E4[:]47[:]3F[:])([0-9a-fA-F]{2}[:]){2}([0-9a-fA-F]{2})$/;
+
     var errorMessages = {
         notInitialized : 'Initialize Bluetooth first',
         noAddress : 'Please provide an address for connecting to a device',
@@ -29,11 +31,16 @@ angular.module('iasCar.services').factory('bluetoothTools', function() {
         return address.replace(/\w{2}(?=\w)/g, '$&:');
     }
 
+    function isNordicSemiVendorMac(mac) {
+        return nordicSemiRegex.test(mac);
+    }
+
     return {
         isValidAddress : isValidAddress,
         errorMessages  : errorMessages,
         unifyAddress : unifyAddress,
-        addressToAndroidFormat : addressToAndroidFormat
+        addressToAndroidFormat : addressToAndroidFormat,
+        isNordicSemiVendorMac : isNordicSemiVendorMac
     };
 
 });

@@ -68,13 +68,31 @@
 
         // TODO Jasmine 2.0 changes jasmine clock, we need this feature here since there will be two callbacks
         it('should connect to a bluetooth device if an address is given', function() {
+
             bluetoothService.initialize().then(function() {
                 return bluetoothService.connect({
                     'address' : 'ab'
                 });
             }).then(success, error, notify);
+
             $rootScope.$apply();
+
             //expect(notify).toHaveBeenCalled();
+        });
+
+        it('should return whether it is connected or not', function() {
+
+            bluetoothService._bt.deviceState.connected = true;
+            bluetoothService.isConnected().then(success);
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalled();
+
+            bluetoothService._bt.deviceState.connected = false;
+            bluetoothService.isConnected().then(success, error);
+            $rootScope.$apply();
+
+            expect(error).toHaveBeenCalled();
         });
 
         it('should disconnect from a bluetooth device', function() {
@@ -189,7 +207,7 @@
 
             $rootScope.$apply();
 
-            expect(success).toHaveBeenCalledWith({ 'status' : 'readDescriptor', 'serviceUuid' : '5678', 'characteristicUuid' : '1234', 'descriptorUuid' : '7890', 'value' : 'AgE='});
+            expect(success).toHaveBeenCalledWith({ 'status' : 'readDescriptor', 'serviceUuid' : '5678', 'characteristicUuid' : '1234', 'descriptorUuid' : '7890', 'value' : 'AAE='});
 
         });
 

@@ -147,14 +147,14 @@
 
             bt.isConnected(success);
             expect(success).toHaveBeenCalledWith({
-                'isConncted': true
+                'isConnected': true
             });
 
             bt.deviceState.connected = false;
 
             bt.isConnected(success);
             expect(success).toHaveBeenCalledWith({
-                'isConncted': false
+                'isConnected': false
             });
 
         });
