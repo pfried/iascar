@@ -1,0 +1,13 @@
+.modal-header
+  h3 {{ 'genericActor.title' | translate }} {{ number }}
+.modal-body
+    .row
+      .col-xs-12
+        form(role="form")
+          .form-group
+            label(for="steeringTrim") {{ 'genericActor.value' | translate }}
+            input.form-control(type="number", min="0", max="65535" ng-model="actorValue")
+            p.help-block {{ 'genericActor.help' | translate }}
+
+.modal-footer
+  button.btn.btn-primary(ng-click="closeModal(actorValue)") OK

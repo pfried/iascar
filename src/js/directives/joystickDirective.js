@@ -102,6 +102,7 @@ angular.module('iasCar.directives').directive('joystick', function() {
             function onTouchMove(event) {
                 // Prevent the browser from doing its default thing (scroll, zoom)
                 event.preventDefault();
+
                 for(var i = 0; i < event.changedTouches.length; i++){
                     var touch = event.changedTouches[i];
 
@@ -126,6 +127,7 @@ angular.module('iasCar.directives').directive('joystick', function() {
 
                 cursorTouch.x = center.x;
                 cursorTouch.y = center.y;
+
             }
 
             function draw() {

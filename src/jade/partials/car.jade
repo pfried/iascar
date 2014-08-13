@@ -3,10 +3,11 @@ div.car(ng-show="car.state === 'connected'")
   .pageHeader
     .container
       .row
-        .col-xs-8
+        .col-xs-6
           h1 {{ car.name }}
         .pull-right.settings
           div
+            signal(signal-value="car.sensors.signal")
             i.icon-bolt(ng-click="disconnect()")
             i.icon-tools(ng-click="openSettings()")
 
@@ -20,13 +21,11 @@ div.car(ng-show="car.state === 'connected'")
         .col-xs-2
           brightness(brightness-value="car.sensors.brightness")
         .col-xs-2
-          signal(signal-value="car.sensors.signal")
-        .col-xs-1
+          | < > F B B
+        .col-xs-4
           horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
-        .col-xs-1
-          generic-actor.actionButton(number="1", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)")
-        .col-xs-1
-          generic-actor.actionButton(number="2", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)")
+          generic-actor.actionButton(number="1", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
+          generic-actor.actionButton(number="2", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
 
     .row
       .pull-right
@@ -46,16 +45,15 @@ div.car(ng-show="car.state === 'connected'")
           battery(battery-value="car.sensors.battery")
         .col-xs-3
           brightness(brightness-value="car.sensors.brightness")
-        .col-xs-3
-          signal(signal-value="car.sensors.signal")
+
 
     .row
       .col-xs-6.col-xs-offset-3.distanceContainer
         distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings")
       .col-xs-3
         horn.actionButton(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
-        generic-actor.actionButton(number="1", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)")
-        generic-actor.actionButton(number="2", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)")
+        generic-actor.actionButton(number="1", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
+        generic-actor.actionButton(number="2", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
 
     .col-xs-12
       joystick(position="car.joystick", controls="XY")

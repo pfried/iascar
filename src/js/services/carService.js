@@ -8,14 +8,14 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             this.state = 'initializing';
 
             this.sensors = {
-                brightness      : 0,
-                battery         : 0,
+                brightness      : 10000,
+                battery         : 7,
                 distanceIRFront : 0,
                 distanceIRRear  : 0,
                 distanceUSFront : 0,
                 distanceUSRear  : 0,
-                temperature     : 0,
-                signal          : 0,
+                temperature     : 100,
+                signal          : 2,
             };
             this.actuators = {
                 speed       : 750,
@@ -105,10 +105,12 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var u8 = new Uint8Array(u16.buffer);
             return bluetoothService.bytesToEncodedString(u8);
         },
-        encodeActors : function() {
+        encodeActuators : function() {
             var that = this;
 
             var u16 = new Uint16Array([that.actuators.generic1, that.actuators.generic2]);
+            var u82 = new Uint8Array(u16.buffer.slice(0,4));
+            
             var u8  = new Uint8Array(2);
             u8[0] = that.actuators.horn;
 
@@ -121,9 +123,10 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             u8[1] |= (that.actuators.lights.blinkerRight << 4);
 
             // buffer, offset, length
-            var actor_values = new Uint8Array(u8, 0, 6);
-            actor_values.set(u16.buffer, 2);
-            return bluetoothService.bytesToEncodedString(actor_values);
+            var actuator_values = new Uint8Array(6);
+            actuator_values.set(u8, 0);
+            actuator_values.set(u82, 2);
+            return bluetoothService.bytesToEncodedString(actuator_values);
         },
         decode16Bit : function(value) {
             var bytes = bluetoothService.encodedStringToBytes(value);
@@ -151,7 +154,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 if(result) {
 
                     if(result.status === 'connecting') {
-                        that.state = 'cc connecting';
+                        that.state = 'connecting';
                     }
 
                     if(result.status === 'connected') {
@@ -368,7 +371,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var that = this;
             var char = value ? 1 : 0;
             that.actuators.horn = char;
-            return that.write('actuators', 'actuators', that.encodeActors());
+            return that.write('actuators', 'actuators', that.encodeActuators());
         },
 
         setGenericActor : function(number, value) {
@@ -381,7 +384,18 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 that.actuators.generic2 = value;
             }
 
-            return that.write('actuators', 'actuators', that.encodeActors());
+            return that.write('actuators', 'actuators', that.encodeActuators());
+        },
+
+        getGenericActor : function(number) {
+            var that = this;
+
+            if(number === '1') {
+                return that.actuators.generic1;
+            }
+            if(number === '2') {
+                return that.actuators.generic2;
+            }
         },
 
         // 7 Notifications possible in android 4.4?
@@ -422,7 +436,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 oldSensorServo = that.actuators.sensorServo;
                 oldSteeringTrim = that.settings.steeringTrim;
                 oldSensorServoTrim = that.settings.sensorServoTrim;
-            }, 100);
+            }, 150);
         },
 
         unsetDrivingControl : function() {

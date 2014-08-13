@@ -14,5 +14,11 @@
         "sensorServoTrim" : "Sensor-Servo Trimmung",
         "distanceRotation" : "Winkelanpassung Abstandssensoren",
         "lockDistanceRotation" : "Rotation abschalten"
+    },
+
+    "genericActor" : {
+        "title" : "Generischer Aktor",
+        "value" : "Wert des Aktors",
+        "help" : "Der generische Aktor ist ein unsigned 16-bit Integer und kann Werte von 0 bis 65535 annehmen."
     }
 }

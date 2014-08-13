@@ -14,5 +14,11 @@
         "sensorServoTrim" : "Sensor Servo trim",
         "distanceRotation" : "Angle adjustment distance sensors",
         "lockDistanceRotation" : "Disable rotation"
+    },
+
+    "genericActor" : {
+        "title" : "Generic Actor",
+        "value" : "Value of the actor",
+        "help" : "The generic actor is an unsigned 16-bit integer and ranges from 0 to 65535."
     }
 }

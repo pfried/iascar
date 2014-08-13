@@ -207,7 +207,7 @@
 
             $rootScope.$apply();
 
-            expect(success).toHaveBeenCalledWith({ 'status' : 'readDescriptor', 'serviceUuid' : '5678', 'characteristicUuid' : '1234', 'descriptorUuid' : '7890', 'value' : 'AAE='});
+            expect(success).toHaveBeenCalledWith({ 'status' : 'readDescriptor', 'serviceUuid' : '5678', 'characteristicUuid' : '1234', 'descriptorUuid' : '7890', 'value' : 'AgE='});
 
         });
 
