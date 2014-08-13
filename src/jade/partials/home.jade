@@ -1,7 +1,11 @@
 header
   .header
     .container
-      h1 {{ 'title' | translate }}
+      .row
+        .col-xs-10
+          h1 {{ 'title' | translate }}
+        .pull-right
+          i.icon-info(ng-click="console.log('asd')")
 
 .container.search
 

@@ -11,23 +11,23 @@ div.car(ng-show="car.state === 'connected'")
             i.icon-bolt(ng-click="disconnect()")
             i.icon-tools(ng-click="openSettings()")
 
-  .joystickLandscape.container
-    .carHeaderBar
-      .row
-        .col-xs-2
-          temperature(temperature-value="car.sensors.temperature")
-        .col-xs-2
-          battery(battery-value="car.sensors.battery")
-        .col-xs-2
-          brightness(brightness-value="car.sensors.brightness")
-        .col-xs-2
-          | < > F B B
-        .col-xs-4
-          horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
-          generic-actor.actionButton(number="1", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
-          generic-actor.actionButton(number="2", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
+  .joystickLandscape
+    .container
+      .carHeaderBar
+        .row
+          .col-xs-2
+            temperature(temperature-value="car.sensors.temperature")
+          .col-xs-2
+            battery(battery-value="car.sensors.battery")
+          .col-xs-3
+            brightness(brightness-value="car.sensors.brightness")
 
-    .row
+          .col-xs-5
+            horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+            generic-actor.actionButton(number="1", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
+            generic-actor.actionButton(number="2", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
+
+    .joystickContainer
       .pull-right
         joystick(position="car.joystick", controls="X")
       .pull-left
@@ -35,27 +35,29 @@ div.car(ng-show="car.state === 'connected'")
       .distanceContainer
         distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings")
 
-  .joystickPortrait.container
+  .joystickPortrait
 
-    .carHeaderBar
+    .container
+
+      .carHeaderBar
+        .row
+          .col-xs-4
+            temperature(temperature-value="car.sensors.temperature")
+          .col-xs-4
+            battery(battery-value="car.sensors.battery")
+          .col-xs-4
+            brightness(brightness-value="car.sensors.brightness")
+
+
       .row
+        .col-xs-6.col-xs-offset-3.distanceContainer
+          distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings")
         .col-xs-3
-          temperature(temperature-value="car.sensors.temperature")
-        .col-xs-3
-          battery(battery-value="car.sensors.battery")
-        .col-xs-3
-          brightness(brightness-value="car.sensors.brightness")
+          horn.actionButton(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+          generic-actor.actionButton(number="1", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
+          generic-actor.actionButton(number="2", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
 
-
-    .row
-      .col-xs-6.col-xs-offset-3.distanceContainer
-        distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings")
-      .col-xs-3
-        horn.actionButton(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
-        generic-actor.actionButton(number="1", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
-        generic-actor.actionButton(number="2", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
-
-    .col-xs-12
+    .joystickContainer
       joystick(position="car.joystick", controls="XY")
 
 
