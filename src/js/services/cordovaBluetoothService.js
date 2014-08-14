@@ -114,9 +114,9 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
                     deferred.resolve(result);
                 }
 
-            }, function () {
+            }, function (error) {
                 // Try reconnecting
-                return disconnect().then(close).then(function(params){ connect(params); });
+                deferred.reject(error);
             }, {
                 address : deviceAddress
             });
@@ -145,24 +145,15 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         return deferred.promise;
     }
 
-    function reconnect(params) {
+    function reconnect() {
         var deferred = $q.defer();
 
         isInitialized().then(function() {
 
-            if(!params || !params.address) {
-                return deferred.reject(bluetoothTools.errorMessages.noAddress);
-            }
-
-            if(!bluetoothTools.isValidAddress(params.address)) {
-                return deferred.reject(bluetoothTools.errorMessages.addressNotValid);
-            }
-
-            var deviceAddress = bluetoothTools.addressToAndroidFormat(params.address);
-
             // We get the disconnected event within this function
             // so we do only notify on connected event in order to not resolve the promise
             bt.reconnect(function(result) {
+
 
                 if(result && result.status === 'connecting') {
                     deferred.notify(result);
@@ -176,8 +167,6 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
 
             }, function (error) {
                 deferred.reject(error.message);
-            }, {
-                address : deviceAddress
             });
 
         },function() {

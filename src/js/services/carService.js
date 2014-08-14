@@ -116,11 +116,11 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
 
             u8[1] = 0x00;
 
-            u8[1] |= (that.actuators.lights.front << 0);
-            u8[1] |= (that.actuators.lights.back  << 1);
-            u8[1] |= (that.actuators.lights.brake << 2);
-            u8[1] |= (that.actuators.lights.blinkerLeft << 3);
-            u8[1] |= (that.actuators.lights.blinkerRight << 4);
+            //u8[1] |= (that.actuators.lights.front << 0);
+            //u8[1] |= (that.actuators.lights.back  << 1);
+            //u8[1] |= (that.actuators.lights.brake << 2);
+            //u8[1] |= (that.actuators.lights.blinkerLeft << 3);
+            //u8[1] |= (that.actuators.lights.blinkerRight << 4);
 
             // buffer, offset, length
             var actuator_values = new Uint8Array(6);
@@ -142,33 +142,10 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 address : that.address
             };
 
-            return bluetoothService.connect(params).then(function() {
-
-                // If this is called the promise is fullfilled and we are disconnected
-                that.state = 'disconnected';
-
-            }, function (error) {
-                that.state = 'error';
-                console.error(error);
-            }, function(result) {
-                if(result) {
-
-                    if(result.status === 'connecting') {
-                        that.state = 'connecting';
-                    }
-
-                    if(result.status === 'connected') {
-                        that.state = 'connected';
-                        that.name = result.name;
-                        // Restore settings from localstorage
-                        that.restoreSettings();
-                    }
-
-                    if(result.status === 'disconnecting') {
-                        that.state = 'disconnecting';
-                    }
-                }
-            });
+            return bluetoothService.connect(params);
+        },
+        reconnect : function() {
+            return bluetoothService.reconnect();
         },
         disconnect :  function () {
             this.unsetDrivingControl();
@@ -279,16 +256,16 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                     that.actuators.generic2 = u16[1];
 
                     // We can just set horn as 0x01 will be 1
-                    that.horn = u8[0];
+                    //that.horn = u8[0];
 
                     var lights = u8[1];
 
                     // Get the single bits from the lights byte
-                    that.actuators.lights.front        = (lights & (1 << 0));
-                    that.actuators.lights.back         = (lights & (1 << 1));
-                    that.actuators.lights.brake        = (lights & (1 << 2));
-                    that.actuators.lights.blinkerLeft  = (lights & (1 << 3));
-                    that.actuators.lights.blinkerRight = (lights & (1 << 4));
+                    that.actuators.lights.front        = (lights & (1 << 0)) ? 1 : 0;
+                    that.actuators.lights.back         = (lights & (1 << 1)) ? 1 : 0;
+                    that.actuators.lights.brake        = (lights & (1 << 2)) ? 1 : 0;
+                    that.actuators.lights.blinkerLeft  = (lights & (1 << 3)) ? 1 : 0;
+                    that.actuators.lights.blinkerRight = (lights & (1 << 4)) ? 1 : 0;
 
                 }
             });
@@ -436,7 +413,8 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 oldSensorServo = that.actuators.sensorServo;
                 oldSteeringTrim = that.settings.steeringTrim;
                 oldSensorServoTrim = that.settings.sensorServoTrim;
-            }, 150);
+             // 150 works pretty well
+            }, 175);
         },
 
         unsetDrivingControl : function() {

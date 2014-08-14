@@ -34,29 +34,48 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
 
     };
 
+    function onConnection(result) {
+        if(result.status === 'connecting') {
+            $scope.car.state = 'connecting';
+        }
+
+        if(result.status === 'connected') {
+            $scope.car.state = 'connected';
+            $scope.car.name = result.name;
+            // Restore settings from localstorage
+            $scope.car.restoreSettings();
+
+            $scope.car.discover().then(function() {
+
+                // Subscribe to updated values from the car
+                $scope.car.subscribeToCar().then(function() {
+                    $scope.car.setDrivingControl();
+                });
+
+            }).catch(function(error) {
+                console.error('discover error', error, error.message);
+            });
+        }
+    }
+
+    function onDisconnect() {
+        $state.go('home');
+    }
+
     function connectToCar(address) {
 
         $scope.car = new Car(address);
-        $scope.car.connect().then(function() {
-            // Here we get disconnected
-            return $state.go('home');
-        }, function() {
 
-        }, function() {
-            if($scope.car.state === 'connected') {
+        $scope.car.connect().then(onDisconnect, function(error) {
 
-                $scope.car.discover().then(function() {
+            console.log('connect error', error, error.message);
 
-                    // Subscribe to updated values from the car
-                    $scope.car.subscribeToCar().then(function() {
-                        $scope.car.setDrivingControl();
-                    });
+            // try reconnecting as this is most probably the reconnect issue
+            $scope.car.reconnect().then(onDisconnect, function(error) {
+                console.log('reconnect error', error, error.message);
+            }, onConnection);
 
-                }).catch(function(error) {
-                    console.error(error);
-                });
-            }
-        });
+        }, onConnection);
 
         $scope.disconnect = function() {
             $scope.car.disconnect().then(function() {
