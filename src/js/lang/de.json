@@ -7,6 +7,10 @@
         "noCars" : "keine Fahrzeuge gefunden"
     },
 
+    "connect" : {
+        "connecting" : "Verbinde zum Fahrzeug"
+    },
+
     "settings" : {
         "title" : "Einstellungen",
         "steeringTrim" : "Lenktrimmung",

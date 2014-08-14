@@ -1,3 +1,14 @@
+div.car(ng-show="car.state === 'connecting'")
+  .pageHeader
+    .container
+      .row
+        .col-xs-12
+          h1 {{ 'connect.connecting' | translate }}
+
+  .container
+    .connectIconContainer
+      i.icon-bolt
+
 div.car(ng-show="car.state === 'connected'")
 
   .pageHeader

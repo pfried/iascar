@@ -116,11 +116,11 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
 
             u8[1] = 0x00;
 
-            //u8[1] |= (that.actuators.lights.front << 0);
-            //u8[1] |= (that.actuators.lights.back  << 1);
-            //u8[1] |= (that.actuators.lights.brake << 2);
-            //u8[1] |= (that.actuators.lights.blinkerLeft << 3);
-            //u8[1] |= (that.actuators.lights.blinkerRight << 4);
+            u8[1] |= (that.actuators.lights.front << 0);
+            u8[1] |= (that.actuators.lights.back  << 1);
+            u8[1] |= (that.actuators.lights.brake << 2);
+            u8[1] |= (that.actuators.lights.blinkerLeft << 3);
+            u8[1] |= (that.actuators.lights.blinkerRight << 4);
 
             // buffer, offset, length
             var actuator_values = new Uint8Array(6);

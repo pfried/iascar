@@ -7,6 +7,10 @@
         "noCars" : "no cars found"
     },
 
+    "connect" : {
+        "connecting" : "Connecting to the car"
+    },
+
     "settings" : {
         "title" : "Settings",
         "steeringTrim" : "Steering trim",
