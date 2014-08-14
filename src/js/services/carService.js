@@ -413,13 +413,24 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                 oldSensorServo = that.actuators.sensorServo;
                 oldSteeringTrim = that.settings.steeringTrim;
                 oldSensorServoTrim = that.settings.sensorServoTrim;
+
              // 150 works pretty well
             }, 175);
+
+            // Checking for the signal strength
+            that.rssiInterval = $interval(function() {
+                bluetoothService.rssi().then(function(result) {
+                    if(result.status === 'rssi' && result.rssi) {
+                        that.sensors.signal = result.rssi;
+                    }
+                });
+            }, 1000);
         },
 
         unsetDrivingControl : function() {
             if(this.drivingInterval) {
                 $interval.cancel(this.drivingInterval);
+                $interval.cancel(this.rssiInterval);
             }
         },
 
