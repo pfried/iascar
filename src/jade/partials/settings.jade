@@ -22,5 +22,15 @@
           label(for="lockDistanceRotation")  {{ 'settings.lockDistanceRotation' | translate }}
             input(type="checkbox", ng-model="car.settings.lockDistanceRotation", name="lockDistanceRotation")
 
+    .row
+      .col-xs-12
+        label(for="expertMode") {{ 'settings.expertMode' | translate }}
+      .col-xs-12
+        .checkbox
+          label(for="expertMode") {{ 'settings.expertMode' | translate }}
+            input(type="checkbox", ng-model="car.settings.expertMode", name="expertMode")
+          span.help-block {{ 'settings.expertModeDescription' | translate }}
+
+
 .modal-footer
   button.btn.btn-primary(ng-click="closeSettings()") OK

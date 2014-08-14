@@ -2,10 +2,11 @@ header
   .header
     .container
       .row
-        .col-xs-10
+        .col-xs-8
           h1 {{ 'title' | translate }}
         .pull-right
-          i.icon-info(ng-click="console.log('asd')")
+          i.icon-tools(ng-click="openLanguageModal()")
+          i.icon-info(ng-click="goToInfo()")
 
 .container.search
 

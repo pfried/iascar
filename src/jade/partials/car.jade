@@ -52,8 +52,18 @@ div.car(ng-show="car.state === 'connected'")
         joystick(position="car.joystick", controls="X")
       .pull-left
         joystick(position="car.joystick", controls="Y")
-      .distanceContainer
-        distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings")
+      .distanceContainer(ng-hide="car.settings.expertMode")
+        distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings", ng-hide="car.settings.expertMode")
+      div(ng-show="car.settings.expertMode")
+        h3 {{ 'sensors.title' | translate }}:
+        p {{ 'sensors.USFront' | translate }}
+          span.pull-right {{ car.sensors.distanceUSFront }}
+        p {{ 'sensors.USRear' | translate }}:
+          span.pull-right {{ car.sensors.distanceUSRear }}
+        p {{ 'sensors.IRFront' | translate }}:
+          span.pull-right {{ car.sensors.distanceIRFront }}
+        p {{ 'sensors.IRRear' | translate }}:
+          span.pull-right {{ car.sensors.distanceIRRear }}
 
   .joystickPortrait
 
@@ -70,7 +80,17 @@ div.car(ng-show="car.state === 'connected'")
 
 
       .row
-        .col-xs-6.col-xs-offset-3.distanceContainer
+        .col-xs-9(ng-show="car.settings.expertMode")
+          h3 {{ 'sensors.title' | translate }}:
+          p {{ 'sensors.USFront' | translate }}
+            span.pull-right {{ car.sensors.distanceUSFront }}
+          p {{ 'sensors.USRear' | translate }}:
+            span.pull-right {{ car.sensors.distanceUSRear }}
+          p {{ 'sensors.IRFront' | translate }}:
+            span.pull-right {{ car.sensors.distanceIRFront }}
+          p {{ 'sensors.IRRear' | translate }}:
+            span.pull-right {{ car.sensors.distanceIRRear }}
+        .col-xs-6.col-xs-offset-3.distanceContainer(ng-hide="car.settings.expertMode")
           distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings")
         .col-xs-3.actors
           horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")

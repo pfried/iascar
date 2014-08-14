@@ -47,7 +47,8 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             this.settings = {
                 steeringTrim : 0,
                 sensorServoTrim : 0,
-                lockDistanceRotation : false
+                lockDistanceRotation : false,
+                expertMode : false
             };
 
         } else {

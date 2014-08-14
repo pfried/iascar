@@ -40,6 +40,7 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
         }
 
         if(result.status === 'connected') {
+
             $scope.car.state = 'connected';
             $scope.car.name = result.name;
             // Restore settings from localstorage
@@ -55,6 +56,12 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
             }).catch(function(error) {
                 console.error('discover error', error, error.message);
             });
+
+            $scope.disconnect = function() {
+                $scope.car.disconnect().then(function() {
+                    $state.go('home');
+                });
+            };
         }
     }
 
@@ -76,12 +83,6 @@ angular.module('iasCar').controller('CarController', ['$scope', '$window', '$sta
             }, onConnection);
 
         }, onConnection);
-
-        $scope.disconnect = function() {
-            $scope.car.disconnect().then(function() {
-                $state.go('home');
-            });
-        };
     }
 
     bluetoothService.isInitialized().then(function() {

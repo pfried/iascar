@@ -11,6 +11,15 @@ angular.module('iasCar').config(['$urlRouterProvider', '$stateProvider', functio
                 }
             }
         })
+        .state('info', {
+            url: '/info',
+            views: {
+                'mainPanel': {
+                    templateUrl: 'partials/info.html',
+                    controller: 'InfoController'
+                }
+            }
+        })
         .state('car', {
             url: '/car/:carAddress',
             views : {
