@@ -1,4 +1,15 @@
-angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$timeout', '$state', 'bluetoothService', function($scope, $window, $timeout, $state, bluetoothService) {
+angular.module('iasCar').controller('HomeController',
+    [
+        '$scope',
+        '$window',
+        '$timeout',
+        '$state',
+        'bluetoothService',
+        '$translate',
+        '$modal',
+        'storageService',
+
+        function($scope, $window, $timeout, $state, bluetoothService, $translate, $modal, storageService) {
     'use strict';
 
     var timeout;
@@ -22,7 +33,6 @@ angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$ti
             $scope.connectToDevice = connectToDevice;
 
             timeout = $timeout(function() {
-                $window.console.log($scope.cars);
                 stopScan();
             }, 5000);
 
@@ -60,5 +70,44 @@ angular.module('iasCar').controller('HomeController', ['$scope', '$window', '$ti
             carAddress : device.address
         });
     }
+
+    function goToInfo() {
+        $state.go('info');
+    }
+
+    $scope.goToInfo = goToInfo;
+
+    var ModalInstanceController = function ($scope, $modalInstance, $translate, storageService) {
+
+        $scope.closeLanguageSettings = function() {
+            $modalInstance.close();
+            storageService.localStorage.setItem('language', JSON.stringify({ 'language' :  $translate.use() }));
+        };
+
+        $scope.setLanguage = function(code) {
+            $translate.use(code);
+        };
+
+        $scope.translate = $translate;
+
+    };
+
+    $scope.openLanguageModal = function () {
+
+        $modal.open({
+            controller : ModalInstanceController,
+            templateUrl: 'partials/language.html',
+            size: 'sm',
+            resolve : {
+                'storageService' : function() {
+                    return storageService;
+                },
+                '$translate' : function() {
+                    return $translate;
+                }
+            }
+        });
+
+    };
 
 }]);

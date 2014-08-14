@@ -55,7 +55,7 @@
     },
 
     "sensors" : {
-        "title" : "Abstandssensoren",
+        "title" : "Abstand",
         "USFront" : "Ultraschall vorne",
         "USRear" : "Ultraschall hinten",
         "IRFront" : "Infrarot vorne",

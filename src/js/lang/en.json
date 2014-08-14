@@ -55,7 +55,7 @@
     },
 
     "sensors" : {
-        "title" : "Distance Sensors",
+        "title" : "Distance",
         "USFront" : "Ultrasonic Front",
         "USRear" : "Ultrasonix Rear",
         "IRFront" : "Infrared Front",

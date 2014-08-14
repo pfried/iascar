@@ -23,4 +23,4 @@ angular.module('iasCar').config(['$translateProvider', function ($translateProvi
 
     restoreLanguage();
 
-}]);;
+}]);

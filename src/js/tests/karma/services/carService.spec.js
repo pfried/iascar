@@ -59,7 +59,7 @@
 
             car.storeSettings();
 
-            expect(localStorage.setItem).toHaveBeenCalledWith('ab:cd:ef:12:34:56', '{"steeringTrim":10,"sensorServoTrim":0,"lockDistanceRotation":false}');
+            expect(localStorage.setItem).toHaveBeenCalledWith('ab:cd:ef:12:34:56', '{"steeringTrim":10,"sensorServoTrim":0,"lockDistanceRotation":false,"expertMode":false}');
 
         });
 
@@ -74,7 +74,7 @@
             car.restoreSettings();
 
             expect(localStorage.getItem).toHaveBeenCalledWith('ab:cd:ef:12:34:56');
-            expect(car.settings).toEqual({ steeringTrim : 10, sensorServoTrim : 2, lockDistanceRotation : true });
+            expect(car.settings).toEqual({ steeringTrim : 10, sensorServoTrim : 2, lockDistanceRotation : true, expertMode : false });
         });
 
     });
