@@ -1,6 +1,18 @@
-h1 IAS Car
+header
+  .header
+    .container
+      .row
+        .col-xs-8
+          h1 {{ 'title' | translate }}
+        .pull-right
+          i.icon-tools(ng-click="openLanguageModal()")
+          i.icon-info(ng-click="goToInfo()")
 
-.container
-  a(ui-sref="scan") Search for bluetooth cars
+.container.search
 
-  h2 Settings
+  ul.cars(ng-repeat="car in cars | nordicMac")
+    li(ng-click="connectToDevice(car)") {{ car.name }}
+      i.pull-right(class="icon-signal{{ car.rssi | signalStrength }}")
+
+  div.text-center
+    button.btn.btn-success(ng-click="startScan()", ng-disabled="scanning") {{ 'scan.scanForCars' | translate }}

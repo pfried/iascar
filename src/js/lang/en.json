@@ -1,8 +1,64 @@
 {
     "title" : "IAS Bluetooth Car",
-    "description" : "Study work at the IAS about the Bluetooth Teamwork Car",
+    "description" : "Study work at the IAS about the Bluetooth Teamwork Car.",
+
+    "language" : {
+        "title" : "Language settings",
+        "label" : "Language",
+        "description" : "Please select your language",
+        "german" : "deutsch",
+        "english" : "english"
+    },
+
+    "scan" : {
+        "scanForCars" : "search for cars",
+        "noCars" : "no cars found"
+    },
+
+    "connect" : {
+        "connecting" : "Connecting to the car"
+    },
+
+    "info" : {
+        "title" : "About the app",
+        "ias" : "IAS, University of Stuttgart",
+        "address" : {
+            "professor" : "Prof. Dr.-Ing. Dr. h. c. Peter Göhner",
+            "street" : "Pfaffenwaldring 47",
+            "zipCity" : "70550 Stuttgart",
+            "country" : "Germany"
+        },
+        "author" : "Author",
+        "authorName" : "Friedrich Mäckle",
+        "sadaNr" : "SADA Nr. 2625",
+        "contact" : "Contact",
+        "contactName" : "Andreas Friedrich",
+        "contactEmail" : "andreas.friedrich@ias.uni-stuttgart.de",
+        "description" : "This application was created during a student research project."
+    },
 
     "settings" : {
-        "title" : "Settings"
+        "title" : "Car settings",
+        "steeringTrim" : "Steering trim",
+        "steeringTrimDescr" : "The steering ranges between 500 left to 1000 right and is corrected by this value.",
+        "sensorServoTrim" : "Sensor Servo trim",
+        "distanceRotation" : "Angle adjustment distance sensors",
+        "lockDistanceRotation" : "Disable rotation",
+        "expertMode" : "Expert mode",
+        "expertModeDescription" : "See the raw data of the distance sensors"
+    },
+
+    "genericActor" : {
+        "title" : "Generic Actor",
+        "value" : "Value of the actor",
+        "help" : "The generic actor is an unsigned 16-bit integer and ranges from 0 to 65535."
+    },
+
+    "sensors" : {
+        "title" : "Distance",
+        "USFront" : "Ultrasonic Front",
+        "USRear" : "Ultrasonix Rear",
+        "IRFront" : "Infrared Front",
+        "IRRear" : "Infrared Rear"
     }
 }

@@ -1,0 +1,15 @@
+.modal-header
+  h3 {{ 'language.title' | translate }}
+.modal-body
+  form(role="form")
+    .row
+      .col-xs-12
+        label(for="steeringTrim") {{ 'language.label' | translate }}
+      .col.xs-12.text-center
+        button.btn(ng-click="setLanguage('de')", ng-class="{'active' : translate.use() === 'de'}") {{ 'language.german' | translate }}
+        button.btn(ng-click="setLanguage('en')", ng-class="{'active' : translate.use() === 'en'}") {{ 'language.english' | translate }}
+      .col-xs-12
+        span.help-block {{ 'language.description' | translate }}
+
+.modal-footer
+  button.btn.btn-primary(ng-click="closeLanguageSettings()") OK

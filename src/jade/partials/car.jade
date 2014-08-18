@@ -1,3 +1,105 @@
-.container
-  p(ng-show="connecting") Loading
-  h1 {{ car.name }}
+div.car(ng-show="car.state === 'connecting'")
+  .pageHeader
+    .container
+      .row
+        .col-xs-12
+          h1 {{ 'connect.connecting' | translate }}
+
+  .container
+    .connectIconContainer
+      i.icon-bolt
+
+div.car(ng-show="car.state === 'connected'")
+
+  .pageHeader
+    .container
+      .row
+        .col-xs-6
+          h1 {{ car.name }}
+        .pull-right.settings
+          div
+            signal(signal-value="car.sensors.signal")
+            i.icon-bolt(ng-click="disconnect()")
+            i.icon-tools(ng-click="openSettings()")
+      .row
+        .col-xs-12
+          div.lights
+            p
+              i.light.icon-arrow-up(light="car.actuators.lights.front ")
+              i.light.icon-arrow-down(light="car.actuators.lights.back")
+              i.light.brake.icon-arrow-down(light="car.actuators.lights.brake")
+              i.light.blinker.icon-arrow-left(light="car.actuators.lights.blinkerLeft")
+              i.light.blinker.icon-arrow-right(light="car.actuators.lights.blinkerRight")
+
+  .joystickLandscape
+    .container
+      .carHeaderBar
+        .row
+          .col-xs-2
+            temperature(temperature-value="car.sensors.temperature")
+          .col-xs-2
+            battery(battery-value="car.sensors.battery")
+          .col-xs-3
+            brightness(brightness-value="car.sensors.brightness")
+
+          .col-xs-5
+            horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+            generic-actor.actionButton(number="1", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
+            generic-actor.actionButton(number="2", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
+
+    .joystickContainer
+      .pull-right
+        joystick(position="car.joystick", controls="X")
+      .pull-left
+        joystick(position="car.joystick", controls="Y")
+      .distanceContainer(ng-hide="car.settings.expertMode")
+        distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings", ng-hide="car.settings.expertMode")
+      div(ng-show="car.settings.expertMode")
+        h3 {{ 'sensors.title' | translate }}:
+        p {{ 'sensors.USFront' | translate }}
+          span.pull-right {{ car.sensors.distanceUSFront }}
+        p {{ 'sensors.USRear' | translate }}:
+          span.pull-right {{ car.sensors.distanceUSRear }}
+        p {{ 'sensors.IRFront' | translate }}:
+          span.pull-right {{ car.sensors.distanceIRFront }}
+        p {{ 'sensors.IRRear' | translate }}:
+          span.pull-right {{ car.sensors.distanceIRRear }}
+
+  .joystickPortrait
+
+    .container
+
+      .carHeaderBar
+        .row
+          .col-xs-4
+            temperature(temperature-value="car.sensors.temperature")
+          .col-xs-4
+            battery(battery-value="car.sensors.battery")
+          .col-xs-4
+            brightness(brightness-value="car.sensors.brightness")
+
+
+      .row
+        .col-xs-9(ng-show="car.settings.expertMode")
+          h3 {{ 'sensors.title' | translate }}:
+          p {{ 'sensors.USFront' | translate }}
+            span.pull-right {{ car.sensors.distanceUSFront }}
+          p {{ 'sensors.USRear' | translate }}:
+            span.pull-right {{ car.sensors.distanceUSRear }}
+          p {{ 'sensors.IRFront' | translate }}:
+            span.pull-right {{ car.sensors.distanceIRFront }}
+          p {{ 'sensors.IRRear' | translate }}:
+            span.pull-right {{ car.sensors.distanceIRRear }}
+        .col-xs-6.col-xs-offset-3.distanceContainer(ng-hide="car.settings.expertMode")
+          distance(sensors="car.sensors", actuators="car.actuators", settings="car.settings")
+        .col-xs-3.actors
+          horn(set-horn-on='car.setHorn(true)', set-horn-off="car.setHorn(false)")
+          generic-actor(number="1", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
+          generic-actor(number="2", settings="car.genericActorButtonSettings", set-value="car.setGenericActor(number, value)", get-value="car.getGenericActor(number)")
+
+    .joystickContainer
+      joystick(position="car.joystick", controls="XY")
+
+
+
+

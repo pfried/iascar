@@ -14,7 +14,7 @@ angular.module('iasCar.services').provider('bluetoothService', ['$windowProvider
     // Returns the Name of the Bluetooth Provider
     this.detectProviderName = function detectProviderName() {
 
-        if ($window.hasOwnProperty('cordova')) {
+        if ($window.hasOwnProperty('cordova') && window.hasOwnProperty('bluetoothle')) {
             return 'cordova';
         }
 
@@ -27,17 +27,25 @@ angular.module('iasCar.services').provider('bluetoothService', ['$windowProvider
     };
 
     // Returns the implementation of the available Bluetooth Provider
-    this.$get = ['chromeBluetoothService', 'cordovaBluetoothService', function getBluetoothProvider (chromeBluetoothService, cordovaBluetoothService) {
+    this.$get = ['$injector', function getBluetoothProvider ($injector) {
+
+        // If there is no Provider set, we run the autodetect feature once again
+        if(!bluetoothProvider) {
+            this.setProvider(this.detectProviderName());
+        }
 
         if(bluetoothProvider === 'cordova') {
-            return cordovaBluetoothService;
+            return $injector.get('cordovaBluetoothService');
         }
 
         if(bluetoothProvider === 'chrome') {
-            return chromeBluetoothService;
+            return $injector.get('chromeBluetoothService');
         }
 
-        return false;
+        throw {
+            name: 'BluetoothMissingProviderError',
+            message: 'No Bluetooth Low Energy Provider available'
+        };
     }];
 
 }]);

@@ -9,4 +9,18 @@ angular.module('iasCar').config(['$translateProvider', function ($translateProvi
 
     $translateProvider.preferredLanguage('en');
 
+
+
+}]).run([ 'storageService', '$translate', function (storageService, $translate) {
+
+    function restoreLanguage() {
+        var data = storageService.localStorage.getItem('language');
+        if(data) {
+            data = JSON.parse(data);
+            $translate.use(data.language);
+        }
+    }
+
+    restoreLanguage();
+
 }]);

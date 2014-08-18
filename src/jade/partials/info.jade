@@ -1,0 +1,34 @@
+header
+  .header
+    .container
+      .row
+        .col-xs-10
+          h1 {{ 'info.title' | translate }}
+        .pull-right
+          span.closeIcon(ng-click="closeInfo()") &times;
+
+.container.description
+  .row
+    .col-xs-12.col-sm-6
+      h2 {{ 'title' | translate }}
+      p
+       strong {{ 'info.author' | translate }}: {{ 'info.authorName' | translate }}, {{ 'info.sadaNr' | translate }}
+      p {{ 'description' | translate }}
+
+    .col-xs-12.col-sm-6
+      h3 {{ 'info.ias' | translate }}
+      address
+        strong {{ 'info.address.professor' | translate }}
+        br
+        | {{ 'info.address.street' | translate }}
+        br
+        | {{ 'info.address.zipCity' | translate }}
+        br
+        | {{ 'info.address.country' | translate }}
+
+      p {{ 'info.contact' | translate }}: {{ 'info.contactName' | translate }}
+        br
+        a(href="mailto:{{ 'info.contactEmail' | translate}}") {{ 'info.contactEmail' | translate}}
+
+    .col-xs-12.col-sm-6
+      p {{ 'info.description' | translate }}

@@ -68,17 +68,159 @@
 
         // TODO Jasmine 2.0 changes jasmine clock, we need this feature here since there will be two callbacks
         it('should connect to a bluetooth device if an address is given', function() {
-            console.log('jasmine-version:' + jasmine.getEnv().versionString());
+
             bluetoothService.initialize().then(function() {
                 return bluetoothService.connect({
                     'address' : 'ab'
                 });
             }).then(success, error, notify);
+
             $rootScope.$apply();
+
             //expect(notify).toHaveBeenCalled();
         });
 
+        it('should return whether it is connected or not', function() {
 
+            bluetoothService._bt.deviceState.connected = true;
+            bluetoothService.isConnected().then(success);
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalled();
+
+            bluetoothService._bt.deviceState.connected = false;
+            bluetoothService.isConnected().then(success, error);
+            $rootScope.$apply();
+
+            expect(error).toHaveBeenCalled();
+        });
+
+        it('should disconnect from a bluetooth device', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            bluetoothService.disconnect().then(success, error);
+
+            $rootScope.$apply();
+            expect(success).toHaveBeenCalled();
+        });
+
+        it('should close a connection', function() {
+
+            bluetoothService.close().then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalled();
+        });
+
+        it('should not disconnect if the device is not connected', function() {
+            bluetoothService._bt.deviceState.connected = false;
+
+            bluetoothService.disconnect().then(success, error);
+
+            $rootScope.$apply();
+            expect(error).toHaveBeenCalled();
+        });
+
+        it('should discover services and characteristics', function() {
+            bluetoothService._bt.deviceState.connected = true;
+            bluetoothService._bt.deviceState.discovered = false;
+
+            bluetoothService.discover().then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalled();
+        });
+
+        it('should read a characeristic\'s value', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            var params = {
+                'serviceUuid' : '5678',
+                'characteristicUuid' : '1234'
+            };
+
+            bluetoothService.read(params).then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalledWith({ 'status' : 'read', 'serviceUuid' : '5678', 'characteristicUuid' : '1234', 'value' : ''});
+        });
+
+        it('should write a value to a characteristic', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            var params = {
+                'serviceUuid' : '5678',
+                'characteristicUuid' : '1234',
+                'value' : 1
+            };
+
+            bluetoothService.write(params).then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalledWith({ 'status' : 'written', 'serviceUuid' : '5678', 'characteristicUuid' : '1234', 'value' : 1});
+        });
+
+        it('should subscribe to a characteristic', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            var params = {
+                'serviceUuid' : '5678',
+                'characteristicUuid' : '1234'
+            };
+
+            bluetoothService.subscribe(params).then(success, error, notify);
+
+            $rootScope.$apply();
+
+            //expect(notify).toHaveBeenCalledWith({ 'status' : 'subscribed', 'serviceUuid' : '5678', 'characteristicUuid' : '1234'});
+        });
+
+        it('should unsubscribe to a characteristic', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            var params = {
+                'serviceUuid' : '5678',
+                'characteristicUuid' : '1234'
+            };
+
+            bluetoothService.unsubscribe(params).then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalledWith({ 'status' : 'unsubscribed', 'serviceUuid' : '5678', 'characteristicUuid' : '1234'});
+        });
+
+        it('should read a descriptor\'s value', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            var params = {
+                'serviceUuid' : '5678',
+                'characteristicUuid' : '1234',
+                'descriptorUuid' : '7890'
+            };
+
+            bluetoothService.readDescriptor(params).then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalledWith({ 'status' : 'readDescriptor', 'serviceUuid' : '5678', 'characteristicUuid' : '1234', 'descriptorUuid' : '7890', 'value' : 'AgE='});
+
+        });
+
+        it('should return the bluetooth device rssi (signal strength)', function() {
+            bluetoothService._bt.deviceState.connected = true;
+
+            bluetoothService.rssi().then(success);
+
+            $rootScope.$apply();
+
+            expect(success).toHaveBeenCalledWith({ 'status' : 'rssi', 'rssi' : -5 });
+
+        });
 
     });
 }());

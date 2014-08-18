@@ -1,0 +1,36 @@
+.modal-header
+  h3 {{ 'settings.title' | translate }}
+.modal-body
+  form(role="form")
+    .row
+      .col-xs-12
+        label(for="steeringTrim") {{ 'settings.steeringTrim' | translate }}
+      .col-xs-4.text-center
+        button.btn.btn-warning(ng-click="car.settings.steeringTrim = car.settings.steeringTrim - 10") -
+      .col-xs-4.text-center
+        span(name="steeringTrim") {{ car.settings.steeringTrim }}
+      .col-xs-4.text-center
+        button.btn.btn-success(ng-click="car.settings.steeringTrim = car.settings.steeringTrim + 10") +
+      .col-xs-12
+        span.help-block {{ 'settings.steeringTrimDescr' | translate }}
+
+    .row
+      .col-xs-12
+        label(for="lockDistanceRotation")  {{ 'settings.distanceRotation' | translate }}
+      .col-xs-12
+        .checkbox
+          label(for="lockDistanceRotation")  {{ 'settings.lockDistanceRotation' | translate }}
+            input(type="checkbox", ng-model="car.settings.lockDistanceRotation", name="lockDistanceRotation")
+
+    .row
+      .col-xs-12
+        label(for="expertMode") {{ 'settings.expertMode' | translate }}
+      .col-xs-12
+        .checkbox
+          label(for="expertMode") {{ 'settings.expertMode' | translate }}
+            input(type="checkbox", ng-model="car.settings.expertMode", name="expertMode")
+          span.help-block {{ 'settings.expertModeDescription' | translate }}
+
+
+.modal-footer
+  button.btn.btn-primary(ng-click="closeSettings()") OK

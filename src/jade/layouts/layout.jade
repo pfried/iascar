@@ -5,15 +5,14 @@ html
     meta(name="robots", content="noindex, nofollow")
     meta(charset='UTF-8')
     meta(name="apple-mobile-web-app-capable", content="yes")
-    meta(name="viewport", content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-density=device-dpi")
-    title(IAS Bluetooth Car)
+    meta(name="viewport", content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1, minimum-scale=1, target-density=device-dpi")
+    title {{ 'title' | translate }}
     link(rel="stylesheet", href="css/index.css")
   body
-    #pageWrapper
-      block header
-      block content
-      block footer
-    script(src="cordova.js")
-    script(src="js/index.js")
-    if livereload
-      script(src="http://localhost:35729/livereload.js")
+    block header
+    block content
+    block footer
+  script(src="cordova.js")
+  script(src="js/index.js")
+  if livereload
+    script(src="http://localhost:35729/livereload.js")

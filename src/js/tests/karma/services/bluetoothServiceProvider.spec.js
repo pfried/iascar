@@ -18,17 +18,25 @@
 
         });
 
-        it('should return false if there is no bluetooth provider available', function() {
+        it('should throw an error if there is no bluetooth provider available', function() {
 
             // Config sets a provider, so set to empty string here
-            bluetoothServiceProvider.setProvider('');
+            bluetoothServiceProvider.setProvider('noProvider');
 
             inject(function ($injector) {
-                expect($injector.get('bluetoothService')).toBe(false);
+                expect(function () {$injector.get('bluetoothService');}).toThrow();
             });
         });
 
         it('should return false if no bluetooth provider is present', function() {
+            // TODO: Tests wont work in chrome itself since window.chrome is not deleteable
+            try {
+                delete window.bluetoothle;
+                delete window.chrome;
+            } catch(e) {
+                console.error(e);
+            }
+
             expect(bluetoothServiceProvider.detectProviderName()).toBeFalsy();
         });
 
@@ -47,6 +55,7 @@
         it('should detect the cordova provider based on window properties', function() {
 
             window.cordova = {};
+            window.bluetoothle = {};
 
             expect(bluetoothServiceProvider.detectProviderName()).toBe('cordova');
 

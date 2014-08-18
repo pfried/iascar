@@ -1,2 +1,193 @@
 @import "../js/lib/bower/bootstrap/less/bootstrap.less";
+@import "./fonts.less";
 
+// Indigo
+@base-color-500: #3f51b5;
+@base-color-700 : #303f9f;
+@base-color-900 : #1a237e;
+@base-color-100 : #c5cae9;
+
+// Pink
+@accent-color-500: #ff4081;
+@accent-color-100: #ff80ab;
+@accent-color-400: #f50057;
+
+@off-color   : #e51c23;
+@on-color    : #259b24;
+@value-color : #9c27b0;
+
+@divider-color : lighten(#000, 88%);
+@font-hint-color : lighten(#000, 74%);
+@font-seconday-color : lighten(#000, 46%);
+@font-text-color : lighten(#000, 13%);
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family : "Roboto", "Helvetica Neue", Helvetica,Arial, sans-serif;
+  color : @font-text-color;
+  transition: opacity ease-in 0.2s;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-touch-callout: none;
+
+}
+
+body[unresolved] {
+  opacity: 0;
+  display: block;
+  overflow: hidden;
+}
+
+.mainPanel {
+  height : 100%;
+}
+
+a {
+  color : @accent-color-500;
+}
+
+.header {
+
+  background-color : @base-color-500;
+
+  h1 {
+    color : white;
+    font-size : 24px;
+  }
+
+  .pull-right {
+    margin-top : 18px;
+    margin-right : 18px;
+  }
+
+  i, span.closeIcon {
+    cursor : pointer;
+    font-size : 24px;
+    color : white;
+    margin-left : 12px;
+  }
+
+}
+
+.search {
+
+  button {
+    margin-top: 1em;
+  }
+
+  ul.cars {
+
+    padding : 0px;
+
+    li {
+      list-style-type : none;
+      font-size : 2.5em;
+      padding: 8px;
+      line-height : 3em;
+
+      i {
+        font-size : 2em;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+.car {
+
+  height : 100%;
+
+  .connectIconContainer {
+
+    text-align : center;
+    padding : 100px;
+
+    i {
+      font-size : 48px;
+      color : @base-color-500;
+    }
+  }
+
+  .pageHeader {
+    background-color : @base-color-500;
+    color : @base-color-900;
+    margin-bottom : 8px;
+
+    h1 {
+      color : white;
+      font-size : 18px;
+    }
+
+    .settings {
+      margin : 12px;
+      font-size : 1.6em;
+
+      signal {
+        color : white;
+        display : inline-block;
+        margin-right : 1.2em;
+      }
+
+      i {
+        margin-right : 14px;
+      }
+    }
+  }
+
+  .lights {
+    text-align : center;
+  }
+
+  .carHeaderBar {
+
+    font-size : 1.5em;
+    text-align : center;
+
+    i {
+      margin-right : 8px;
+    }
+
+    span {
+      font-size : 1.2em;
+    }
+
+  }
+
+  .distanceContainer {
+    padding : 0px;
+  }
+
+  .actors {
+    padding-top : 20px;
+  }
+
+}
+
+.joystickContainer {
+  position: fixed;
+  bottom: 0px;
+  width : 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.joystickPortrait, .joystickLandscape {
+  display : none;
+}
+
+@media screen and (orientation: portrait) {
+    .joystickPortrait {
+        display : block;
+    }
+}
+
+@media screen and (orientation: landscape) {
+  .joystickLandscape {
+      display : block;
+  }
+}

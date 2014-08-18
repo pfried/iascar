@@ -6,11 +6,12 @@ module.exports = function (grunt) {
     var cordovaBuildPath = 'bluetoothcar/www';
 
     var CLIENT_LIB_FILES = [
-        'src/js/lib/bower/jquery/dist/jquery.js',
+        //'src/js/lib/bower/jquery/dist/jquery.js',
         'src/js/lib/bower/angular/angular.js',
         'src/js/lib/bower/angular-cookies/angular-cookies.js',
         'src/js/lib/bower/angular-resource/angular-resource.js',
         'src/js/lib/bower/angular-bootstrap/ui-bootstrap.js',
+        'src/js/lib/bower/angular-bootstrap/ui-bootstrap-tpls.js',
         'src/js/lib/bower/angular-ui-router/release/angular-ui-router.js',
         'src/js/lib/bower/angular-translate/angular-translate.js',
         'src/js/lib/bower/angular-translate-loader-static-files/angular-translate-loader-static-files.js'
@@ -73,6 +74,16 @@ module.exports = function (grunt) {
                 options : {
                     livereload : true
                 }
+            },
+            lang : {
+                files : ['src/js/lang/**'],
+                tasks : ['copy'],
+                options : {
+                    livereload : true
+                }
+            },
+            grunt : {
+                files : ['gruntfile.js']
             }
         },
         jshint: {
@@ -222,7 +233,7 @@ module.exports = function (grunt) {
             cordova: {
                 files: [{
                     cwd    : 'src/jade/',
-                    src    : ['*.jade', 'partials/*.jade'],
+                    src    : ['*.jade', 'partials/*.jade', 'directives/*.jade'],
                     dest   : cordovaBuildPath,
                     expand : true,
                     ext    : '.html'
@@ -240,7 +251,7 @@ module.exports = function (grunt) {
             chrome : {
                 files: [{
                     cwd    : 'src/jade/',
-                    src    : ['*.jade', 'partials/*.jade'],
+                    src    : ['*.jade', 'partials/*.jade', 'directives/*.jade'],
                     dest   : chromeBuildPath,
                     expand : true,
                     ext    : '.html'
@@ -283,7 +294,7 @@ module.exports = function (grunt) {
         plato: {
             all : {
                 options: {
-                    jshint : grunt.file.readJSON('.jshintrc')
+                    jshintrc : '.jshintrc'
                 },
                 files : {
                     'reports' : ['gruntfile.js'].concat(CLIENT_SRC_FILES).concat(CLIENT_SPEC_FILES).concat(MOCK_FILES)
@@ -366,7 +377,7 @@ module.exports = function (grunt) {
     grunt.registerTask('cordovaPrepare', ['exec:prepare']);
     grunt.registerTask('cordovaServe', ['exec:serve']);
     grunt.registerTask('cordovaBuild', ['exec:build']);
-    grunt.registerTask('cordovaRunAndroid', ['buildClient', 'exec:prepare', 'exec:runAndroid']);
+    grunt.registerTask('cordovaRunAndroid', ['buildCordovaClient', 'exec:prepare', 'exec:runAndroid']);
 
     grunt.registerTask('cordovaBuildAndroidRelease', ['exec:buildAndroidRelease']);
     grunt.registerTask('cordovaBuildIOSRelease', ['exec:buildIOSRelease']);

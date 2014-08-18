@@ -1,8 +1,64 @@
 {
     "title" : "IAS Bluetooth Auto",
-    "description" : "Studienarbeit am IAS über das Bluetooth Teamarbeit Auto",
+    "description" : "Studienarbeit am IAS über das Bluetooth Teamarbeit Auto.",
+
+    "language" : {
+        "title" : "Spracheinstellung",
+        "label" : "Sprache",
+        "description" : "Bitte wählen Sie ihre Sprache",
+        "german" : "deutsch",
+        "english" : "english"
+    },
+
+    "scan" : {
+        "scanForCars" : "nach Fahrzeugen suchen",
+        "noCars" : "keine Fahrzeuge gefunden"
+    },
+
+    "connect" : {
+        "connecting" : "Verbinde zum Fahrzeug"
+    },
+
+    "info" : {
+        "title" : "Über die App",
+        "ias" : "IAS, Universität Stuttgart",
+        "address" : {
+            "professor" : "Prof. Dr.-Ing. Dr. h. c. Peter Göhner",
+            "street" : "Pfaffenwaldring 47",
+            "zipCity" : "70550 Stuttgart",
+            "country" : "Deutschland"
+        },
+        "author" : "Autor",
+        "authorName" : "Friedrich Mäckle",
+        "sadaNr" : "SADA Nr. 2625",
+        "contact" : "Kontakt",
+        "contactName" : "Andreas Friedrich",
+        "contactEmail" : "andreas.friedrich@ias.uni-stuttgart.de",
+        "description" : "Diese Smartphone Anwendung entstand in einer studentischen Arbeit am IAS."
+    },
 
     "settings" : {
-        "title" : "Einstellungen"
+        "title" : "Fahrzeug-Einstellungen",
+        "steeringTrim" : "Lenktrimmung",
+        "steeringTrimDescr" : "Der Lenkwert reicht von 500 links bis 1000 rechts und wird um diesen Wert korrigiert.",
+        "sensorServoTrim" : "Sensor-Servo Trimmung",
+        "distanceRotation" : "Winkelanpassung Abstandssensoren",
+        "lockDistanceRotation" : "Rotation abschalten",
+        "expertMode" : "Expert mode",
+        "expertModeDescription" : "Schau dir die Rohdaten der Abstandssensoren an"
+    },
+
+    "genericActor" : {
+        "title" : "Generischer Aktor",
+        "value" : "Wert des Aktors",
+        "help" : "Der generische Aktor ist ein unsigned 16-bit Integer und kann Werte von 0 bis 65535 annehmen."
+    },
+
+    "sensors" : {
+        "title" : "Abstand",
+        "USFront" : "Ultraschall vorne",
+        "USRear" : "Ultraschall hinten",
+        "IRFront" : "Infrarot vorne",
+        "IRRear" : "Infrarot hinten"
     }
 }
