@@ -74,7 +74,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
                         'uuid'   : '5d5f0021-e670-11e3-a4f3-0002a5d5c51b',
                         'length' : 6,
                         'descriptors' : {
-                            'genericActors' : {
+                            'genericActuators' : {
                                 'uuid' : '5d5f00f0-e670-11e3-a4f3-0002a5d5c51b',
                                 'length' : 2
                             }
@@ -184,12 +184,12 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             return bluetoothService.write(params);
         },
         readDescriptor : function(service, characteristic, descriptor) {
-            //var that = this;
+            var that = this;
 
             var params = {
-                'serviceUuid' : service,
-                'characteristicUuid' : characteristic,
-                'descriptorUuid' :  descriptor
+                'serviceUuid' : that.services[service].uuid,
+                'characteristicUuid' : that.services[service].characteristics[characteristic].uuid,
+                'descriptorUuid' :  that.services[service].characteristics[characteristic].descriptors[descriptor].uuid
             };
 
             return bluetoothService.readDescriptor(params);
@@ -197,11 +197,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         readGenericActorButtonConfiguration : function() {
             var that = this;
 
-            this.readDescriptor(
-                that.services.actuators.uuid,
-                that.services.actuators.characteristics.actuators.uuid,
-                that.services.actuators.characteristics.actuators.descriptors.genericActors.uuid
-            ).then(function(result) {
+            this.readDescriptor('actuators', 'actuators', 'genericActuators').then(function(result) {
                     var bytes = bluetoothService.encodedStringToBytes(result.value);
                     var u8bytes = bytes.buffer.slice(0,4);
                     var u8 = new Uint8Array(u8bytes);

@@ -19,10 +19,7 @@ angular.module('iasCar.services').service('storageService', [function() {
         if (!localStorage) {
             localStorage = {
                 setItem: function (item) { console.info(item); },
-                getItem: function (item) { console.info(item); },
-                removeItem: function (item) { console.info(item); },
-                key: function (item) { console.info(item); },
-                clear: function (item) { console.info(item); }
+                getItem: function (item) { console.info(item); }
             };
         }
 
@@ -34,17 +31,6 @@ angular.module('iasCar.services').service('storageService', [function() {
             return localStorage.getItem(key);
         };
 
-        this.removeItem = function (key) {
-            return localStorage.removeItem(key);
-        };
-
-        this.key = function (position) {
-            return localStorage.key(position);
-        };
-
-        this.clear = function () {
-            return localStorage.clear();
-        };
     }
 
     return {
