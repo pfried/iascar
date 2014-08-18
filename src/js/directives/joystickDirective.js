@@ -66,6 +66,7 @@ angular.module('iasCar.directives').directive('joystick', function() {
                 var touch = event.targetTouches[0];
                 cursorTouchId = touch.identifier;
                 setPosition(touch);
+                event.preventDefault();
             }
 
             function applyPosition() {
@@ -114,20 +115,32 @@ angular.module('iasCar.directives').directive('joystick', function() {
 
             }
 
-            function onTouchEnd() {
+            function onTouchEnd(event) {
 
-                cursorTouchId = -1;
+                // Is it this directives touch that ended?
+                for(var i = 0; i < event.changedTouches.length; i++) {
 
-                scope.$apply(
-                    scope.position = {
-                        x : 0,
-                        y : 0
+                    var touch = event.changedTouches[i];
+
+                    if (cursorTouchId === touch.identifier) {
+
+                        cursorTouchId = -1;
+
+                        if (isControlY()) {
+                            cursorTouch.y = center.y;
+                            scope.position.y = 0;
+                        }
+
+                        if (isControlX()) {
+                            cursorTouch.x = center.x;
+                            scope.position.x = 0;
+                        }
                     }
-                );
+                }
 
-                cursorTouch.x = center.x;
-                cursorTouch.y = center.y;
+                scope.$apply();
 
+                event.preventDefault();
             }
 
             function draw() {
