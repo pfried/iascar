@@ -294,7 +294,7 @@ module.exports = function (grunt) {
         plato: {
             all : {
                 options: {
-                    jshint : grunt.file.readJSON('.jshintrc')
+                    jshintrc : '.jshintrc'
                 },
                 files : {
                     'reports' : ['gruntfile.js'].concat(CLIENT_SRC_FILES).concat(CLIENT_SPEC_FILES).concat(MOCK_FILES)
