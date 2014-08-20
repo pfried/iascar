@@ -9,7 +9,23 @@
         }
     },
     "bluetooth": {
-        // TODO Add UUIDs to Bluetooth
-        "uuids": [ "1105", "1106" ]
-    }
+        "uuids": [
+            "1800",
+            "1801",
+            "180A",
+            "5d5f0000-e670-11e3-a4f3-0002a5d5c51b",
+            "5d5f0001-e670-11e3-a4f3-0002a5d5c51b",
+            "5d5f0020-e670-11e3-a4f3-0002a5d5c51b",
+            "5d5f0021-e670-11e3-a4f3-0002a5d5c51b",
+            "5d5f00f0-e670-11e3-a4f3-0002a5d5c51b",
+            "5d5f0030-e670-11e3-a4f3-0002a5d5c51b",
+            "5d5f0031-e670-11e3-a4f3-0002a5d5c51b",
+            "5d5f0010-e670-11e3-a4f3-0002a5d5c51b",
+            "5d5f0011-e670-11e3-a4f3-0002a5d5c51b"
+        ],
+        "low_energy" : true
+    },
+    "permissions" : [
+        "storage"
+    ]
 }

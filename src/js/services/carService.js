@@ -428,13 +428,15 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         // Retrieve settings from the storage
         restoreSettings : function() {
             var that = this;
-            var data = storageService.localStorage.getItem(that.address);
-            if(data) {
-                data = JSON.parse(data);
-                for (var key in data) {
-                    that.settings[key] = data[key];
+            storageService.localStorage.getItem(that.address).then(function(data) {
+                if(data) {
+                    data = JSON.parse(data);
+                    for (var key in data) {
+                        that.settings[key] = data[key];
+                    }
                 }
-            }
+            });
+
         }
 
     };

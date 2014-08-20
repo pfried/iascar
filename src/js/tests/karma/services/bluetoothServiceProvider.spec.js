@@ -66,6 +66,9 @@
 
             bluetoothServiceProvider.setProvider('chrome');
 
+            window.chrome = {};
+            window.chrome.bluetooth = {};
+
             inject(function ($injector) {
                 bluetoothService = $injector.get('bluetoothService');
             });

@@ -6,7 +6,7 @@
         var Car;
         var car;
         var $rootScope, $q;
-        var success, error, notify, bluetoothService;
+        var success, error, notify, bluetoothService, localStorage;
 
         beforeEach(function() {
 
@@ -19,6 +19,7 @@
                 $rootScope = ($injector.get('$rootScope'));
                 $q = ($injector.get('$q'));
                 bluetoothService = ($injector.get('bluetoothService'));
+                localStorage = ($injector.get('storageService')).localStorage;
             });
 
             car = new Car('ab:cd:ef:12:34:56');
@@ -135,11 +136,17 @@
 
         it('can store its settings to the localstorage', function() {
 
-            var store = {};
+            var that = this;
+            that.store = {};
 
             spyOn(localStorage, 'setItem').andCallFake(function (key, value) {
-                store[key] = value + '';
-                return true;
+                var deferred = $q.defer();
+
+                deferred.resolve(function() {
+                    that.store[key] = value + '';
+                });
+
+                return deferred.promise;
             });
 
             car = new Car('ab:cd:ef:12:34:56');
@@ -155,12 +162,16 @@
         it('can restore its settings from the localstorage', function() {
 
             spyOn(localStorage, 'getItem').andCallFake(function () {
-                return '{"steeringTrim" : 10, "sensorServoTrim" : 2, "lockDistanceRotation" : true}';
+                var deferred = $q.defer();
+                deferred.resolve('{"steeringTrim" : 10, "sensorServoTrim" : 2, "lockDistanceRotation" : true}');
+                return deferred.promise;
             });
 
             car = new Car('ab:cd:ef:12:34:56');
 
             car.restoreSettings();
+
+            $rootScope.$apply();
 
             expect(localStorage.getItem).toHaveBeenCalledWith('ab:cd:ef:12:34:56');
             expect(car.settings).toEqual({ steeringTrim : 10, sensorServoTrim : 2, lockDistanceRotation : true, expertMode : false });
