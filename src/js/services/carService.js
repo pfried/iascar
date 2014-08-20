@@ -394,23 +394,8 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
         setDrivingControl : function() {
             var that = this;
 
-            var oldSpeed;
-            var oldSteering;
-            var oldSensorServo;
-            var oldSteeringTrim;
-            var oldSensorServoTrim;
-
             that.drivingInterval = $interval(function() {
-                // Check if values have changed
-                if(oldSpeed !== that.joystick.y | oldSteering !== that.joystick.x | oldSensorServo !== that.actuators.sensorServo | oldSteeringTrim !== that.settings.steeringTrim | oldSensorServoTrim !== that.settings.sensorServoTrim) {
-                    that.setSpeedAndAngle(that.joystick.y, that.joystick.x, that.actuators.sensorServo);
-                }
-                oldSpeed = that.joystick.y;
-                oldSteering = that.joystick.x;
-                oldSensorServo = that.actuators.sensorServo;
-                oldSteeringTrim = that.settings.steeringTrim;
-                oldSensorServoTrim = that.settings.sensorServoTrim;
-
+                that.setSpeedAndAngle(that.joystick.y, that.joystick.x, that.actuators.sensorServo);
              // 150 works pretty well
             }, 175);
 
