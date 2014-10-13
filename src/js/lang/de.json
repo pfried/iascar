@@ -44,7 +44,7 @@
         "sensorServoTrim" : "Sensor-Servo Trimmung",
         "distanceRotation" : "Winkelanpassung Abstandssensoren",
         "lockDistanceRotation" : "Rotation abschalten",
-        "expertMode" : "Expert mode",
+        "expertMode" : "Experten-Modus",
         "expertModeDescription" : "Schau dir die Rohdaten der Abstandssensoren an"
     },
 
