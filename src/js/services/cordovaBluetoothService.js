@@ -128,7 +128,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         return deferred.promise;
     }
 
-    function isConnected() {
+    function isConnected(params) {
 
         var deferred = $q.defer();
 
@@ -140,7 +140,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
                     deferred.reject();
                 }
             }
-        });
+        }, params);
 
         return deferred.promise;
     }
@@ -176,10 +176,12 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
         return deferred.promise;
     }
 
-    function disconnect() {
+    function disconnect(params) {
         var deferred = $q.defer();
 
         bt.disconnect(function(result) {
+
+            console.log('disconnect event', result.status);
 
             if(result && result.status === 'disconnecting') {
                 deferred.notify(result);
@@ -191,12 +193,12 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
 
         }, function(error) {
             deferred.reject(error.message);
-        });
+        }, params);
 
         return deferred.promise;
     }
 
-    function close() {
+    function close(params) {
         var deferred = $q.defer();
 
         bt.close(function(result) {
@@ -207,12 +209,12 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
 
         }, function(error) {
             deferred.reject(error.message);
-        });
+        }, params);
 
         return deferred.promise;
     }
 
-    function discover() {
+    function discover(params) {
         var deferred = $q.defer();
 
         bt.discover(function(result) {
@@ -221,7 +223,7 @@ angular.module('iasCar.services').factory('cordovaBluetoothService', ['$window',
             }
         }, function(error) {
             deferred.reject(error.message);
-        });
+        }, params);
 
         return deferred.promise;
     }

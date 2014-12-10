@@ -9,6 +9,7 @@ Java, Ant, Android
 Add locations of the dependencies to PATH Variable on Windows
 
 http://stackoverflow.com/questions/22275026/cordova-for-android-an-error-occurred-while-listening-android-targets
+http://stackoverflow.com/questions/20323787/cordova-platform-add-android-not-working-while-listing-android-targets
 
 ## Trying to add a cordova plugin results in error:
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="JSHintConfiguration" version="2.4.4" use-config-file="true" default-config-file-path="$PROJECT_DIR$/.jshintrc">
+  <component name="JSHintConfiguration" version="2.4.4" use-config-file="true">
     <option asi="false" />
     <option bitwise="true" />
     <option boss="false" />
@@ -68,4 +68,3 @@
     <option yui="false" />
   </component>
 </project>
-
