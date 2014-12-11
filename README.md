@@ -27,7 +27,6 @@ Note: All Cordova commands must be executed in the bluetoothcar cwd, since this 
 Add platforms needed:
 
    * platform add android
-   * platform add windows8
 
 #### IOS
 

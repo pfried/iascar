@@ -149,13 +149,27 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             return bluetoothService.reconnect();
         },
         disconnect :  function () {
+
+            var that = this;
+
+            var params = {
+                address : that.address
+            };
+
             this.unsetDrivingControl();
-            return bluetoothService.disconnect().then(bluetoothService.close);
+            return bluetoothService.disconnect(params).then(function() {
+                return bluetoothService.close(params);
+            });
         },
         discover : function() {
             var that = this;
 
-            return bluetoothService.discover().then(function(result) {
+            var params = {
+                address : that.address
+            };
+
+            return bluetoothService.discover(params).then(function(result) {
+                console.log('discovered services', result);
                 that.name = result.name;
                 // We do not take the result from the discover since we already know everything about the car
             });
@@ -164,22 +178,28 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var that = this;
 
             var params = {
+                address : that.address,
                 serviceUuid: that.services[service].uuid,
                 characteristicUuid: that.services[service].characteristics[characteristic].uuid
             };
 
             return bluetoothService.read(params);
         },
-        write : function(service, characteristic, value) {
+        write : function(service, characteristic, value, type) {
             var that = this;
 
-            //console.log('Writing ', service, ': ', characteristic, ': ', value);
+            console.log('Writing ', service, ': ', characteristic, ': ', value);
 
             var params = {
+                address : that.address,
                 serviceUuid: that.services[service].uuid,
                 characteristicUuid: that.services[service].characteristics[characteristic].uuid,
                 value : value
             };
+
+            if(type) {
+                params.type = type;
+            }
 
             return bluetoothService.write(params);
         },
@@ -187,9 +207,10 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var that = this;
 
             var params = {
-                'serviceUuid' : that.services[service].uuid,
-                'characteristicUuid' : that.services[service].characteristics[characteristic].uuid,
-                'descriptorUuid' :  that.services[service].characteristics[characteristic].descriptors[descriptor].uuid
+                address : that.address,
+                serviceUuid : that.services[service].uuid,
+                characteristicUuid : that.services[service].characteristics[characteristic].uuid,
+                descriptorUuid :  that.services[service].characteristics[characteristic].descriptors[descriptor].uuid
             };
 
             return bluetoothService.readDescriptor(params);
@@ -214,6 +235,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var that = this;
 
             var params = {
+                address : that.address,
                 serviceUuid: that.services[service].uuid,
                 characteristicUuid: that.services[service].characteristics[characteristic].uuid
             };
@@ -224,6 +246,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var that = this;
 
             var params = {
+                address : that.address,
                 serviceUuid: that.services[service].uuid,
                 characteristicUuid: that.services[service].characteristics[characteristic].uuid
             };
@@ -338,7 +361,7 @@ angular.module('iasCar.services').factory('Car', ['$rootScope', '$q', '$interval
             var servoSpeed = $filter('speed')(speed);
             var sensorServo = $filter('steering')(this.actuators.sensorServo, this.settings.sensorServoTrim);
             var value = this.encodeSpeedAndAngle(servoSpeed, servoAngle, sensorServo);
-            return this.write('drive', 'speedAndAngle', value);
+            return this.write('drive', 'speedAndAngle', value, 'noResponse');
         },
 
         setHorn : function(value) {

@@ -221,10 +221,12 @@ angular.module('iasCar.directives').directive('joystick', function() {
 
             // Bind to the values from outside as well
             scope.$watch('position', function(newval) {
-                cursorTouch = {
-                    x : ((newval.x * radiusBound) / 100) + center.x,
-                    y : ((newval.y * radiusBound) / -100) + center.y
-                };
+                if (newval) {
+                    cursorTouch = {
+                        x : ((newval.x * radiusBound) / 100) + center.x,
+                        y : ((newval.y * radiusBound) / -100) + center.y
+                    };
+                }
             });
 
             draw();

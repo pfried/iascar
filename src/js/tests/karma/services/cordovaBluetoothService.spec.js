@@ -126,7 +126,9 @@
             bluetoothService._bt.deviceState.connected = true;
             bluetoothService._bt.deviceState.discovered = false;
 
-            bluetoothService.discover().then(success);
+            bluetoothService.discover({
+                'address' : 'ab'
+            }).then(success);
 
             $rootScope.$apply();
 
